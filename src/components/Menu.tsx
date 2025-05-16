@@ -41,12 +41,12 @@ const menuItems = [
           href: "/list/students",
           visible: ["admin", "teacher"],
         },
-        {
-          icon: HiUsers,
-          label: "Parents",
-          href: "/list/parents",
-          visible: ["admin", "teacher"],
-        },
+        // {
+        //   icon: HiUsers,
+        //   label: "Parents",
+        //   href: "/list/parents",
+        //   visible: ["admin", "teacher"],
+        // },
         {
           icon: HiBookOpen,
           label: "Subjects",

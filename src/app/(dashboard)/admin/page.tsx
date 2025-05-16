@@ -3,7 +3,7 @@ import CountChart from "@/components/CountChart";
 import AttendanceChart from "@/components/AttendanceChart";
 import FinanceChart from "@/components/FinanceChart";
 import EventCalendar from "@/components/EventCalendar";
-import Announcements from "@/components/Announcments";
+import Announcements from "@/components/Announcements";
 
 const AdminPage = () => {
   return (
