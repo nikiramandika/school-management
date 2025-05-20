@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { LuMessageSquareText } from "react-icons/lu";
 import { GrAnnounce } from "react-icons/gr";
+import { UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -27,13 +28,14 @@ const Navbar = () => {
           <span className="text-xs leading-3 font-medium">Niki gan</span>
           <span className="text-[10px] text-gray-500 text-right">Admin</span>
         </div>
-        <Image
+        {/* <Image
           src="/avatar.png"
           alt="logo"
           width={36}
           height={36}
           className="rounded-full"
-        />
+        /> */}
+        <UserButton/>
       </div>
     </div>
   );

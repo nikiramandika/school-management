@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import type { JSX } from "react";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
+import { useUser } from "@clerk/nextjs";
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
@@ -42,6 +43,9 @@ const FormModal = ({
   data?: any;
   id?: number | string;
 }) => {
+  const { user } = useUser();
+  const role = user?.publicMetadata?.role as string || "student";
+  
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const iconSize = 16;
 
@@ -89,28 +93,34 @@ const FormModal = ({
   };
 
   return (
-    <>
+    <div>
       <button
-        className={`${size} flex items-center justify-center rounded-full cursor-pointer ${bgColor}`}
         onClick={() => setOpen(true)}
+        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
       >
         <IconComponent />
       </button>
-
       {open && (
-        <div className="fixed inset-0 bg-gray-900/60 z-60 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">
+              {type === "create"
+                ? `Add New ${table.charAt(0).toUpperCase() + table.slice(1)}`
+                : type === "update"
+                ? `Update ${table.charAt(0).toUpperCase() + table.slice(1)}`
+                : `Delete ${table.charAt(0).toUpperCase() + table.slice(1)}`}
+            </h2>
             <Form />
-            <div
-              className="absolute top-4 right-4 cursor-pointer"
+            <button
               onClick={() => setOpen(false)}
+              className="mt-4 text-gray-500 hover:text-gray-700"
             >
-              <span className="text-gray-600 hover:text-black text-lg">×</span>
-            </div>
+              Cancel
+            </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

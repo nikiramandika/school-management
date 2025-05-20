@@ -1,6 +1,6 @@
 "use client";
 
-import { role } from "@/lib/data";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { 
   HiHome, 
@@ -20,7 +20,6 @@ import {
   HiCog, 
   HiLogout 
 } from "react-icons/hi";
-import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 const menuItems = [
@@ -140,6 +139,8 @@ const menuItems = [
 
   const Menu = () => {
     const pathname = usePathname();
+    const { user } = useUser();
+    const role = user?.publicMetadata?.role as string || "student";
   
     return (
       <div className="mt-4 text-sm">
