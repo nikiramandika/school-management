@@ -23,7 +23,7 @@ model Student {
   img         String?
   bloodType   String
   sex         UserSex
-  createdAt   DateTime     @default(no  ())
+  createdAt   DateTime     @default(now())
   classId     Int
   class       Class        @relation(fields: [classId], references: [id])
   gradeId     Int

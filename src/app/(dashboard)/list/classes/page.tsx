@@ -3,6 +3,8 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { classesData, role } from "@/lib/data";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Prisma, Teacher } from "@prisma/client";
@@ -32,10 +34,14 @@ const columns = [
     accessor: "supervisor",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
+  ...(role === "admin" 
+    ?[
+        {
+          header: "Actions",
+          accessor: "action",
   },
+    ]
+  : [])
 ];
 
 const renderRow = (item: ClassList) => (
@@ -69,6 +75,16 @@ const ClassListPage = async ({
 
   const p = page ? parseInt(page) : 1;
 
+  const { userId, sessionClaims } = await auth();
+  
+    // Redirect if not authenticated
+    if (!userId) {
+      redirect("/sign-in");
+    }
+  
+    const role = (sessionClaims?.metadata as { role?: string })?.role;
+  
+
   // URL PARAM CONDITION
 
   const query: Prisma.ClassWhereInput = {};
@@ -89,6 +105,7 @@ const ClassListPage = async ({
       }
     }
   }
+
 
   const [data, count] = await prisma.$transaction([
     prisma.class.findMany({

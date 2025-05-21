@@ -4,6 +4,8 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { lessonsData, role } from "@/lib/data";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
@@ -28,10 +30,14 @@ const columns = [
     accessor: "teacher",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
+  ...(role === "admin" 
+    ?[
+        {
+          header: "Actions",
+          accessor: "action",
   },
+    ]
+  : [])
 ];
 
 const renderRow = (item: LessonList) => (
@@ -63,8 +69,23 @@ const LessonListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const { page, ...queryParams } = searchParams;
+  
+    const p = page ? parseInt(page) : 1;
 
-  const p = page ? parseInt(page) : 1;
+    const { userId, sessionClaims } = await auth();
+  
+    // Redirect if not authenticated
+    if (!userId) {
+      redirect("/sign-in");
+    }
+  
+    const role = (sessionClaims?.metadata as { role?: string })?.role;
+    const currentUserId = userId;
+  
+    // Redirect if user doesn't have access
+    if (role !== "admin" && role !== "teacher" && role !== "student") {
+      redirect(`/${role}`);
+    }
 
   // URL PARAM CONDITION
 

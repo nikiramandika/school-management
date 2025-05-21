@@ -7,6 +7,8 @@ import {
   role,
 } from "@/lib/data";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
@@ -52,10 +54,14 @@ const columns = [
     accessor: "date",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
+  ...(role === "admin" || role === "teacher"
+    ?[
+        {
+          header: "Actions",
+          accessor: "action",
   },
+    ]
+  : [])
 ];
 
 const renderRow = (item: ResultList) => (
@@ -75,7 +81,7 @@ const renderRow = (item: ResultList) => (
         </td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" || role === "teacher" && (
+          {(role === "admin" || role === "teacher") && (
             <>
               <FormModal table="result" type="update" data={item} />
               <FormModal table="result" type="delete" id={item.id} />
@@ -93,10 +99,26 @@ const renderRow = (item: ResultList) => (
     const { page, ...queryParams } = searchParams;
   
     const p = page ? parseInt(page) : 1;
+
+    const { userId, sessionClaims } = await auth();
+  
+    // Redirect if not authenticated
+    if (!userId) {
+      redirect("/sign-in");
+    }
+  
+    const role = (sessionClaims?.metadata as { role?: string })?.role;
+    const currentUserId = userId;
+  
+    // Redirect if user doesn't have access
+    if (role !== "admin" && role !== "teacher" && role !== "student") {
+      redirect(`/${role}`);
+    }
   
     // URL PARAM CONDITION
   
     const query: Prisma.ResultWhereInput = {};
+    
   
     if (queryParams) {
       for (const [key, value] of Object.entries(queryParams)) {
@@ -117,7 +139,27 @@ const renderRow = (item: ResultList) => (
         }
       }
     }
-  
+
+    // ROLE CONDITIONS
+    switch (role) {
+      case "admin":
+        break;
+      case "teacher":
+        query.OR = [
+          { exam: { lesson : { teacherId: currentUserId!}}},
+          { assignment: { lesson: { teacherId: currentUserId!}}},
+        ];
+        break;
+      case "student":
+        query.student = {
+          id: currentUserId!,
+        };
+        break;
+      default:
+        break;
+    }
+    
+
     const [dataRes, count] = await prisma.$transaction([
       prisma.result.findMany({
         where: query,
@@ -184,7 +226,9 @@ const renderRow = (item: ResultList) => (
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" || role === "teacher" && <FormModal table="result" type="create" />}
+            {(role === "admin" || role === "teacher") && ( 
+            <FormModal table="result" type="create" />
+            )}
           </div>
         </div>
       </div>
