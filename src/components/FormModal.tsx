@@ -1,23 +1,41 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
-import type { JSX } from "react";
+import { useEffect, useState, type Dispatch, type JSX, type SetStateAction } from "react";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
 import { useUser } from "@clerk/nextjs";
+import { useFormState } from "react-dom";
+import { deleteSubject } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const StudentForm = dynamic(() => import("./forms/StudentForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
+// Pemetaan delete action
+const deleteActionMap = {
+  subject: deleteSubject,
+  class: deleteSubject,
+  teacher: deleteSubject,
+  student: deleteSubject,
+  exam: deleteSubject,
+  lesson: deleteSubject,
+  assignment: deleteSubject,
+  result: deleteSubject,
+  attendance: deleteSubject,
+  event: deleteSubject,
+  announcement: deleteSubject,
+};
 
+// Load form secara dinamis
+const TeacherForm = dynamic(() => import("./forms/TeacherForm"), { loading: () => <h1>Loading...</h1> });
+const StudentForm = dynamic(() => import("./forms/StudentForm"), { loading: () => <h1>Loading...</h1> });
+const SubjectForm = dynamic(() => import("./forms/SubjectForm"), { loading: () => <h1>Loading...</h1> });
+
+// Pemetaan nama form ke komponen
 const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
+  [key: string]: (setOpen: Dispatch<SetStateAction<boolean>>, type: "create" | "update", data?: any) => JSX.Element;
 } = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />,
+  teacher: (setOpen, type, data) => <TeacherForm type={type} data={data} setOpen={setOpen} />,
+  student: (setOpen, type, data) => <StudentForm type={type} data={data} setOpen={setOpen} />,
+  subject: (setOpen, type, data) => <SubjectForm type={type} data={data} setOpen={setOpen} />,
 };
 
 const FormModal = ({
@@ -45,7 +63,7 @@ const FormModal = ({
 }) => {
   const { user } = useUser();
   const role = user?.publicMetadata?.role as string || "student";
-  
+
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const iconSize = 16;
 
@@ -70,23 +88,41 @@ const FormModal = ({
   };
 
   const [open, setOpen] = useState(false);
+  const [state, formAction] = useFormState(deleteActionMap[table], {
+    success: false,
+    error: false,
+  });
 
-  const Form = () => {
-    if (type === "delete" && id) {
-      return (
-        <form className="flex flex-col gap-4">
-          <span className="text-center font-medium">
-            All data will be lost. Are you sure you want to delete this {table}?
-          </span>
-          <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-            Delete
-          </button>
-        </form>
-      );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      toast(`${table.charAt(0).toUpperCase() + table.slice(1)} has been deleted!`);
+      setOpen(false);
+      router.refresh();
     }
+  }, [state]);
+
+  const RenderForm = () => {
+    if (type === "delete" && id) {
+  return (
+    <form action={formAction} className="flex flex-col gap-4">
+      <input type="hidden" name="id" value={id.toString()} />
+      <span className="text-center font-medium">
+        All data will be lost. Are you sure you want to delete this {table}?
+      </span>
+      <button
+        type="submit"
+        className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center"
+      >
+        Delete
+      </button>
+    </form>
+  );
+}
 
     if ((type === "create" || type === "update") && typeof forms[table] === "function") {
-      return forms[table](type, data);
+      return forms[table](setOpen, type, data);
     }
 
     return <p className="text-center">Form for "{table}" not found!</p>;
@@ -110,7 +146,7 @@ const FormModal = ({
                 ? `Update ${table.charAt(0).toUpperCase() + table.slice(1)}`
                 : `Delete ${table.charAt(0).toUpperCase() + table.slice(1)}`}
             </h2>
-            <Form />
+            <RenderForm />
             <button
               onClick={() => setOpen(false)}
               className="mt-4 text-gray-500 hover:text-gray-700"
