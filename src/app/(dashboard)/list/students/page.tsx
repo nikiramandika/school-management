@@ -15,7 +15,6 @@ type StudentList = Student & {
   class: Class;
 };
 
-
 const columns = [
   {
     header: "Info",
@@ -42,13 +41,13 @@ const columns = [
     className: "hidden lg:table-cell",
   },
   ...(role === "admin" || role === "teacher"
-    ?[
+    ? [
         {
           header: "Actions",
           accessor: "action",
-  },
-    ]
-  : [])
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: StudentList) => (
@@ -84,7 +83,7 @@ const renderRow = (item: StudentList) => (
           // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
           //   <Image src="/delete.png" alt="" width={16} height={16} />
           // </button>
-          <FormModal table="student" type="delete" id={item.id}/>
+          <FormModal table="student" type="delete" id={item.id} />
         )}
       </div>
     </td>
@@ -96,24 +95,24 @@ const StudentListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-    const { page, ...queryParams } = searchParams;
-  
-    const p = page ? parseInt(page) : 1;
+  const { page, ...queryParams } = searchParams;
 
-    const { userId, sessionClaims } = await auth();
-  
-    // Redirect if not authenticated
-    if (!userId) {
-      redirect("/sign-in");
-    }
-  
-    const role = (sessionClaims?.metadata as { role?: string })?.role;
-    const currentUserId = userId;
-  
-    // Redirect if user doesn't have access
-    if (role !== "admin" && role !== "teacher" && role !== "student") {
-      redirect(`/${role}`);
-    }
+  const p = page ? parseInt(page) : 1;
+
+  const { userId, sessionClaims } = await auth();
+
+  // Redirect if not authenticated
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
+
+  // Redirect if user doesn't have access
+  if (role !== "admin" && role !== "teacher" && role !== "student") {
+    redirect(`/${role}`);
+  }
   // URL PARAM CONDITION
 
   const query: Prisma.StudentWhereInput = {};
@@ -153,8 +152,6 @@ const StudentListPage = async ({
     prisma.student.count({ where: query }),
   ]);
 
-
-  
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
@@ -173,7 +170,7 @@ const StudentListPage = async ({
               // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               //   <Image src="/plus.png" alt="" width={14} height={14} />
               // </button>
-              <FormModal table="student" type="create"/>
+              <FormModal table="student" type="create" />
             )}
           </div>
         </div>

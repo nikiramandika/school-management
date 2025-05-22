@@ -30,14 +30,14 @@ const columns = [
     accessor: "teacher",
     className: "hidden md:table-cell",
   },
-  ...(role === "admin" 
-    ?[
+  ...(role === "admin"
+    ? [
         {
           header: "Actions",
           accessor: "action",
-  },
-    ]
-  : [])
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: LessonList) => (
@@ -69,23 +69,23 @@ const LessonListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const { page, ...queryParams } = searchParams;
-  
-    const p = page ? parseInt(page) : 1;
 
-    const { userId, sessionClaims } = await auth();
-  
-    // Redirect if not authenticated
-    if (!userId) {
-      redirect("/sign-in");
-    }
-  
-    const role = (sessionClaims?.metadata as { role?: string })?.role;
-    const currentUserId = userId;
-  
-    // Redirect if user doesn't have access
-    if (role !== "admin" && role !== "teacher" && role !== "student") {
-      redirect(`/${role}`);
-    }
+  const p = page ? parseInt(page) : 1;
+
+  const { userId, sessionClaims } = await auth();
+
+  // Redirect if not authenticated
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
+
+  // Redirect if user doesn't have access
+  if (role !== "admin" && role !== "teacher" && role !== "student") {
+    redirect(`/${role}`);
+  }
 
   // URL PARAM CONDITION
 
@@ -107,8 +107,8 @@ const LessonListPage = async ({
               { teacher: { name: { contains: value, mode: "insensitive" } } },
             ];
             break;
-            default:
-              break;
+          default:
+            break;
         }
       }
     }

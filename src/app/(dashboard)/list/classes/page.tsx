@@ -34,14 +34,14 @@ const columns = [
     accessor: "supervisor",
     className: "hidden md:table-cell",
   },
-  ...(role === "admin" 
-    ?[
+  ...(role === "admin"
+    ? [
         {
           header: "Actions",
           accessor: "action",
-  },
-    ]
-  : [])
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: ClassList) => (
@@ -52,7 +52,9 @@ const renderRow = (item: ClassList) => (
     <td className="flex items-center gap-4 p-4">{item.name}</td>
     <td className="hidden md:table-cell">{item.capacity}</td>
     <td className="hidden md:table-cell">{item.name[0]}</td>
-    <td className="hidden md:table-cell">{item.supervisor.name + " " + item.supervisor.surname}</td>
+    <td className="hidden md:table-cell">
+      {item.supervisor.name + " " + item.supervisor.surname}
+    </td>
     <td>
       <div className="flex items-center gap-2">
         {role === "admin" && (
@@ -76,14 +78,13 @@ const ClassListPage = async ({
   const p = page ? parseInt(page) : 1;
 
   const { userId, sessionClaims } = await auth();
-  
-    // Redirect if not authenticated
-    if (!userId) {
-      redirect("/sign-in");
-    }
-  
-    const role = (sessionClaims?.metadata as { role?: string })?.role;
-  
+
+  // Redirect if not authenticated
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   // URL PARAM CONDITION
 
@@ -99,13 +100,12 @@ const ClassListPage = async ({
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
-            default:
-              break;
+          default:
+            break;
         }
       }
     }
   }
-
 
   const [data, count] = await prisma.$transaction([
     prisma.class.findMany({
@@ -118,7 +118,6 @@ const ClassListPage = async ({
     }),
     prisma.class.count({ where: query }),
   ]);
-
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">

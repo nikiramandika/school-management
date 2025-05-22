@@ -37,18 +37,18 @@ const AnnouncementListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const { page, ...queryParams } = searchParams;
-    
-      const p = page ? parseInt(page) : 1;
-  
-      const { userId, sessionClaims } = await auth();
-    
-      // Redirect if not authenticated
-      if (!userId) {
-        redirect("/sign-in");
-      }
-  
-      const currentUserId = userId;
-      const role = (sessionClaims?.metadata as { role?: string })?.role;
+
+  const p = page ? parseInt(page) : 1;
+
+  const { userId, sessionClaims } = await auth();
+
+  // Redirect if not authenticated
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const currentUserId = userId;
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   // Filter query param
   const query: Prisma.AnnouncementWhereInput = {};
@@ -62,14 +62,14 @@ const AnnouncementListPage = async ({
     }
   }
 
-    // ROLE CONDITIONS
+  // ROLE CONDITIONS
   const roleConditions = {
-    teacher: { lessons: { some: { teacherId: currentUserId!}}},
-    student: { students: { some: { id: currentUserId!}}},
+    teacher: { lessons: { some: { teacherId: currentUserId! } } },
+    student: { students: { some: { id: currentUserId! } } },
   };
 
   query.OR = [
-    { classId: null},
+    { classId: null },
     {
       class: roleConditions[role as keyof typeof roleConditions] || {},
     },
