@@ -197,7 +197,7 @@ const FormModal = ({
       </Button>
       {open && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+          <div className="bg-card p-8 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <Button
               variant="ghost"
