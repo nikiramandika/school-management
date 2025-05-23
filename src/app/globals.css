@@ -13,6 +13,7 @@
 }
 
 .react-calendar {
+  background-color: rgb(249 250 251) !important; /* bg-gray-50 */
   width: 100% !important;
   border: none !important;
   font-family: "Inter", sans-serif !important;
@@ -25,6 +26,48 @@
 .react-calendar__tile--active {
   background-color: #c3ebfa !important;
   color: black !important;
+}
+
+/* Dark mode styles for calendar */
+.dark-calendar .react-calendar {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.dark-calendar .react-calendar__navigation button {
+  color: var(--foreground) !important;
+}
+
+.dark-calendar .react-calendar__navigation button:enabled:hover,
+.dark-calendar .react-calendar__navigation button:enabled:focus {
+  background-color: var(--accent) !important;
+}
+
+.dark-calendar .react-calendar__tile {
+  color: var(--foreground) !important;
+}
+
+.dark-calendar .react-calendar__tile:enabled:hover,
+.dark-calendar .react-calendar__tile:enabled:focus {
+  background-color: var(--accent) !important;
+}
+
+.dark-calendar .react-calendar__tile--now {
+  background-color: var(--accent) !important;
+  color: var(--foreground) !important;
+}
+
+.dark-calendar .react-calendar__tile--active {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.dark-calendar .react-calendar__month-view__days__day--weekend {
+  color: var(--destructive) !important;
+}
+
+.dark-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  color: var(--muted-foreground) !important;
 }
 
 .rbc-btn-group:first-child{

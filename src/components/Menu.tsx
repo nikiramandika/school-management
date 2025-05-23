@@ -29,7 +29,20 @@ const menuItems = [
       {
         icon: HiHome,
         label: "Home",
-        href: "/",
+        href: (role: string) => {
+          switch (role) {
+            case "admin":
+              return "/admin";
+            case "teacher":
+              return "/teacher";
+            case "student":
+              return "/student";
+            case "parent":
+              return "/parent";
+            default:
+              return "/";
+          }
+        },
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
@@ -143,7 +156,7 @@ const Menu = () => {
   const role = (user?.publicMetadata?.role as string) || "student";
 
   return (
-    <div className="mt-4 text-sm">
+    <div className="text-sm">
       {menuItems.map((section) => (
         <div className="flex flex-col gap-2" key={section.title}>
           <span className="hidden lg:block text-gray-400 font-light my-4">
@@ -151,15 +164,15 @@ const Menu = () => {
           </span>
           {section.items.map((item) => {
             if (item.visible.includes(role)) {
-              const isActive = pathname === item.href;
+              const isActive = pathname === (typeof item.href === "function" ? item.href(role) : item.href);
               return (
                 <Link
-                  href={item.href}
+                  href={typeof item.href === "function" ? item.href(role) : item.href}
                   key={item.label}
-                  className={`flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-white py-2 md:px-2 rounded-md hover:bg-blue-50 dark:hover:bg-card ${
+                  className={`flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-white py-2 md:px-2 rounded-md transition-colors ${
                     isActive
-                      ? "bg-blue-500 text-white font-semibold hover:bg-blue-600"
-                      : ""
+                      ? "bg-blue-500 text-white font-semibold hover:bg-blue-600 dark:hover:bg-blue-600"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />

@@ -9,12 +9,19 @@ import {
   deleteEvent,
 } from "@/lib/actions";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useActionState, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
+import { Button } from "@/components/ui/button";
+import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -121,14 +128,6 @@ const FormModal = ({
   id,
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
-  const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-  const bgColor =
-    type === "create"
-      ? "bg-lamaYellow"
-      : type === "update"
-      ? "bg-lamaSky"
-      : "bg-lamaPurple";
-
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -149,39 +148,65 @@ const FormModal = ({
 
     return type === "delete" && id ? (
       <form action={formAction} className="flex flex-col gap-4">
-          <input type="hidden" name="id" value={id.toString()} />
+        <input type="hidden" name="id" value={id.toString()} />
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
+        <Button variant="destructive" className="w-max self-center text-white">
           Delete
-        </button>
+        </Button>
       </form>
     ) : type === "create" || type === "update" ? (
-      forms[table] ? forms[table](setOpen, type, data, relatedData) : "Form not found!"
+      forms[table] ? (
+        forms[table](setOpen, type, data, relatedData)
+      ) : (
+        "Form not found!"
+      )
     ) : (
       "Form not found!"
     );
   };
 
+  const getIcon = () => {
+    switch (type) {
+      case "create":
+        return <Plus className="h-4 w-4" />;
+      case "update":
+        return <Pencil className="h-4 w-4" />;
+      case "delete":
+        return <Trash2 className="h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
-      <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+      <Button
+        variant={
+          type === "create"
+            ? "outline"
+            : type === "update"
+            ? "secondary"
+            : "destructive"
+        }
+        size="icon"
         onClick={() => setOpen(true)}
       >
-        <Image src={`/${type}.png`} alt="" width={16} height={16} />
-      </button>
+        {getIcon()}
+      </Button>
       {open && (
-        <div className="w-screen h-screen absolute left-0 top-0 bg-black/70 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
-            <div
-              className="absolute top-4 right-4 cursor-pointer"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4"
               onClick={() => setOpen(false)}
             >
-              <Image src="/close.png" alt="" width={14} height={14} />
-            </div>
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       )}
