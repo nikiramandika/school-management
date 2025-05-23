@@ -1,15 +1,9 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 const Announcements = async () => {
   const { userId, sessionClaims } = await auth();
-  if (!userId) {
-      redirect("/sign-in");
-    }
-  
-    const role = (sessionClaims?.metadata as { role?: string })?.role;
-    const currentUserId = userId;
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   const roleConditions = {
     teacher: { lessons: { some: { teacherId: userId! } } },

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import AttendanceChart from "./AttendanceChart";
 import prisma from "@/lib/prisma";
-import { IoIosMore } from "react-icons/io";
 
 const AttendanceChartContainer = async () => {
   const today = new Date();
@@ -23,6 +22,8 @@ const AttendanceChartContainer = async () => {
       present: true,
     },
   });
+
+  // console.log(data)
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -56,13 +57,13 @@ const AttendanceChartContainer = async () => {
     absent: attendanceMap[day].absent,
   }));
 
-   return (
-   <div className="bg-white rounded-lg w-full h-full p-4">
-         <div className="flex justify-between items-center">
-           <h1 className="text-lg font-semibold">Attendance</h1>
-           <IoIosMore />
-         </div>
-    <AttendanceChart data = {data}/>
+  return (
+    <div className="bg-white rounded-lg p-4 h-full">
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg font-semibold">Attendance</h1>
+        <Image src="/moreDark.png" alt="" width={20} height={20} />
+      </div>
+      <AttendanceChart data={data}/>
     </div>
   );
 };

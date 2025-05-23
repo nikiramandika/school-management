@@ -1,36 +1,40 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import {
-  useEffect,
-  useState,
-  type Dispatch,
-  type JSX,
-  type SetStateAction,
-} from "react";
-import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
-import { useUser } from "@clerk/nextjs";
-import { useFormState } from "react-dom";
-import { deleteSubject } from "@/lib/actions";
+  deleteClass,
+  deleteExam,
+  deleteStudent,
+  deleteSubject,
+  deleteTeacher,
+  deleteEvent,
+} from "@/lib/actions";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useActionState, useEffect, useState } from "react";
+import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
+import { FormContainerProps } from "./FormContainer";
 
-// Pemetaan delete action
 const deleteActionMap = {
   subject: deleteSubject,
-  class: deleteSubject,
-  teacher: deleteSubject,
-  student: deleteSubject,
-  exam: deleteSubject,
+  class: deleteClass,
+  teacher: deleteTeacher,
+  student: deleteStudent,
+  exam: deleteExam,
   lesson: deleteSubject,
   assignment: deleteSubject,
   result: deleteSubject,
   attendance: deleteSubject,
-  event: deleteSubject,
+  event: deleteEvent,
   announcement: deleteSubject,
 };
 
-// Load form secara dinamis
+// USE LAZY LOADING
+
+// import TeacherForm from "./forms/TeacherForm";
+// import StudentForm from "./forms/StudentForm";
+
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
 });
@@ -40,24 +44,74 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ExamForm = dynamic(() => import("./forms/ExamForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const EventForm = dynamic(() => import("./forms/EventForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+// TODO: OTHER FORMS
 
-// Pemetaan nama form ke komponen
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
     type: "create" | "update",
-    data?: any
+    data?: any,
+    relatedData?: any
   ) => JSX.Element;
 } = {
-  teacher: (setOpen, type, data) => (
-    <TeacherForm type={type} data={data} setOpen={setOpen} />
+  subject: (setOpen, type, data, relatedData) => (
+    <SubjectForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
-  student: (setOpen, type, data) => (
-    <StudentForm type={type} data={data} setOpen={setOpen} />
+  class: (setOpen, type, data, relatedData) => (
+    <ClassForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
-  subject: (setOpen, type, data) => (
-    <SubjectForm type={type} data={data} setOpen={setOpen} />
+  teacher: (setOpen, type, data, relatedData) => (
+    <TeacherForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
+  student: (setOpen, type, data, relatedData) => (
+    <StudentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  exam: (setOpen, type, data, relatedData) => (
+    <ExamForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  event: (setOpen, type, data, relatedData) => (
+    <EventForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  // TODO OTHER LIST ITEMS
 };
 
 const FormModal = ({
@@ -65,30 +119,9 @@ const FormModal = ({
   type,
   data,
   id,
-}: {
-  table:
-    | "teacher"
-    | "student"
-    | "parent"
-    | "subject"
-    | "class"
-    | "lesson"
-    | "exam"
-    | "assignment"
-    | "result"
-    | "attendance"
-    | "event"
-    | "announcement";
-  type: "create" | "update" | "delete";
-  data?: any;
-  id?: number | string;
-}) => {
-  const { user } = useUser();
-  const role = (user?.publicMetadata?.role as string) || "student";
-
+  relatedData,
+}: FormContainerProps & { relatedData?: any }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-  const iconSize = 16;
-
   const bgColor =
     type === "create"
       ? "bg-lamaYellow"
@@ -96,83 +129,58 @@ const FormModal = ({
       ? "bg-lamaSky"
       : "bg-lamaPurple";
 
-  const IconComponent = () => {
-    switch (type) {
-      case "create":
-        return <FiPlus size={iconSize} className="text-black" />;
-      case "update":
-        return <FiEdit size={iconSize} className="text-white" />;
-      case "delete":
-        return <FiTrash2 size={iconSize} className="text-white" />;
-      default:
-        return null;
-    }
-  };
-
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useFormState(deleteActionMap[table], {
-    success: false,
-    error: false,
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state.success) {
-      toast(
-        `${table.charAt(0).toUpperCase() + table.slice(1)} has been deleted!`
-      );
-      setOpen(false);
-      router.refresh();
-    }
-  }, [state]);
 
   const Form = () => {
-    if (type === "delete" && id) {
-      return (
-        <form action={formAction} className="flex flex-col gap-4">
+    const [state, formAction] = useActionState(deleteActionMap[table], {
+      success: false,
+      error: false,
+    });
+
+    const router = useRouter();
+
+    useEffect(() => {
+      if (state.success) {
+        toast(`${table} has been deleted!`);
+        setOpen(false);
+        router.refresh();
+      }
+    }, [state, router]);
+
+    return type === "delete" && id ? (
+      <form action={formAction} className="flex flex-col gap-4">
           <input type="hidden" name="id" value={id.toString()} />
-          <span className="text-center font-medium">
-            All data will be lost. Are you sure you want to delete this {table}?
-          </span>
-          <button
-            type="submit"
-            className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center"
-          >
-            Delete
-          </button>
-        </form>
-      );
-    }
-
-    if (
-      (type === "create" || type === "update") &&
-      typeof forms[table] === "function"
-    ) {
-      return forms[table](setOpen, type, data);
-    }
-
-    return <p className="text-center">Form for "{table}" not found!</p>;
+        <span className="text-center font-medium">
+          All data will be lost. Are you sure you want to delete this {table}?
+        </span>
+        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
+          Delete
+        </button>
+      </form>
+    ) : type === "create" || type === "update" ? (
+      forms[table] ? forms[table](setOpen, type, data, relatedData) : "Form not found!"
+    ) : (
+      "Form not found!"
+    );
   };
 
   return (
     <>
       <button
-        className={`${size} flex items-center justify-center rounded-full cursor-pointer ${bgColor}`}
+        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <IconComponent />
+        <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>
-
       {open && (
-        <div className="fixed inset-0 bg-black/65 z-60 flex items-center justify-center">
-        <div className="bg-card p-8 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+        <div className="w-screen h-screen absolute left-0 top-0 bg-black/70 z-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <div
               className="absolute top-4 right-4 cursor-pointer"
               onClick={() => setOpen(false)}
             >
-              <span className="text-gray-600 hover:text-black text-lg">×</span>
+              <Image src="/close.png" alt="" width={14} height={14} />
             </div>
           </div>
         </div>
