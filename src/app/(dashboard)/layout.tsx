@@ -10,7 +10,7 @@ export default function DashboardLayout({
   }>) {
     return (
         <div className="h-screen flex">
-            <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4">
+            <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4 bg-gray-50 dark:bg-card">
                 <Link href="/" className="flex items-center justify-center lg:justify-start gap-2">
                 <Image 
                     src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png" 
@@ -23,7 +23,7 @@ export default function DashboardLayout({
                 </Link>
                 <Menu/>
             </div>
-            <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#f7f8fa] overflow-scroll flex flex-col">
+            <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-background overflow-scroll flex flex-col">
                 <Navbar/>
                 {children}
             </div>
