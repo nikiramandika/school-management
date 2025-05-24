@@ -1,17 +1,10 @@
 "use server"
 
 import FormContainer from "@/components/FormContainer";
-import TableSearch from "@/components/TableSearch";
 import prisma from "@/lib/prisma";
-import { Class, Prisma, Subject, Teacher } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
+import {  Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
 import { TeacherTable } from "./teacher-table";
-
-type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 const TeacherListPage = async ({
   searchParams,

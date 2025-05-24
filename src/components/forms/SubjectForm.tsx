@@ -56,7 +56,11 @@ const SubjectForm = ({
     }
   }, [state, router, type, setOpen]);
 
-  const { teachers } = relatedData;
+  // Get teachers from relatedData with default empty array
+  const teachers = relatedData?.teachers || [];
+
+  // Get current teacher IDs
+  const currentTeacherIds = data?.teachers?.map((t: any) => t.id) || [];
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -88,11 +92,14 @@ const SubjectForm = ({
             multiple
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("teachers")}
-            defaultValue={data?.teachers}
+            defaultValue={currentTeacherIds}
           >
             {teachers.map(
               (teacher: { id: string; name: string; surname: string }) => (
-                <option value={teacher.id} key={teacher.id}>
+                <option
+                  value={teacher.id}
+                  key={teacher.id}
+                >
                   {teacher.name + " " + teacher.surname}
                 </option>
               )

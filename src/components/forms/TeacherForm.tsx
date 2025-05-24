@@ -6,6 +6,7 @@ import InputField from "../InputField";
 import {
   Dispatch,
   SetStateAction,
+  useActionState,
   useEffect,
   useState,
 } from "react";
@@ -41,7 +42,7 @@ const TeacherForm = ({
     resolver: zodResolver(teacherSchema),
   });
 
-  const [state, formAction] = useFormState<FormState, TeacherSchema>(
+  const [state, formAction] = useActionState<FormState, TeacherSchema>(
     type === "create" ? createTeacher : updateTeacher,
     {
       success: false,

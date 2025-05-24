@@ -32,7 +32,10 @@ const StudentPage = async () => {
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
-        <EventCalendar />
+        <EventCalendar onDateChange={(date) => {
+          // Handle date change if needed
+          console.log('Date changed:', date);
+        }} />
         <Announcements />
       </div>
     </div>

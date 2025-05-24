@@ -6,7 +6,6 @@ import { Class, Subject, Teacher } from "@prisma/client"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
 import { ArrowUpDown, Eye } from "lucide-react"
 import FormModal from "@/components/FormModal"
 
@@ -18,7 +17,6 @@ interface TeacherTableProps {
 }
 
 export function TeacherTable({ data, role }: TeacherTableProps) {
-  const router = useRouter()
 
   const columns: ColumnDef<TeacherList>[] = [
     {

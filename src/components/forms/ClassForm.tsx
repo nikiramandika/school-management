@@ -60,13 +60,21 @@ const ClassForm = ({
 
   useEffect(() => {
     if (state.success) {
-      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
+      toast(`Class has been ${type === "create" ? "created" : "updated"}!`);
       setOpen(false);
       router.refresh();
     }
   }, [state, router, type, setOpen]);
 
-  const { teachers, grades } = relatedData;
+  // Log the incoming data to debug
+  console.log("ClassForm received data:", { data, relatedData, type });
+
+  // Get teachers and grades from relatedData
+  const teachers = relatedData?.teachers || [];
+  const grades = relatedData?.grades || [];
+
+  // Get the current values
+  const currentSupervisorId = data?.supervisorId || data?.supervisor?.id;
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -104,17 +112,23 @@ const ClassForm = ({
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("supervisorId")}
-            defaultValue={data?.supervisorId}
+            defaultValue={currentSupervisorId}
           >
+            <option value="">Select a supervisor</option>
             {teachers.map(
-              (teacher: { id: string; name: string; surname: string }) => (
-                <option
-                  value={teacher.id}
-                  key={teacher.id}
-                >
-                  {teacher.name + " " + teacher.surname}
-                </option>
-              )
+              (teacher: { id: string; name: string; surname: string; isSupervisor?: boolean }) => {
+                const isDisabled = teacher.isSupervisor && teacher.id !== currentSupervisorId;
+                return (
+                  <option
+                    value={teacher.id}
+                    key={teacher.id}
+                    disabled={isDisabled}
+                  >
+                    {teacher.name + " " + teacher.surname}
+                    {isDisabled ? " (Already a supervisor)" : ""}
+                  </option>
+                );
+              }
             )}
           </select>
           {errors.supervisorId?.message && (
@@ -130,6 +144,7 @@ const ClassForm = ({
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
+            <option value="">Select a grade</option>
             {grades.map((grade: { id: number; level: number }) => (
               <option
                 value={grade.id}

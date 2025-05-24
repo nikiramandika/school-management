@@ -7,6 +7,7 @@ import {
   StudentSchema,
   SubjectSchema,
   TeacherSchema,
+  LessonSchema,
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -29,9 +30,18 @@ export const createSubject = async (
           connect: data.teachers.map((teacherId) => ({ id: teacherId })),
         },
       },
+      include: {
+        teachers: true,
+        lessons: {
+          include: {
+            class: true,
+            teacher: true
+          }
+        }
+      }
     });
 
-    // revalidatePath("/list/subjects");
+    revalidatePath("/list/subjects");
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
@@ -54,9 +64,18 @@ export const updateSubject = async (
           set: data.teachers.map((teacherId) => ({ id: teacherId })),
         },
       },
+      include: {
+        teachers: true,
+        lessons: {
+          include: {
+            class: true,
+            teacher: true
+          }
+        }
+      }
     });
 
-    // revalidatePath("/list/subjects");
+    revalidatePath("/list/subjects");
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
@@ -70,13 +89,27 @@ export const deleteSubject = async (
 ) => {
   const id = data.get("id") as string;
   try {
+    // Check if subject has any lessons
+    const subject = await prisma.subject.findUnique({
+      where: { id: parseInt(id) },
+      include: { lessons: true }
+    });
+
+    if (subject?.lessons.length) {
+      return { 
+        success: false, 
+        error: true,
+        message: "Cannot delete subject because it has associated lessons. Please delete the lessons first."
+      };
+    }
+
     await prisma.subject.delete({
       where: {
         id: parseInt(id),
       },
     });
 
-    // revalidatePath("/list/subjects");
+    revalidatePath("/list/subjects");
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
@@ -677,3 +710,108 @@ export const deleteEvent = async (
     return { success: false, error: true };
   }
 };
+
+export async function createLesson(
+  currentState: CurrentState,
+  data: LessonSchema
+) {
+  try {
+    await prisma.lesson.create({
+      data: {
+        name: data.name,
+        day: data.day,
+        startTime: new Date(`1970-01-01T${data.startTime}`),
+        endTime: new Date(`1970-01-01T${data.endTime}`),
+        subjectId: data.subjectId,
+        classId: data.classId,
+        teacherId: data.teacherId,
+      },
+      include: {
+        subject: true,
+        class: true,
+        teacher: true,
+      }
+    });
+
+    revalidatePath("/list/lessons");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error("Error creating lesson:", error);
+    return { success: false, error: true };
+  }
+}
+
+export async function updateLesson(
+  currentState: CurrentState,
+  data: LessonSchema
+) {
+  try {
+    await prisma.lesson.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        day: data.day,
+        startTime: new Date(`1970-01-01T${data.startTime}`),
+        endTime: new Date(`1970-01-01T${data.endTime}`),
+        subjectId: data.subjectId,
+        classId: data.classId,
+        teacherId: data.teacherId,
+      },
+      include: {
+        subject: true,
+        class: true,
+        teacher: true,
+      }
+    });
+
+    revalidatePath("/list/lessons");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error("Error updating lesson:", error);
+    return { success: false, error: true };
+  }
+}
+
+export async function deleteLesson(
+  currentState: CurrentState,
+  data: FormData
+) {
+  const id = parseInt(data.get("id") as string);
+  try {
+    // Check if lesson has any related records
+    const lesson = await prisma.lesson.findUnique({
+      where: { id },
+      include: {
+        exams: true,
+        assignments: true,
+        attendances: true,
+      },
+    });
+
+    if (!lesson) {
+      return { success: false, error: true, message: "Lesson not found" };
+    }
+
+    if (
+      lesson.exams.length > 0 ||
+      lesson.assignments.length > 0 ||
+      lesson.attendances.length > 0
+    ) {
+      return {
+        success: false,
+        error: true,
+        message: "Cannot delete lesson with related records",
+      };
+    }
+
+    await prisma.lesson.delete({
+      where: { id },
+    });
+
+    revalidatePath("/list/lessons");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+    return { success: false, error: true };
+  }
+}

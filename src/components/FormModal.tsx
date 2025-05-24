@@ -60,6 +60,9 @@ const ExamForm = dynamic(() => import("./forms/ExamForm"), {
 const EventForm = dynamic(() => import("./forms/EventForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const LessonForm = dynamic(() => import("./forms/LessonForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 // TODO: OTHER FORMS
 
 const forms: {
@@ -118,6 +121,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
+  lesson: (setOpen, type, data, relatedData) => (
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
   // TODO OTHER LIST ITEMS
 };
 
@@ -158,7 +169,15 @@ const FormModal = ({
       </form>
     ) : type === "create" || type === "update" ? (
       forms[table] ? (
-        forms[table](setOpen, type, data, relatedData)
+        (() => {
+          console.log("FormModal Data:", {
+            type,
+            data,
+            relatedData,
+            table
+          });
+          return forms[table](setOpen, type, data, relatedData);
+        })()
       ) : (
         "Form not found!"
       )
