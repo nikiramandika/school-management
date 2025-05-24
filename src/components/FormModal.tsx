@@ -7,6 +7,7 @@ import {
   deleteSubject,
   deleteTeacher,
   deleteEvent,
+  deleteLesson,
 } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -17,7 +18,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-  lesson: deleteSubject,
+  lesson: deleteLesson,
   assignment: deleteSubject,
   result: deleteSubject,
   attendance: deleteSubject,

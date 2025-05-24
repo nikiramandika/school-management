@@ -9,25 +9,15 @@ import { LessonTable } from "./lesson-table";
 const LessonListPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   const query: Prisma.LessonWhereInput = {};
 
-  if (searchParams) {
-    for (const [key, value] of Object.entries(searchParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.name = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
-        }
-      }
-    }
+  if (searchParams?.search) {
+    query.name = { contains: searchParams.search as string, mode: "insensitive" };
   }
 
   const data = await prisma.lesson.findMany({
