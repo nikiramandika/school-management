@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { lessonSchema, LessonSchema } from "@/lib/formValidationSchemas";
 import { createLesson, updateLesson } from "@/lib/actions";
-import { useFormState } from "react-dom";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -21,53 +20,44 @@ const LessonForm = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LessonSchema>({
     resolver: zodResolver(lessonSchema),
+    defaultValues: data,
   });
 
-  const [state, formAction] = useActionState(
-    type === "create" ? createLesson : updateLesson,
-    {
-      success: false,
-      error: false,
+  const onSubmit = useCallback(async (formData: LessonSchema) => {
+    try {
+      const submitData = {
+        ...formData,
+        subjectId: Number(formData.subjectId),
+        classId: Number(formData.classId),
+      };
+
+      const action = type === "create" ? createLesson : updateLesson;
+      const result = await action({ success: false, error: false }, submitData);
+
+      if (result.success) {
+        toast.success(`Lesson has been ${type === "create" ? "created" : "updated"}!`);
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(result.message || "Failed to save lesson data. Please try again.");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
-  );
-
-  const onSubmit = handleSubmit((data) => {
-    console.log("Form data being submitted:", data);
-    console.log("Form errors:", errors);
-    
-    const formData = { ...data };
-    console.log("Submitting form data:", formData);
-    
-    startTransition(() => {
-      formAction(formData);
-    });
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log("Form state changed:", state);
-    if (state?.success) {
-      toast.success(`Lesson has been ${type === "create" ? "created" : "updated"}!`);
-      setOpen(false);
-      router.refresh();
-    } else if (state?.error) {
-      toast.error("Failed to save lesson data. Please try again.");
-    }
-  }, [state, router, type, setOpen]);
-
-  console.log("LessonForm received data:", { data, relatedData, type });
+  }, [type, setOpen, router]);
 
   const { subjects, classes, teachers } = relatedData || {};
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new lesson" : "Update the lesson"}
       </h1>
@@ -187,11 +177,11 @@ const LessonForm = ({
           error={errors?.endTime}
         />
       </div>
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
+      <button 
+        className="bg-blue-400 text-white p-2 rounded-md disabled:opacity-50"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Saving..." : type === "create" ? "Create" : "Update"}
       </button>
     </form>
   );

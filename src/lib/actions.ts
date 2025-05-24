@@ -12,8 +12,8 @@ import {
 import prisma from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
 
-type CurrentState = { 
-  success: boolean; 
+type CurrentState = {
+  success: boolean;
   error: boolean;
   message?: string;
 };
@@ -734,10 +734,14 @@ export async function createLesson(
     });
 
     revalidatePath("/list/lessons");
-    return { success: true, error: false };
+    return { success: true, error: false, message: "Lesson created successfully" };
   } catch (error) {
     console.error("Error creating lesson:", error);
-    return { success: false, error: true };
+    return { 
+      success: false, 
+      error: true, 
+      message: error instanceof Error ? error.message : "Failed to create lesson" 
+    };
   }
 }
 
@@ -765,10 +769,14 @@ export async function updateLesson(
     });
 
     revalidatePath("/list/lessons");
-    return { success: true, error: false };
+    return { success: true, error: false, message: "Lesson updated successfully" };
   } catch (error) {
     console.error("Error updating lesson:", error);
-    return { success: false, error: true };
+    return { 
+      success: false, 
+      error: true, 
+      message: error instanceof Error ? error.message : "Failed to update lesson" 
+    };
   }
 }
 
