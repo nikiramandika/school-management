@@ -946,53 +946,148 @@ export const deleteAssignment = async (
 
 export async function createResult(
   prevState: { success: boolean; error: boolean; message: string },
-  formData: any
+  formData: {
+    studentId: string;
+    examId?: number;
+    assignmentId?: number;
+    score: number;
+  }
 ) {
+  "use server";
+  
   try {
-    await prisma.result.create({
+    console.log('Creating result with data:', formData);
+
+    // Validate required fields
+    if (!formData.studentId || (!formData.examId && !formData.assignmentId) || formData.score === undefined) {
+      console.log('Missing required fields:', formData);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Missing required fields" 
+      };
+    }
+
+    // Validate score range and convert to integer
+    const score = Math.round(formData.score);
+    if (score < 0 || score > 100) {
+      console.log('Invalid score:', score);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Score must be between 0 and 100" 
+      };
+    }
+
+    // Check if result already exists
+    const existingResult = await prisma.result.findFirst({
+      where: {
+        studentId: formData.studentId,
+        ...(formData.examId ? { examId: formData.examId } : { assignmentId: formData.assignmentId })
+      }
+    });
+
+    if (existingResult) {
+      console.log('Result already exists:', existingResult);
+      return {
+        success: false,
+        error: true,
+        message: "Grade already exists for this student and assessment"
+      };
+    }
+
+    const result = await prisma.result.create({
       data: {
         studentId: formData.studentId,
+        score: score,
         examId: formData.examId,
         assignmentId: formData.assignmentId,
-        score: formData.score,
       },
     });
 
-    return { success: true, error: false, message: "Result created successfully" };
-  } catch (error) {
-    console.error("Error creating result:", error);
-    return {
-      success: false,
-      error: true,
-      message: "Failed to create result",
+    console.log('Created result:', result);
+
+    // Revalidate the current page
+    const path = formData.examId ? `/list/results/${formData.examId}/exam` : `/list/results/${formData.assignmentId}/assignment`;
+    revalidatePath(path);
+    
+    return { 
+      success: true, 
+      error: false, 
+      message: "Grade saved successfully" 
+    };
+  } catch (err) {
+    console.error("Error saving grade:", err);
+    return { 
+      success: false, 
+      error: true, 
+      message: err instanceof Error ? err.message : "Failed to save grade" 
     };
   }
 }
 
 export async function updateResult(
   prevState: { success: boolean; error: boolean; message: string },
-  formData: any
+  formData: {
+    id: number;
+    studentId: string;
+    examId?: number;
+    assignmentId?: number;
+    score: number;
+  }
 ) {
+  "use server";
+  
   try {
-    await prisma.result.update({
+    console.log('Updating result with data:', formData);
+
+    // Validate required fields
+    if (!formData.id || !formData.studentId || (!formData.examId && !formData.assignmentId) || formData.score === undefined) {
+      console.log('Missing required fields:', formData);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Missing required fields" 
+      };
+    }
+
+    // Validate score range and convert to integer
+    const score = Math.round(formData.score);
+    if (score < 0 || score > 100) {
+      console.log('Invalid score:', score);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Score must be between 0 and 100" 
+      };
+    }
+
+    const result = await prisma.result.update({
       where: {
         id: formData.id,
       },
       data: {
-        studentId: formData.studentId,
-        examId: formData.examId,
-        assignmentId: formData.assignmentId,
-        score: formData.score,
+        score: score,
       },
     });
 
-    return { success: true, error: false, message: "Result updated successfully" };
-  } catch (error) {
-    console.error("Error updating result:", error);
-    return {
-      success: false,
-      error: true,
-      message: "Failed to update result",
+    console.log('Updated result:', result);
+
+    // Revalidate the current page
+    const path = formData.examId ? `/list/results/${formData.examId}/exam` : `/list/results/${formData.assignmentId}/assignment`;
+    revalidatePath(path);
+    
+    return { 
+      success: true, 
+      error: false, 
+      message: "Grade updated successfully" 
+    };
+  } catch (err) {
+    console.error("Error updating grade:", err);
+    return { 
+      success: false, 
+      error: true, 
+      message: err instanceof Error ? err.message : "Failed to update grade" 
     };
   }
 }

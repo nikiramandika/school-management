@@ -155,28 +155,35 @@ const Menu = () => {
   const { user } = useUser();
   const role = (user?.publicMetadata?.role as string) || "student";
 
+  const checkIsActive = (path: string) => {
+    if (path === "/list/results") {
+      return pathname.startsWith("/list/results");
+    }
+    return pathname === path;
+  };
+
   return (
-    <div className="text-sm">
+    <div className="text-sm px-4 lg:px-0">
       {menuItems.map((section) => (
         <div className="flex flex-col gap-2" key={section.title}>
-          <span className="hidden lg:block text-gray-400 font-light my-4">
+          <span className="text-gray-400 font-light my-4">
             {section.title}
           </span>
           {section.items.map((item) => {
             if (item.visible.includes(role)) {
-              const isActive = pathname === (typeof item.href === "function" ? item.href(role) : item.href);
+              const isActive = checkIsActive(typeof item.href === "function" ? item.href(role) : item.href);
               return (
                 <Link
                   href={typeof item.href === "function" ? item.href(role) : item.href}
                   key={item.label}
-                  className={`flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-white py-2 md:px-2 rounded-md transition-colors ${
+                  className={`flex items-center gap-4 text-gray-500 dark:text-white py-3 px-4 rounded-md transition-colors ${
                     isActive
                       ? "bg-blue-500 text-white font-semibold hover:bg-blue-600 dark:hover:bg-blue-600"
                       : "hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
-                  <span className="hidden lg:block">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             }
