@@ -6,8 +6,7 @@ import {
   createEvent,
   updateEvent,
 } from "@/lib/actions";
-import { useFormState } from "react-dom";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
@@ -34,41 +33,36 @@ const EventForm = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<EventSchema>({
     resolver: zodResolver(eventSchema),
+    defaultValues: data,
   });
 
-  const [state, formAction] = useActionState(
-    type === "create" ? createEvent : updateEvent,
-    {
-      success: false,
-      error: false,
+  const onSubmit = useCallback(async (formData: EventSchema) => {
+    try {
+      const action = type === "create" ? createEvent : updateEvent;
+      const result = await action({ success: false, error: false, message: "" }, formData);
+
+      if (result.success) {
+        toast.success(`Event has been ${type === "create" ? "created" : "updated"}!`);
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(result.message || "Failed to save event data. Please try again.");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
-  );
-
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    startTransition(() => {
-      formAction(data);
-    });
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state.success) {
-      toast(`Event has been ${type === "create" ? "created" : "updated"}!`);
-      setOpen(false);
-      router.refresh();
-    }
-  }, [state, router, type, setOpen]);
+  }, [type, setOpen, router]);
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new event" : "Update the event"}
       </h1>
@@ -152,11 +146,7 @@ const EventForm = ({
         )}
       </div>
 
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
-
-      <button type="submit" className="bg-blue-400 text-white p-2 rounded-md">
+      <button type="submit" className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

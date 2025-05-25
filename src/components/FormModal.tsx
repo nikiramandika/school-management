@@ -14,14 +14,14 @@ import { useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
-  useActionState,
-  useEffect,
+  useCallback,
   useState,
 } from "react";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { ReactElement } from "react";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -63,6 +63,11 @@ const EventForm = dynamic(() => import("./forms/EventForm"), {
 const LessonForm = dynamic(() => import("./forms/LessonForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const AssignmentForm = dynamic(() => import("./forms/AssignmentForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+
+
 // TODO: OTHER FORMS
 
 const forms: {
@@ -71,7 +76,7 @@ const forms: {
     type: "create" | "update",
     data?: any,
     relatedData?: any
-  ) => JSX.Element;
+  ) => ReactElement;
 } = {
   subject: (setOpen, type, data, relatedData) => (
     <SubjectForm
@@ -129,6 +134,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
+  assignment: (setOpen, type, data, relatedData) => (
+    <AssignmentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
   // TODO OTHER LIST ITEMS
 };
 
@@ -140,30 +153,38 @@ const FormModal = ({
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  const Form = () => {
-    const [state, formAction] = useActionState(deleteActionMap[table], {
-      success: false,
-      error: false,
-    });
+  const handleDelete = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      const action = deleteActionMap[table];
+      const formData = new FormData();
+      formData.append("id", id.toString());
+      
+      const result = await action({ success: false, error: false, message: "" }, formData);
 
-    const router = useRouter();
-
-    useEffect(() => {
-      if (state.success) {
-        toast(`${table} has been deleted!`);
+      if (result.success) {
+        toast.success(`${table} has been deleted!`);
         setOpen(false);
         router.refresh();
+      } else {
+        toast.error(result.message || `Failed to delete ${table}. Please try again.`);
       }
-    }, [state, router]);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }, [table, id, router]);
 
+  const Form = () => {
     return type === "delete" && id ? (
-      <form action={formAction} className="flex flex-col gap-4">
-        <input type="hidden" name="id" value={id.toString()} />
+      <form onSubmit={(e) => { e.preventDefault(); handleDelete(); }} className="flex flex-col gap-4">
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
-        <Button variant="destructive" className="w-max self-center text-white">
+        <Button variant="destructive" type="submit" className="w-max self-center text-white">
           Delete
         </Button>
       </form>

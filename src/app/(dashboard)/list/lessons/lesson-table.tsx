@@ -162,6 +162,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
     },
     {
       id: "actions",
+      header: "Action",
       cell: ({ row }) => {
         const lesson = row.original;
         // Prepare the data in a format that matches what the form expects

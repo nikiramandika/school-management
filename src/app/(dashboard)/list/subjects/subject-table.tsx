@@ -2,9 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/ui/data-table"
-import { Class, Subject, Teacher } from "@prisma/client"
+import { Subject, Teacher } from "@prisma/client"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Eye } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 import FormModal from "@/components/FormModal"
 
 type SubjectList = Subject & { 
@@ -93,6 +93,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
     },
     {
       id: "actions",
+      header: "Action",
       cell: ({ row }) => {
         const subject = row.original;
         return (

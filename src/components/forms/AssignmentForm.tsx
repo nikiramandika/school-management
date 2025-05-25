@@ -3,13 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { examSchema, ExamSchema } from "@/lib/formValidationSchemas";
-import { createExam, updateExam } from "@/lib/actions";
+import { assignmentSchema, AssignmentSchema } from "@/lib/formValidationSchemas";
+import { createAssignment, updateAssignment } from "@/lib/actions";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-const ExamForm = ({
+const AssignmentForm = ({
   type,
   data,
   setOpen,
@@ -25,38 +25,32 @@ const ExamForm = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ExamSchema>({
-    resolver: zodResolver(examSchema),
-    defaultValues: data,
+  } = useForm<AssignmentSchema>({
+    resolver: zodResolver(assignmentSchema),
+    defaultValues: {
+      ...data,
+      startTime: data?.startDate,
+      endTime: data?.dueDate,
+    },
   });
 
-  const onSubmit = useCallback(
-    async (formData: ExamSchema) => {
-      try {
-        const action = type === "create" ? createExam : updateExam;
-        const result = await action(
-          { success: false, error: false, message: "" },
-          formData
-        );
+  const onSubmit = useCallback(async (formData: AssignmentSchema) => {
+    try {
+      const action = type === "create" ? createAssignment : updateAssignment;
+      const result = await action({ success: false, error: false, message: "" }, formData);
 
-        if (result.success) {
-          toast.success(
-            `Exam has been ${type === "create" ? "created" : "updated"}!`
-          );
-          setOpen(false);
-          router.refresh();
-        } else {
-          toast.error(
-            result.message || "Failed to save exam data. Please try again."
-          );
-        }
-      } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+      if (result.success) {
+        toast.success(`Assignment has been ${type === "create" ? "created" : "updated"}!`);
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(result.message || "Failed to save assignment data. Please try again.");
       }
-    },
-    [type, setOpen, router]
-  );
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }, [type, setOpen, router]);
 
   // Get lessons from relatedData
   const lessons = relatedData?.lessons || [];
@@ -67,29 +61,29 @@ const ExamForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new exam" : "Update the exam"}
+        {type === "create" ? "Create a new assignment" : "Update the assignment"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Exam title"
+          label="Assignment title"
           name="title"
           defaultValue={data?.title}
           register={register}
           error={errors?.title}
         />
         <InputField
-          label="Start Date"
+          label="Start Time"
           name="startTime"
-          defaultValue={data?.startTime}
+          defaultValue={data?.startDate}
           register={register}
           error={errors?.startTime}
           type="datetime-local"
         />
         <InputField
-          label="End Date"
+          label="End Time"
           name="endTime"
-          defaultValue={data?.endTime}
+          defaultValue={data?.dueDate}
           register={register}
           error={errors?.endTime}
           type="datetime-local"
@@ -112,20 +106,17 @@ const ExamForm = ({
             defaultValue={currentLessonId}
           >
             <option value="">Select a lesson</option>
-            {lessons.map(
-              (lesson: {
-                id: number;
-                name: string;
-                subject: { id: number; name: string };
-                class: { id: number; name: string };
-                teacher: { id: string; name: string; surname: string };
-              }) => (
-                <option value={lesson.id} key={lesson.id}>
-                  {lesson.subject.name} - {lesson.class.name} ({lesson.name}) -{" "}
-                  {lesson.teacher.name} {lesson.teacher.surname}
-                </option>
-              )
-            )}
+            {lessons.map((lesson: { 
+              id: number; 
+              name: string;
+              subject: { id: number; name: string };
+              class: { id: number; name: string };
+              teacher: { id: string; name: string; surname: string };
+            }) => (
+              <option value={lesson.id} key={lesson.id}>
+                {lesson.subject.name} - {lesson.class.name} ({lesson.name}) - {lesson.teacher.name} {lesson.teacher.surname}
+              </option>
+            ))}
           </select>
           {errors.lessonId?.message && (
             <p className="text-xs text-red-400">
@@ -134,14 +125,11 @@ const ExamForm = ({
           )}
         </div>
       </div>
-      <button
-        className="bg-blue-400 text-white p-2 rounded-md"
-        disabled={isSubmitting}
-      >
+      <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>
   );
 };
 
-export default ExamForm;
+export default AssignmentForm; 

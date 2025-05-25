@@ -60,13 +60,6 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
           isSupervisor: existingSupervisors.has(teacher.id)
         }));
         relatedData = { teachers: teachersWithStatus, grades: classGrades };
-        console.log("FormContainer Class Data:", {
-          type,
-          data,
-          relatedData,
-          teachers: teachersWithStatus,
-          grades: classGrades
-        });
         break;
       case "teacher":
         const teacherSubjects = await prisma.subject.findMany({
@@ -84,12 +77,65 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         relatedData = { classes: studentClasses, grades: studentGrades };
         break;
       case "exam":
+        // Always fetch lessons for the dropdown
         const examLessons = await prisma.lesson.findMany({
-          where: {
-            ...(role === "teacher" ? { teacherId: currentUserId! } : {}),
+          include: {
+            subject: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            class: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            teacher: {
+              select: {
+                id: true,
+                name: true,
+                surname: true
+              }
+            }
           },
-          select: { id: true, name: true },
         });
+        
+        // If it's an update form, ensure the current lesson is included
+        if (type === "update" && data?.lessonId) {
+          const currentLesson = examLessons.find(lesson => lesson.id === data.lessonId);
+          if (!currentLesson) {
+            const lesson = await prisma.lesson.findUnique({
+              where: { id: data.lessonId },
+              include: {
+                subject: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                },
+                class: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                },
+                teacher: {
+                  select: {
+                    id: true,
+                    name: true,
+                    surname: true
+                  }
+                }
+              }
+            });
+            if (lesson) {
+              examLessons.push(lesson);
+            }
+          }
+        }
+
         relatedData = { lessons: examLessons };
         break;
       case "event":
@@ -102,7 +148,6 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         break;
     }
   }
-
   return (
     <div className="">
       <FormModal
@@ -117,3 +162,4 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
 };
 
 export default FormContainer;
+

@@ -90,6 +90,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
     },
     {
       id: "actions",
+      header: "Action",
       cell: ({ row }) => {
         const classItem = row.original;
         // Prepare the data in a format that matches what the form expects
