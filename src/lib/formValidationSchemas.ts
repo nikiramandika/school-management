@@ -117,7 +117,7 @@ export const resultSchema = z.object({
   studentId: z.string().min(1, "Student is required"),
   examId: z.number().optional(),
   assignmentId: z.number().optional(),
-  score: z.number().min(0).max(100, "Score must be between 0 and 100"),
+  score: z.coerce.number().min(0).max(100, "Score must be between 0 and 100"),
 });
 
 export type ResultSchema = z.infer<typeof resultSchema>;

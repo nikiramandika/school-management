@@ -25,6 +25,24 @@ const ResultForm = ({
     data?.examId ? "exam" : "assignment"
   );
 
+  // Get students from relatedData
+  const students = relatedData?.students || [];
+  // Get exams from relatedData
+  const exams = relatedData?.exams || [];
+  // Get assignments from relatedData
+  const assignments = relatedData?.assignments || [];
+  // Get classes from relatedData
+  const classes = relatedData?.classes || [];
+
+  // Set initial class based on data
+  const initialClass = data ? (
+    data.examId 
+      ? exams.find((exam: any) => exam.id === data.examId.toString())?.className
+      : assignments.find((assignment: any) => assignment.id === data.assignmentId.toString())?.className
+  ) : "";
+
+  const [selectedClass, setSelectedClass] = useState<string>(initialClass);
+
   const {
     register,
     handleSubmit,
@@ -63,13 +81,6 @@ const ResultForm = ({
     [type, setOpen, router]
   );
 
-  // Get students from relatedData
-  const students = relatedData?.students || [];
-  // Get exams from relatedData
-  const exams = relatedData?.exams || [];
-  // Get assignments from relatedData
-  const assignments = relatedData?.assignments || [];
-
   const handleAssessmentTypeChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -83,6 +94,27 @@ const ResultForm = ({
     }
   };
 
+  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedClass(value);
+    // Clear student selection when class changes
+    setValue("studentId", "");
+  };
+
+  // Filter students based on selected class
+  const filteredStudents = selectedClass
+    ? students.filter((student: any) => student.className === selectedClass)
+    : students;
+
+  // Filter exams and assignments based on selected class
+  const filteredExams = selectedClass
+    ? exams.filter((exam: any) => exam.className === selectedClass)
+    : exams;
+
+  const filteredAssignments = selectedClass
+    ? assignments.filter((assignment: any) => assignment.className === selectedClass)
+    : assignments;
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
@@ -91,14 +123,31 @@ const ResultForm = ({
 
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Class</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            onChange={handleClassChange}
+            value={selectedClass}
+          >
+            <option value="">Select a class</option>
+            {classes.map((cls: { id: string; name: string }) => (
+              <option value={cls.name} key={cls.id}>
+                {cls.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Student</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("studentId")}
             defaultValue={data?.studentId}
+            disabled={!selectedClass}
           >
             <option value="">Select a student</option>
-            {students.map(
+            {filteredStudents.map(
               (student: { id: string; name: string; surname: string }) => (
                 <option value={student.id} key={student.id}>
                   {student.name} {student.surname}
@@ -119,6 +168,7 @@ const ResultForm = ({
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             onChange={handleAssessmentTypeChange}
             value={assessmentType}
+            disabled={!selectedClass}
           >
             <option value="exam">Exam</option>
             <option value="assignment">Assignment</option>
@@ -132,9 +182,10 @@ const ResultForm = ({
               className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
               {...register("examId", { valueAsNumber: true })}
               defaultValue={data?.examId}
+              disabled={!selectedClass}
             >
               <option value="">Select an exam</option>
-              {exams.map((exam: { id: string; title: string }) => (
+              {filteredExams.map((exam: { id: string; title: string }) => (
                 <option value={parseInt(exam.id)} key={exam.id}>
                   {exam.title}
                 </option>
@@ -155,9 +206,10 @@ const ResultForm = ({
               className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
               {...register("assignmentId", { valueAsNumber: true })}
               defaultValue={data?.assignmentId}
+              disabled={!selectedClass}
             >
               <option value="">Select an assignment</option>
-              {assignments.map((assignment: { id: string; title: string }) => (
+              {filteredAssignments.map((assignment: { id: string; title: string }) => (
                 <option value={parseInt(assignment.id)} key={assignment.id}>
                   {assignment.title}
                 </option>

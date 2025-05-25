@@ -18,9 +18,19 @@ const ResultListPage = async ({
   const p = page ? parseInt(page) : 1;
 
   // Fetch all students, exams, and assignments for the form
-  const [students, exams, assignments] = await prisma.$transaction([
+  const [students, exams, assignments, classes] = await prisma.$transaction([
     prisma.student.findMany({
-      select: { id: true, name: true, surname: true },
+      select: { 
+        id: true, 
+        name: true, 
+        surname: true,
+        class: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      },
     }),
     prisma.exam.findMany({
       select: { 
@@ -28,8 +38,8 @@ const ResultListPage = async ({
         title: true,
         lesson: {
           select: {
-            class: { select: { name: true } },
-            teacher: { select: { name: true, surname: true } },
+            class: { select: { id: true, name: true } },
+            teacher: { select: { id: true, name: true, surname: true } },
           }
         }
       },
@@ -40,13 +50,44 @@ const ResultListPage = async ({
         title: true,
         lesson: {
           select: {
-            class: { select: { name: true } },
-            teacher: { select: { name: true, surname: true } },
+            class: { select: { id: true, name: true } },
+            teacher: { select: { id: true, name: true, surname: true } },
           }
         }
       },
     }),
+    prisma.class.findMany({
+      select: {
+        id: true,
+        name: true
+      }
+    })
   ]);
+
+  // Filter classes based on role
+  const filteredClasses = role === "admin" 
+    ? classes 
+    : classes.filter(cls => 
+        exams.some(exam => exam.lesson.class.id === cls.id && exam.lesson.teacher.id === currentUserId) ||
+        assignments.some(assignment => assignment.lesson.class.id === cls.id && assignment.lesson.teacher.id === currentUserId)
+      );
+
+  // Filter students based on role
+  const filteredStudents = role === "admin"
+    ? students
+    : students.filter(student => 
+        exams.some(exam => exam.lesson.class.id === student.class.id && exam.lesson.teacher.id === currentUserId) ||
+        assignments.some(assignment => assignment.lesson.class.id === student.class.id && assignment.lesson.teacher.id === currentUserId)
+      );
+
+  // Filter exams and assignments based on role
+  const filteredExams = role === "admin"
+    ? exams
+    : exams.filter(exam => exam.lesson.teacher.id === currentUserId);
+
+  const filteredAssignments = role === "admin"
+    ? assignments
+    : assignments.filter(assignment => assignment.lesson.teacher.id === currentUserId);
 
   // URL PARAMS CONDITION
   const query: Prisma.ResultWhereInput = {};
@@ -165,9 +206,22 @@ const ResultListPage = async ({
                 table="result" 
                 type="create" 
                 relatedData={{
-                  students,
-                  exams,
-                  assignments,
+                  classes: filteredClasses,
+                  students: filteredStudents.map(student => ({
+                    ...student,
+                    id: student.id.toString(),
+                    className: student.class.name
+                  })),
+                  exams: filteredExams.map(exam => ({
+                    ...exam,
+                    id: exam.id.toString(),
+                    className: exam.lesson.class.name
+                  })),
+                  assignments: filteredAssignments.map(assignment => ({
+                    ...assignment,
+                    id: assignment.id.toString(),
+                    className: assignment.lesson.class.name
+                  }))
                 }}
               />
             )}
@@ -179,17 +233,24 @@ const ResultListPage = async ({
         data={data} 
         role={role}
         relatedData={{
-          students: students.map(student => ({
+          classes: filteredClasses.map(cls => ({
+            ...cls,
+            id: cls.id.toString()
+          })),
+          students: filteredStudents.map(student => ({
             ...student,
-            id: student.id.toString()
+            id: student.id.toString(),
+            className: student.class.name
           })),
-          exams: exams.map(exam => ({
+          exams: filteredExams.map(exam => ({
             ...exam,
-            id: exam.id.toString()
+            id: exam.id.toString(),
+            className: exam.lesson.class.name
           })),
-          assignments: assignments.map(assignment => ({
+          assignments: filteredAssignments.map(assignment => ({
             ...assignment,
-            id: assignment.id.toString()
+            id: assignment.id.toString(),
+            className: assignment.lesson.class.name
           }))
         }}
       />

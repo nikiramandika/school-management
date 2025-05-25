@@ -23,10 +23,17 @@ type ResultTableProps = {
   data: ResultList[];
   role?: string;
   relatedData?: {
-    students: { id: string; name: string; surname: string; }[];
+    classes: { id: string; name: string; }[];
+    students: { 
+      id: string; 
+      name: string; 
+      surname: string;
+      className: string;
+    }[];
     exams: { 
       id: string; 
       title: string;
+      className: string;
       lesson: {
         class: { name: string; };
         teacher: { name: string; surname: string; };
@@ -35,6 +42,7 @@ type ResultTableProps = {
     assignments: { 
       id: string; 
       title: string;
+      className: string;
       lesson: {
         class: { name: string; };
         teacher: { name: string; surname: string; };

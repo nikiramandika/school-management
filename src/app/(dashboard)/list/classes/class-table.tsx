@@ -147,5 +147,8 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
     },
   ];
 
-  return <DataTable columns={columns} data={data} searchKey="name" />;
+  // Only include the actions column for admin role
+  const filteredColumns = role === "admin" ? columns : columns.filter(col => col.id !== "actions");
+
+  return <DataTable columns={filteredColumns} data={data} searchKey="name" />;
 } 
