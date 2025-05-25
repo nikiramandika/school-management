@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { subjectSchema, SubjectSchema } from "@/lib/formValidationSchemas";
 import { createSubject, updateSubject } from "@/lib/actions";
-import { useFormState } from "react-dom";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -21,45 +20,52 @@ const SubjectForm = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SubjectSchema>({
     resolver: zodResolver(subjectSchema),
+    defaultValues: data,
   });
 
-  // AFTER REACT 19 IT'LL BE USEACTIONSTATE
+  const onSubmit = useCallback(
+    async (formData: SubjectSchema) => {
+      try {
+        const action = type === "create" ? createSubject : updateSubject;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          formData
+        );
 
-  const [state, formAction] = useActionState(
-    type === "create" ? createSubject : updateSubject,
-    {
-      success: false,
-      error: false,
-    }
+        if (result.success) {
+          toast.success(
+            `Subject has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message || "Failed to save subject data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    },
+    [type, setOpen, router]
   );
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    startTransition(() => {
-      formAction(data);
-    });
-  });
+  // Get teachers from relatedData with default empty array
+  const teachers = relatedData?.teachers || [];
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state.success) {
-      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
-      setOpen(false);
-      router.refresh();
-    }
-  }, [state, router, type, setOpen]);
-
-  const { teachers } = relatedData;
+  // Get current teacher IDs
+  const currentTeacherIds = data?.teachers?.map((t: any) => t.id) || [];
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new subject" : "Update the subject"}
       </h1>
@@ -88,7 +94,7 @@ const SubjectForm = ({
             multiple
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("teachers")}
-            defaultValue={data?.teachers}
+            defaultValue={currentTeacherIds}
           >
             {teachers.map(
               (teacher: { id: string; name: string; surname: string }) => (
@@ -105,10 +111,10 @@ const SubjectForm = ({
           )}
         </div>
       </div>
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md"
+        disabled={isSubmitting}
+      >
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

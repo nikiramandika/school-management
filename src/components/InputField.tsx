@@ -1,35 +1,41 @@
-import { FieldError } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 
-type InputFieldProps = {
+interface InputFieldProps {
   label: string;
-  type?: string;
-  register: any;
   name: string;
-  defaultValue?: string;
-  error?: FieldError;
+  defaultValue?: any;
+  register: UseFormRegister<any>;
+  error?: any;
+  type?: string;
   hidden?: boolean;
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-};
+  min?: number;
+  max?: number;
+  step?: number;
+}
 
 const InputField = ({
   label,
-  type = "text",
-  register,
   name,
   defaultValue,
+  register,
   error,
-  hidden,
-  inputProps,
+  type = "text",
+  hidden = false,
+  min,
+  max,
+  step,
 }: InputFieldProps) => {
   return (
-    <div className={hidden ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+    <div className={`flex flex-col gap-2 w-full md:w-1/4 ${hidden ? "hidden" : ""}`}>
       <label className="text-xs text-gray-500">{label}</label>
       <input
         type={type}
-        {...register(name)}
         className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-        {...inputProps}
+        {...register(name)}
         defaultValue={defaultValue}
+        min={min}
+        max={max}
+        step={step}
       />
       {error?.message && (
         <p className="text-xs text-red-400">{error.message.toString()}</p>

@@ -7,21 +7,24 @@ import {
   deleteSubject,
   deleteTeacher,
   deleteEvent,
+  deleteLesson,
+  deleteAssignment,
+  deleteResult,
+  deleteAnnouncement,
 } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
-  useActionState,
-  useEffect,
+  useCallback,
   useState,
 } from "react";
-import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { ReactElement } from "react";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -29,12 +32,12 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-  lesson: deleteSubject,
-  assignment: deleteSubject,
-  result: deleteSubject,
+  lesson: deleteLesson,
+  assignment: deleteAssignment,
+  result: deleteResult,
   attendance: deleteSubject,
   event: deleteEvent,
-  announcement: deleteSubject,
+  announcement: deleteAnnouncement,
 };
 
 // USE LAZY LOADING
@@ -60,6 +63,20 @@ const ExamForm = dynamic(() => import("./forms/ExamForm"), {
 const EventForm = dynamic(() => import("./forms/EventForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const LessonForm = dynamic(() => import("./forms/LessonForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AssignmentForm = dynamic(() => import("./forms/AssignmentForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ResultForm = dynamic(() => import("./forms/ResultForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+
+
 // TODO: OTHER FORMS
 
 const forms: {
@@ -68,7 +85,7 @@ const forms: {
     type: "create" | "update",
     data?: any,
     relatedData?: any
-  ) => JSX.Element;
+  ) => ReactElement;
 } = {
   subject: (setOpen, type, data, relatedData) => (
     <SubjectForm
@@ -118,7 +135,38 @@ const forms: {
       relatedData={relatedData}
     />
   ),
-  // TODO OTHER LIST ITEMS
+  lesson: (setOpen, type, data, relatedData) => (
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  assignment: (setOpen, type, data, relatedData) => (
+    <AssignmentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  result: (setOpen, type, data, relatedData) => (
+    <ResultForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  announcement: (setOpen, type, data, relatedData) => (
+    <AnnouncementForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
 };
 
 const FormModal = ({
@@ -129,36 +177,52 @@ const FormModal = ({
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  const Form = () => {
-    const [state, formAction] = useActionState(deleteActionMap[table], {
-      success: false,
-      error: false,
-    });
+  const handleDelete = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      const action = deleteActionMap[table];
+      const formData = new FormData();
+      formData.append("id", id.toString());
+      
+      const result = await action({ success: false, error: false, message: "" }, formData);
 
-    const router = useRouter();
-
-    useEffect(() => {
-      if (state.success) {
-        toast(`${table} has been deleted!`);
+      if (result.success) {
+        toast.success(`${table} has been deleted!`);
         setOpen(false);
         router.refresh();
+      } else {
+        toast.error(result.message || `Failed to delete ${table}. Please try again.`);
       }
-    }, [state, router]);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }, [table, id, router]);
 
+  const Form = () => {
     return type === "delete" && id ? (
-      <form action={formAction} className="flex flex-col gap-4">
-        <input type="hidden" name="id" value={id.toString()} />
+      <form onSubmit={(e) => { e.preventDefault(); handleDelete(); }} className="flex flex-col gap-4">
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
-        <Button variant="destructive" className="w-max self-center text-white">
+        <Button variant="destructive" type="submit" className="w-max self-center text-white">
           Delete
         </Button>
       </form>
     ) : type === "create" || type === "update" ? (
       forms[table] ? (
-        forms[table](setOpen, type, data, relatedData)
+        (() => {
+          console.log("FormModal Data:", {
+            type,
+            data,
+            relatedData,
+            table
+          });
+          return forms[table](setOpen, type, data, relatedData);
+        })()
       ) : (
         "Form not found!"
       )
