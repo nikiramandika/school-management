@@ -52,11 +52,34 @@ const ResultForm = ({
   const onSubmit = useCallback(
     async (formData: ResultSchema) => {
       try {
-        const action = type === "create" ? createResult : updateResult;
-        const result = await action(
-          { success: false, error: false, message: "" },
-          formData
-        );
+        if (type === "update" && !formData.id) {
+          toast.error("Missing result ID. Please try again.");
+          return;
+        }
+
+        let result;
+        if (type === "create") {
+          result = await createResult(
+            { success: false, error: false, message: "" },
+            {
+              studentId: formData.studentId,
+              score: formData.score,
+              examId: formData.examId,
+              assignmentId: formData.assignmentId,
+            }
+          );
+        } else {
+          result = await updateResult(
+            { success: false, error: false, message: "" },
+            {
+              id: formData.id!,
+              studentId: formData.studentId,
+              score: formData.score,
+              examId: formData.examId,
+              assignmentId: formData.assignmentId,
+            }
+          );
+        }
 
         if (result.success) {
           toast.success(

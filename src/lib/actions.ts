@@ -1206,3 +1206,75 @@ export const deleteAnnouncement = async (
     };
   }
 };
+
+export const createAttendance = async (
+  currentState: CurrentState,
+  data: {
+    studentId: string;
+    lessonId: number;
+    date: Date;
+    present: boolean;
+  }
+): Promise<CurrentState> => {
+  try {
+    const attendance = await prisma.attendance.create({
+      data: {
+        studentId: data.studentId,
+        lessonId: data.lessonId,
+        date: data.date,
+        present: data.present,
+      },
+    });
+
+    return {
+      success: true,
+      error: false,
+      message: "Attendance record created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating attendance:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Failed to create attendance record",
+    };
+  }
+};
+
+export const updateAttendance = async (
+  currentState: CurrentState,
+  data: {
+    id: number;
+    studentId: string;
+    lessonId: number;
+    date: Date;
+    present: boolean;
+  }
+): Promise<CurrentState> => {
+  try {
+    const attendance = await prisma.attendance.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        studentId: data.studentId,
+        lessonId: data.lessonId,
+        date: data.date,
+        present: data.present,
+      },
+    });
+
+    return {
+      success: true,
+      error: false,
+      message: "Attendance record updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating attendance:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Failed to update attendance record",
+    };
+  }
+};

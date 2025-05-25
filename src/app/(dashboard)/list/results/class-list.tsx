@@ -1,5 +1,6 @@
 'use client';
 
+import { Card } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 
 interface Teacher {
@@ -22,20 +23,20 @@ const ClassList = ({ classes }: ClassListProps) => {
   const router = useRouter();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {classes.map((cls) => (
-        <div
+        <Card
           key={cls.id}
-          className="p-4 bg-gray-50 dark:bg-black rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+          className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           onClick={() => router.push(`/list/results/${cls.id}`)}
         >
-          <h3 className="font-semibold text-lg mb-2">{cls.name}</h3>
+          <h3 className="text-lg font-semibold">{cls.name}</h3>
           {cls.teacher && (
             <p className="text-sm text-muted-foreground">
               Teacher: {cls.teacher.name} {cls.teacher.surname}
             </p>
           )}
-        </div>
+        </Card>
       ))}
     </div>
   );

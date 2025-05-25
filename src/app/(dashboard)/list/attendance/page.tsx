@@ -1,0 +1,58 @@
+import { auth } from "@clerk/nextjs/server";
+import prisma from "@/lib/prisma";
+import ClassList from "./class-list";
+
+// Header component for better organization
+const PageHeader = ({ role }: { role: string }) => (
+  <div className="mb-8">
+    <h1 className="text-lg font-bold text-gray-900 dark:text-white">Class Attendance</h1>
+    <p className="mt-2 text-gray-600 dark:text-white">
+      {role === "admin" 
+        ? "View and manage attendance for all classes" 
+        : "View attendance for your assigned classes"}
+    </p>
+  </div>
+);
+
+// Empty state component
+const EmptyState = () => (
+  <div className="text-center py-12 bg-gray-50 rounded-lg">
+    <p className="text-gray-500">No classes available to display</p>
+  </div>
+);
+
+export default async function AttendancePage() {
+  const { sessionClaims } = await auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+
+  // Get all classes
+  const classes = await prisma.class.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return (
+    <div className="bg-card p-4 rounded-md flex-1 m-4 mt-0">
+      <div className="bg-card rounded-lg">
+        <div className="px-6 py-5 border-b border-gray-200">
+          <PageHeader role={role || ""} />
+        </div>
+        <div className="px-6 py-5">
+          {classes.length > 0 ? (
+            <ClassList 
+              classes={classes.map(cls => ({
+                id: cls.id,
+                name: cls.name,
+              }))} 
+            />
+          ) : (
+            <EmptyState />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+} 
+

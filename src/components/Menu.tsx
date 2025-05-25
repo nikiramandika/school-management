@@ -159,6 +159,9 @@ const Menu = () => {
     if (path === "/list/results") {
       return pathname.startsWith("/list/results");
     }
+    if (path === "/list/attendance") {
+      return pathname.startsWith("/list/attendance");
+    }
     return pathname === path;
   };
 
