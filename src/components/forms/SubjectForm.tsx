@@ -30,23 +30,33 @@ const SubjectForm = ({
     defaultValues: data,
   });
 
-  const onSubmit = useCallback(async (formData: SubjectSchema) => {
-    try {
-      const action = type === "create" ? createSubject : updateSubject;
-      const result = await action({ success: false, error: false, message: "" }, formData);
+  const onSubmit = useCallback(
+    async (formData: SubjectSchema) => {
+      try {
+        const action = type === "create" ? createSubject : updateSubject;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          formData
+        );
 
-      if (result.success) {
-        toast.success(`Subject has been ${type === "create" ? "created" : "updated"}!`);
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.message || "Failed to save subject data. Please try again.");
+        if (result.success) {
+          toast.success(
+            `Subject has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message || "Failed to save subject data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }, [type, setOpen, router]);
+    },
+    [type, setOpen, router]
+  );
 
   // Get teachers from relatedData with default empty array
   const teachers = relatedData?.teachers || [];
@@ -88,10 +98,7 @@ const SubjectForm = ({
           >
             {teachers.map(
               (teacher: { id: string; name: string; surname: string }) => (
-                <option
-                  value={teacher.id}
-                  key={teacher.id}
-                >
+                <option value={teacher.id} key={teacher.id}>
                   {teacher.name + " " + teacher.surname}
                 </option>
               )
@@ -104,7 +111,10 @@ const SubjectForm = ({
           )}
         </div>
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md"
+        disabled={isSubmitting}
+      >
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

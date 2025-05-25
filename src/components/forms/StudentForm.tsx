@@ -3,25 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import {
-  Dispatch,
-  SetStateAction,
-  useActionState,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { studentSchema, StudentSchema } from "@/lib/formValidationSchemas";
-import { useFormState } from "react-dom";
 import { createStudent, updateStudent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { startTransition } from "react";
-
-type FormState = {
-  success: boolean;
-  error: boolean;
-  message?: string;
-};
 
 const StudentForm = ({
   type,
@@ -34,52 +20,48 @@ const StudentForm = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<StudentSchema>({
     resolver: zodResolver(studentSchema),
+    defaultValues: data,
   });
 
-  const [state, formAction] = useActionState<FormState, StudentSchema>(
-    type === "create" ? createStudent : updateStudent,
-    {
-      success: false,
-      error: false,
-      message: "",
-    }
+  const onSubmit = useCallback(
+    async (formData: StudentSchema) => {
+      try {
+        const action = type === "create" ? createStudent : updateStudent;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          formData
+        );
+
+        if (result.success) {
+          toast.success(
+            `Student has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message || "Failed to save student data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    },
+    [type, setOpen, router]
   );
-
-  const onSubmit = handleSubmit((data) => {
-    console.log("Form data being submitted:", data);
-    console.log("Form errors:", errors);
-    
-    const formData = { ...data };
-    console.log("Submitting form data:", formData);
-    
-    startTransition(() => {
-      formAction(formData);
-    });
-  });
-
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log("Form state changed:", state);
-    if (state?.success) {
-      toast.success(`Student has been ${type === "create" ? "created" : "updated"}!`);
-      setOpen(false);
-      router.refresh();
-    } else if (state?.error) {
-      toast.error(state.message || "Failed to save student data. Please try again.");
-    }
-  }, [state, router, type, setOpen]);
 
   const { grades, classes } = relatedData;
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new student" : "Update the student"}
       </h1>
@@ -190,9 +172,10 @@ const StudentForm = ({
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
+            <option value="">Select a grade</option>
             {grades.map((grade: { id: number; level: number }) => (
               <option value={grade.id} key={grade.id}>
-                Grade {grade.level}
+                {grade.level}
               </option>
             ))}
           </select>
@@ -209,6 +192,7 @@ const StudentForm = ({
             {...register("classId")}
             defaultValue={data?.classId}
           >
+            <option value="">Select a class</option>
             {classes.map((classItem: { id: number; name: string }) => (
               <option value={classItem.id} key={classItem.id}>
                 {classItem.name}
@@ -222,10 +206,10 @@ const StudentForm = ({
           )}
         </div>
       </div>
-      {state.error && (
-        <span className="text-red-500">{state.message || "Something went wrong!"}</span>
-      )}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md"
+        disabled={isSubmitting}
+      >
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

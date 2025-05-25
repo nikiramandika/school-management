@@ -30,29 +30,39 @@ const LessonForm = ({
     defaultValues: data,
   });
 
-  const onSubmit = useCallback(async (formData: LessonSchema) => {
-    try {
-      const submitData = {
-        ...formData,
-        subjectId: Number(formData.subjectId),
-        classId: Number(formData.classId),
-      };
+  const onSubmit = useCallback(
+    async (formData: LessonSchema) => {
+      try {
+        const submitData = {
+          ...formData,
+          subjectId: Number(formData.subjectId),
+          classId: Number(formData.classId),
+        };
 
-      const action = type === "create" ? createLesson : updateLesson;
-      const result = await action({ success: false, error: false }, submitData);
+        const action = type === "create" ? createLesson : updateLesson;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          submitData
+        );
 
-      if (result.success) {
-        toast.success(`Lesson has been ${type === "create" ? "created" : "updated"}!`);
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.message || "Failed to save lesson data. Please try again.");
+        if (result.success) {
+          toast.success(
+            `Lesson has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message || "Failed to save lesson data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }, [type, setOpen, router]);
+    },
+    [type, setOpen, router]
+  );
 
   const { subjects, classes, teachers } = relatedData || {};
 
@@ -128,11 +138,13 @@ const LessonForm = ({
             defaultValue={data?.teacherId}
           >
             <option value="">Select a teacher</option>
-            {teachers?.map((teacher: { id: string; name: string; surname: string }) => (
-              <option value={teacher.id} key={teacher.id}>
-                {teacher.name} {teacher.surname}
-              </option>
-            ))}
+            {teachers?.map(
+              (teacher: { id: string; name: string; surname: string }) => (
+                <option value={teacher.id} key={teacher.id}>
+                  {teacher.name} {teacher.surname}
+                </option>
+              )
+            )}
           </select>
           {errors.teacherId?.message && (
             <p className="text-xs text-red-400">
@@ -177,7 +189,7 @@ const LessonForm = ({
           error={errors?.endTime}
         />
       </div>
-      <button 
+      <button
         className="bg-blue-400 text-white p-2 rounded-md disabled:opacity-50"
         disabled={isSubmitting}
       >
@@ -187,4 +199,4 @@ const LessonForm = ({
   );
 };
 
-export default LessonForm; 
+export default LessonForm;
