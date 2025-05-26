@@ -29,8 +29,20 @@ const LessonForm = ({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startTime ? new Date(data.startTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : undefined,
-      endTime: data?.endTime ? new Date(data.endTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : undefined,
+      startTime: data?.startTime
+        ? new Date(data.startTime).toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : undefined,
+      endTime: data?.endTime
+        ? new Date(data.endTime).toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : undefined,
     },
   });
 
@@ -135,6 +147,26 @@ const LessonForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Day</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("day")}
+            defaultValue={data?.day}
+          >
+            <option value="">Select a day</option>
+            <option value="MONDAY">Monday</option>
+            <option value="TUESDAY">Tuesday</option>
+            <option value="WEDNESDAY">Wednesday</option>
+            <option value="THURSDAY">Thursday</option>
+            <option value="FRIDAY">Friday</option>
+          </select>
+          {errors.day?.message && (
+            <p className="text-xs text-red-400">
+              {errors.day.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Teacher</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -156,42 +188,29 @@ const LessonForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Day</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("day")}
-            defaultValue={data?.day}
-          >
-            <option value="">Select a day</option>
-            <option value="MONDAY">Monday</option>
-            <option value="TUESDAY">Tuesday</option>
-            <option value="WEDNESDAY">Wednesday</option>
-            <option value="THURSDAY">Thursday</option>
-            <option value="FRIDAY">Friday</option>
-          </select>
-          {errors.day?.message && (
-            <p className="text-xs text-red-400">
-              {errors.day.message.toString()}
-            </p>
-          )}
+
+        <div className="flex gap-4 w-full">
+          <div className="w-1/2">
+            <InputField
+              label="Start Time"
+              name="startTime"
+              type="time"
+              defaultValue={data?.startTime}
+              register={register}
+              error={errors?.startTime}
+            />
+          </div>
+          <div className="w-1/2">
+            <InputField
+              label="End Time"
+              name="endTime"
+              type="time"
+              defaultValue={data?.endTime}
+              register={register}
+              error={errors?.endTime}
+            />
+          </div>
         </div>
-        <InputField
-          label="Start Time"
-          name="startTime"
-          type="time"
-          defaultValue={data?.startTime}
-          register={register}
-          error={errors?.startTime}
-        />
-        <InputField
-          label="End Time"
-          name="endTime"
-          type="time"
-          defaultValue={data?.endTime}
-          register={register}
-          error={errors?.endTime}
-        />
       </div>
       <button
         className="bg-blue-400 text-white p-2 rounded-md disabled:opacity-50"

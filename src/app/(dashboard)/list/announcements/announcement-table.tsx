@@ -106,14 +106,14 @@ export const AnnouncementTable = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <div className="inline-flex items-center justify-center">
                         <FormModal
                           table="announcement"
                           type="update"
                           data={announcement}
                           relatedData={relatedData}
                         />
-                      </Button>
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent>Edit</TooltipContent>
                   </Tooltip>

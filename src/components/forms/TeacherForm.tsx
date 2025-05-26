@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import InputField from "../InputField";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { teacherSchema, TeacherSchema } from "@/lib/formValidationSchemas";
 import { createTeacher, updateTeacher } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 const TeacherForm = ({
   type,
@@ -25,6 +26,7 @@ const TeacherForm = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control,
   } = useForm<TeacherSchema>({
     resolver: zodResolver(teacherSchema),
     defaultValues: data,
@@ -52,6 +54,7 @@ const TeacherForm = ({
         }
       } catch (error) {
         console.error("Form submission error:", error);
+        console.error("Clerk error details:", errors);
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
@@ -68,7 +71,7 @@ const TeacherForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Authentication Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="Username"
           name="username"
@@ -95,7 +98,7 @@ const TeacherForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Personal Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="First Name"
           name="name"
@@ -149,10 +152,12 @@ const TeacherForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+      </div>
+      <div className="flex gap-4 w-full">
+        <div className="flex flex-col gap-2 w-1/3">
           <label className="text-xs text-gray-500">Sex</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
             {...register("sex")}
             defaultValue={data?.sex}
           >
@@ -165,20 +170,40 @@ const TeacherForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-2/3 ">
           <label className="text-xs text-gray-500">Subjects</label>
-          <select
-            multiple
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("subjects")}
-            defaultValue={data?.subjects}
-          >
-            {subjects.map((subject: { id: number; name: string }) => (
-              <option value={subject.id} key={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
+          <Controller
+            control={control}
+            name="subjects"
+            render={({ field }) => (
+              <Select
+                isMulti
+                isSearchable
+                options={subjects.map(
+                  (subject: { id: number; name: string }) => ({
+                    value: subject.id.toString(),
+                    label: subject.name,
+                  })
+                )}
+                value={(field.value || []).map((id: string) => {
+                  const subject = subjects.find(
+                    (s: { id: number }) => s.id.toString() === id
+                  );
+                  return subject
+                    ? { value: subject.id.toString(), label: subject.name }
+                    : { value: id, label: String(id) };
+                })}
+                onChange={(selected) =>
+                  field.onChange(
+                    selected ? selected.map((s: any) => s.value) : []
+                  )
+                }
+                classNamePrefix="react-select"
+                placeholder="Select subjects..."
+                styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+              />
+            )}
+          />
           {errors.subjects?.message && (
             <p className="text-xs text-red-400">
               {errors.subjects.message.toString()}

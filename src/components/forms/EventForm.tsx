@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { eventSchema, EventSchema } from "@/lib/formValidationSchemas";
 import { createEvent, updateEvent } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
 
 const EventForm = ({
   type,
@@ -21,26 +23,52 @@ const EventForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (data?.startTime && data?.endTime) {
+      return {
+        from: new Date(data.startTime),
+        to: new Date(data.endTime),
+      };
+    }
+    return undefined;
+  });
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EventSchema>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
-      endTime: data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      startTime: data?.startTime ? new Date(data.startTime) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime) : undefined,
     },
   });
+
+  // Update form values when dateRange changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      setValue("startTime", dateRange.from);
+    }
+    if (dateRange?.to) {
+      setValue("endTime", dateRange.to);
+    }
+  }, [dateRange, setValue]);
 
   const onSubmit = useCallback(
     async (formData: EventSchema) => {
       try {
+        if (!dateRange?.from || !dateRange?.to) {
+          toast.error("Please select both start and end dates");
+          return;
+        }
+
         const submitData = {
           ...formData,
-          startTime: new Date(formData.startTime).toISOString(),
-          endTime: new Date(formData.endTime).toISOString(),
+          startTime: dateRange.from.toISOString(),
+          endTime: dateRange.to.toISOString(),
         };
         const action = type === "create" ? createEvent : updateEvent;
         const result = await action(
@@ -64,7 +92,7 @@ const EventForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, dateRange]
   );
 
   // Get classes from relatedData
@@ -100,23 +128,23 @@ const EventForm = ({
           )}
         </div>
 
-        <InputField
-          label="Start Time"
-          name="startTime"
-          defaultValue={data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
-          register={register}
-          error={errors?.startTime}
-          type="datetime-local"
-        />
-
-        <InputField
-          label="End Time"
-          name="endTime"
-          defaultValue={data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
-          register={register}
-          error={errors?.endTime}
-          type="datetime-local"
-        />
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Event Date Range</label>
+          <DateRangePicker
+            date={dateRange}
+            setDate={setDateRange}
+          />
+          {errors.startTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.startTime.message.toString()}
+            </p>
+          )}
+          {errors.endTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.endTime.message.toString()}
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Class</label>

@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { assignmentSchema, AssignmentSchema } from "@/lib/formValidationSchemas";
 import { createAssignment, updateAssignment } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
 
 const AssignmentForm = ({
   type,
@@ -21,23 +23,54 @@ const AssignmentForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (data?.startDate && data?.dueDate) {
+      return {
+        from: new Date(data.startDate),
+        to: new Date(data.dueDate),
+      };
+    }
+    return undefined;
+  });
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<AssignmentSchema>({
     resolver: zodResolver(assignmentSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startDate ? new Date(data.startDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
-      endTime: data?.dueDate ? new Date(data.dueDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      startTime: data?.startDate ? new Date(data.startDate) : undefined,
+      endTime: data?.dueDate ? new Date(data.dueDate) : undefined,
     },
   });
 
+  // Update form values when dateRange changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      setValue("startTime", dateRange.from);
+    }
+    if (dateRange?.to) {
+      setValue("endTime", dateRange.to);
+    }
+  }, [dateRange, setValue]);
+
   const onSubmit = useCallback(async (formData: AssignmentSchema) => {
     try {
+      if (!dateRange?.from || !dateRange?.to) {
+        toast.error("Please select both start and end dates");
+        return;
+      }
+
+      const submitData = {
+        ...formData,
+        startTime: dateRange.from,
+        endTime: dateRange.to,
+      };
       const action = type === "create" ? createAssignment : updateAssignment;
-      const result = await action({ success: false, error: false, message: "" }, formData);
+      const result = await action({ success: false, error: false, message: "" }, submitData);
 
       if (result.success) {
         toast.success(`Assignment has been ${type === "create" ? "created" : "updated"}!`);
@@ -50,7 +83,7 @@ const AssignmentForm = ({
       console.error("Form submission error:", error);
       toast.error("An unexpected error occurred. Please try again.");
     }
-  }, [type, setOpen, router]);
+  }, [type, setOpen, router, dateRange]);
 
   // Get lessons from relatedData
   const lessons = relatedData?.lessons || [];
@@ -72,32 +105,7 @@ const AssignmentForm = ({
           register={register}
           error={errors?.title}
         />
-        <InputField
-          label="Start Time"
-          name="startTime"
-          defaultValue={data?.startDate ? new Date(data.startDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
-          register={register}
-          error={errors?.startTime}
-          type="datetime-local"
-        />
-        <InputField
-          label="End Time"
-          name="endTime"
-          defaultValue={data?.dueDate ? new Date(data.dueDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
-          register={register}
-          error={errors?.endTime}
-          type="datetime-local"
-        />
-        {data && (
-          <InputField
-            label="Id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
-        )}
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Lesson</label>
           <select
@@ -124,6 +132,35 @@ const AssignmentForm = ({
             </p>
           )}
         </div>
+
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Assignment Date Range</label>
+          <DateRangePicker
+            date={dateRange}
+            setDate={setDateRange}
+          />
+          {errors.startTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.startTime.message.toString()}
+            </p>
+          )}
+          {errors.endTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.endTime.message.toString()}
+            </p>
+          )}
+        </div>
+
+        {data && (
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
         {type === "create" ? "Create" : "Update"}

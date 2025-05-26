@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { examSchema, ExamSchema } from "@/lib/formValidationSchemas";
 import { createExam, updateExam } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
 
 const ExamForm = ({
   type,
@@ -21,26 +23,57 @@ const ExamForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (data?.startTime && data?.endTime) {
+      return {
+        from: new Date(data.startTime),
+        to: new Date(data.endTime),
+      };
+    }
+    return undefined;
+  });
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ExamSchema>({
     resolver: zodResolver(examSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
-      endTime: data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      startTime: data?.startTime ? new Date(data.startTime) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime) : undefined,
     },
   });
+
+  // Update form values when dateRange changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      setValue("startTime", dateRange.from);
+    }
+    if (dateRange?.to) {
+      setValue("endTime", dateRange.to);
+    }
+  }, [dateRange, setValue]);
 
   const onSubmit = useCallback(
     async (formData: ExamSchema) => {
       try {
+        if (!dateRange?.from || !dateRange?.to) {
+          toast.error("Please select both start and end dates");
+          return;
+        }
+
+        const submitData = {
+          ...formData,
+          startTime: dateRange.from,
+          endTime: dateRange.to,
+        };
         const action = type === "create" ? createExam : updateExam;
         const result = await action(
           { success: false, error: false, message: "" },
-          formData
+          submitData
         );
 
         if (result.success) {
@@ -59,7 +92,7 @@ const ExamForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, dateRange]
   );
 
   // Get lessons from relatedData
@@ -82,32 +115,7 @@ const ExamForm = ({
           register={register}
           error={errors?.title}
         />
-        <InputField
-          label="Start Date"
-          name="startTime"
-          defaultValue={data?.startTime}
-          register={register}
-          error={errors?.startTime}
-          type="datetime-local"
-        />
-        <InputField
-          label="End Date"
-          name="endTime"
-          defaultValue={data?.endTime}
-          register={register}
-          error={errors?.endTime}
-          type="datetime-local"
-        />
-        {data && (
-          <InputField
-            label="Id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
-        )}
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Lesson</label>
           <select
@@ -137,6 +145,35 @@ const ExamForm = ({
             </p>
           )}
         </div>
+
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Exam Date Range</label>
+          <DateRangePicker
+            date={dateRange}
+            setDate={setDateRange}
+          />
+          {errors.startTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.startTime.message.toString()}
+            </p>
+          )}
+          {errors.endTime?.message && (
+            <p className="text-xs text-red-400">
+              {errors.endTime.message.toString()}
+            </p>
+          )}
+        </div>
+
+        {data && (
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
       </div>
       <button
         className="bg-blue-400 text-white p-2 rounded-md"

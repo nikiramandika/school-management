@@ -68,7 +68,7 @@ const StudentForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Authentication Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="Username"
           name="username"
@@ -95,7 +95,7 @@ const StudentForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Personal Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="First Name"
           name="name"
@@ -149,7 +149,7 @@ const StudentForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Sex</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -165,7 +165,7 @@ const StudentForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Grade</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -185,7 +185,7 @@ const StudentForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Class</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"

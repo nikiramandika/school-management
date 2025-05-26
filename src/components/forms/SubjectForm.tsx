@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import InputField from "../InputField";
 import { subjectSchema, SubjectSchema } from "@/lib/formValidationSchemas";
 import { createSubject, updateSubject } from "@/lib/actions";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 
 const SubjectForm = ({
   type,
@@ -25,9 +26,13 @@ const SubjectForm = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control,
   } = useForm<SubjectSchema>({
     resolver: zodResolver(subjectSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      teachers: data?.teachers?.map((t: any) => t.id) || [],
+    },
   });
 
   const onSubmit = useCallback(
@@ -88,22 +93,44 @@ const SubjectForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Teachers</label>
-          <select
-            multiple
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("teachers")}
-            defaultValue={currentTeacherIds}
-          >
-            {teachers.map(
-              (teacher: { id: string; name: string; surname: string }) => (
-                <option value={teacher.id} key={teacher.id}>
-                  {teacher.name + " " + teacher.surname}
-                </option>
-              )
-            )}
-          </select>
+          <Controller
+            control={control}
+            name="teachers"
+            render={({ field }) => {
+              const selectedIds = field.value || [];
+              const selectedOptions = selectedIds.map((id: string) => {
+                const teacher = teachers.find((t: { id: string }) => t.id === id);
+                return teacher
+                  ? { value: teacher.id, label: teacher.name + " " + teacher.surname }
+                  : { value: id, label: id };
+              });
+              const mergedOptions = [
+                ...teachers.map((teacher: { id: string; name: string; surname: string }) => ({
+                  value: teacher.id,
+                  label: teacher.name + " " + teacher.surname,
+                })),
+                ...selectedOptions
+              ];
+              // Hilangkan duplikat berdasarkan value
+              const uniqueOptions = Array.from(
+                new Map(mergedOptions.map(opt => [opt.value, opt])).values()
+              );
+              return (
+                <Select
+                  isMulti
+                  isSearchable
+                  options={uniqueOptions}
+                  value={selectedOptions}
+                  onChange={(selected) => field.onChange(selected ? selected.map((s: any) => s.value) : [])}
+                  classNamePrefix="react-select"
+                  placeholder="Select teachers..."
+                  styles={{ container: (base) => ({ ...base, width: '100%' }) }}
+                />
+              );
+            }}
+          />
           {errors.teachers?.message && (
             <p className="text-xs text-red-400">
               {errors.teachers.message.toString()}
