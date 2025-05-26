@@ -27,7 +27,11 @@ const LessonForm = ({
     formState: { errors, isSubmitting },
   } = useForm<LessonSchema>({
     resolver: zodResolver(lessonSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      startTime: data?.startTime ? new Date(data.startTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : undefined,
+    },
   });
 
   const onSubmit = useCallback(

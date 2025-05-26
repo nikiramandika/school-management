@@ -144,6 +144,12 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         });
         relatedData = { classes: eventClasses };
         break;
+      case "announcement":
+        const announcementClasses = await prisma.class.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { classes: announcementClasses };
+        break;
       case "result":
         // If relatedData is provided from parent component, use it
         if (initialRelatedData) {

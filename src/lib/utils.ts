@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Day } from "@prisma/client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -18,16 +19,24 @@ const getLatestMonday = (): Date => {
   return latestMonday;
 };
 
+const getDaysFromMonday = (day: Day): number => {
+  const days = {
+    'MONDAY': 0,
+    'TUESDAY': 1,
+    'WEDNESDAY': 2,
+    'THURSDAY': 3,
+    'FRIDAY': 4
+  };
+  return days[day];
+};
+
 export const adjustScheduleToCurrentWeek = (
-  lessons: { title: string; start: Date; end: Date }[]
+  lessons: { title: string; start: Date; end: Date; day: Day }[]
 ): { title: string; start: Date; end: Date }[] => {
   const latestMonday = getLatestMonday();
 
   return lessons.map((lesson) => {
-    const lessonDayOfWeek = lesson.start.getDay();
-
-    const daysFromMonday = lessonDayOfWeek === 0 ? 6 : lessonDayOfWeek - 1;
-
+    const daysFromMonday = getDaysFromMonday(lesson.day);
     const adjustedStartDate = new Date(latestMonday);
 
     adjustedStartDate.setDate(latestMonday.getDate() + daysFromMonday);

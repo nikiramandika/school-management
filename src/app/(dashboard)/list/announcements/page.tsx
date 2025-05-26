@@ -4,47 +4,19 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { AnnouncementTable } from "./announcement-table";
 
-const AnnouncementListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const AnnouncementListPage = async () => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
-
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
 
   // Fetch all classes for the form
   const classes = await prisma.class.findMany({
     select: { id: true, name: true },
   });
 
-  // URL PARAMS CONDITION
+  // ROLE CONDITIONS
   const query: Prisma.AnnouncementWhereInput = {};
 
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.OR = [
-              { title: { contains: value, mode: "insensitive" } },
-              { description: { contains: value, mode: "insensitive" } },
-            ];
-            break;
-          case "classId":
-            query.classId = parseInt(value);
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  // ROLE CONDITIONS
   switch (role) {
     case "admin":
       break;
@@ -80,22 +52,19 @@ const AnnouncementListPage = async ({
       break;
   }
 
-  const [dataRes, count] = await prisma.$transaction([
-    prisma.announcement.findMany({
-      where: query,
-      include: {
-        class: {
-          select: {
-            name: true,
-          },
+  const dataRes = await prisma.announcement.findMany({
+    where: query,
+    include: {
+      class: {
+        select: {
+          name: true,
         },
       },
-      orderBy: {
-        date: 'desc',
-      },
-    }),
-    prisma.announcement.count({ where: query }),
-  ]);
+    },
+    orderBy: {
+      date: 'desc',
+    },
+  });
 
   const data = dataRes.map((item) => ({
     id: item.id,
@@ -103,6 +72,7 @@ const AnnouncementListPage = async ({
     description: item.description,
     date: item.date,
     className: item.class?.name,
+    classId: item.classId
   }));
 
   return (

@@ -4,35 +4,11 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { ClassTable } from "./class-table";
 
-const ClassListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const ClassListPage = async () => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const query: Prisma.ClassWhereInput = {};
-
-  if (searchParams) {
-    for (const [key, value] of Object.entries(searchParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "supervisorId":
-            query.supervisorId = value;
-            break;
-          case "search":
-            query.name = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
   const data = await prisma.class.findMany({
-    where: query,
     include: {
       supervisor: true,
       grade: true,

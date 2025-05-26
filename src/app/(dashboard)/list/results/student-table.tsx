@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AlertCircle } from 'lucide-react';
 
 interface Student {
   id: string;
@@ -204,99 +205,109 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
       </div>
 
       {filteredAssessments.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Name</th>
-                <th className="text-left p-2">Score</th>
-                <th className="text-left p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => {
-                const existingGrade = existingGrades.find(
-                  grade => grade.assessmentId === selectedAssessment && grade.studentId === student.id
-                );
-                const isEditing = editingGrades[student.id];
+        !selectedAssessment ? (
+          <div className="text-center py-8">
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              <AlertCircle className="h-8 w-8 text-yellow-500" />
+              <p className="text-lg font-medium">Please select an {assessmentType} first</p>
+              <p className="text-sm">Choose an {assessmentType} from the dropdown above to view and manage grades</p>
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2">Name</th>
+                  <th className="text-left p-2">Score</th>
+                  <th className="text-left p-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => {
+                  const existingGrade = existingGrades.find(
+                    grade => grade.assessmentId === selectedAssessment && grade.studentId === student.id
+                  );
+                  const isEditing = editingGrades[student.id];
 
-                return (
-                  <tr key={student.id} className="border-b">
-                    <td className="p-2">
-                      {student.name} {student.surname}
-                    </td>
-                    <td className="p-2">
-                      {isEditing ? (
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={scores[student.id] || ''}
-                          onChange={(e) => handleScoreChange(student.id, e.target.value)}
-                          className="w-24"
-                        />
-                      ) : (
-                        existingGrade ? (
-                          <span className="px-2 py-1 bg-muted rounded">
-                            {existingGrade.score}
-                          </span>
+                  return (
+                    <tr key={student.id} className="border-b">
+                      <td className="p-2">
+                        {student.name} {student.surname}
+                      </td>
+                      <td className="p-2">
+                        {isEditing ? (
+                          <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={scores[student.id] || ''}
+                            onChange={(e) => handleScoreChange(student.id, e.target.value)}
+                            className="w-24"
+                          />
                         ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )
-                      )}
-                    </td>
-                    <td className="p-2">
-                      {isEditing ? (
-                        <Button
-                          onClick={() => handleSave(student.id)}
-                          disabled={!scores[student.id]}
-                        >
-                          Save
-                        </Button>
-                      ) : (
-                        <TooltipProvider>
-                          <Tooltip defaultOpen={false}>
-                            <TooltipTrigger asChild>
-                              <div className={!selectedAssessment ? "cursor-not-allowed" : ""}>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    if (!selectedAssessment) {
-                                      return;
-                                    }
-                                    handleEdit(student.id);
-                                  }}
-                                  disabled={!selectedAssessment}
-                                  className="disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent 
-                              side="top" 
-                              className="bg-gray-800 text-white px-3 py-2 rounded-md text-sm"
-                            >
-                              {!selectedAssessment ? (
-                                <div className="flex items-center gap-2">
-                                  <span>⚠️</span>
-                                  <p>Pilih {assessmentType} terlebih dahulu</p>
+                          existingGrade ? (
+                            <span className="px-2 py-1 bg-muted rounded">
+                              {existingGrade.score}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )
+                        )}
+                      </td>
+                      <td className="p-2">
+                        {isEditing ? (
+                          <Button
+                            onClick={() => handleSave(student.id)}
+                            disabled={!scores[student.id]}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <TooltipProvider>
+                            <Tooltip defaultOpen={false}>
+                              <TooltipTrigger asChild>
+                                <div className={!selectedAssessment ? "cursor-not-allowed" : ""}>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      if (!selectedAssessment) {
+                                        return;
+                                      }
+                                      handleEdit(student.id);
+                                    }}
+                                    disabled={!selectedAssessment}
+                                    className="disabled:cursor-not-allowed disabled:opacity-50"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
                                 </div>
-                              ) : (
-                                <p>Edit nilai</p>
-                              )}
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                              </TooltipTrigger>
+                              <TooltipContent 
+                                side="top" 
+                                className="bg-gray-800 text-white px-3 py-2 rounded-md text-sm"
+                              >
+                                {!selectedAssessment ? (
+                                  <div className="flex items-center gap-2">
+                                    <span>⚠️</span>
+                                    <p>Pilih {assessmentType} terlebih dahulu</p>
+                                  </div>
+                                ) : (
+                                  <p>Edit nilai</p>
+                                )}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : (
         <div className="text-center py-8 text-muted-foreground">
           No {assessmentType}s available for this class

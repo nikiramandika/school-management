@@ -19,6 +19,7 @@ export default async function ClassAttendancePage({
     select: {
       id: true,
       name: true,
+      supervisorId: true,
       lessons: {
         select: {
           teacher: {
@@ -38,7 +39,9 @@ export default async function ClassAttendancePage({
   }
 
   // Check if user has access to this class
-  if (role !== "admin" && !classItem.lessons.some(lesson => lesson.teacher.id === currentUserId)) {
+  if (role !== "admin" && 
+      !classItem.lessons.some(lesson => lesson.teacher.id === currentUserId) &&
+      classItem.supervisorId !== currentUserId) {
     notFound();
   }
 
@@ -64,7 +67,12 @@ export default async function ClassAttendancePage({
   const lessons = await prisma.lesson.findMany({
     where: {
       classId: parseInt(id),
-      ...(role === "teacher" ? { teacherId: currentUserId! } : {})
+      ...(role !== "admin" ? {
+        OR: [
+          { teacherId: currentUserId! },
+          { class: { supervisorId: currentUserId! } }
+        ]
+      } : {})
     },
     select: {
       id: true,
@@ -72,6 +80,7 @@ export default async function ClassAttendancePage({
       class: {
         select: {
           name: true,
+          supervisorId: true,
         },
       },
       teacher: {
@@ -89,7 +98,12 @@ export default async function ClassAttendancePage({
     where: {
       lesson: {
         classId: parseInt(id),
-        ...(role === "teacher" ? { teacherId: currentUserId! } : {})
+        ...(role !== "admin" ? {
+          OR: [
+            { teacherId: currentUserId! },
+            { class: { supervisorId: currentUserId! } }
+          ]
+        } : {})
       },
     },
     select: {
@@ -130,6 +144,7 @@ export default async function ClassAttendancePage({
         students={students}
         lessons={lessons}
         role={role}
+        currentUserId={currentUserId || undefined}
         existingAttendances={attendances}
       />
     </div>

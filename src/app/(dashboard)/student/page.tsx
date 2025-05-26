@@ -3,6 +3,7 @@ import BigCalendarContainer from "@/components/BigCalendarContainer";
 import EventCalendar from "@/components/EventCalendar";
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { Day } from "@prisma/client";
 
 const StudentPage = async () => {
   const { userId } = await auth();
@@ -25,6 +26,7 @@ const StudentPage = async () => {
     title: lesson.name,
     start: lesson.startTime,
     end: lesson.endTime,
+    day: lesson.day,
   }));
 
   return (

@@ -29,8 +29,8 @@ const AssignmentForm = ({
     resolver: zodResolver(assignmentSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startDate,
-      endTime: data?.dueDate,
+      startTime: data?.startDate ? new Date(data.startDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      endTime: data?.dueDate ? new Date(data.dueDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
     },
   });
 
@@ -75,7 +75,7 @@ const AssignmentForm = ({
         <InputField
           label="Start Time"
           name="startTime"
-          defaultValue={data?.startDate}
+          defaultValue={data?.startDate ? new Date(data.startDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
           register={register}
           error={errors?.startTime}
           type="datetime-local"
@@ -83,7 +83,7 @@ const AssignmentForm = ({
         <InputField
           label="End Time"
           name="endTime"
-          defaultValue={data?.dueDate}
+          defaultValue={data?.dueDate ? new Date(data.dueDate).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
           register={register}
           error={errors?.endTime}
           type="datetime-local"

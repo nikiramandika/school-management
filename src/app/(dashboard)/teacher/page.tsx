@@ -16,6 +16,7 @@ const TeacherPage = async () => {
     title: lesson.name,
     start: lesson.startTime,
     end: lesson.endTime,
+    day: lesson.day,
   }));
 
   return (

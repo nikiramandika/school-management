@@ -127,7 +127,12 @@ export const eventSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
   description: z.string().min(1, { message: "Description is required!" }),
   startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
+  endTime: z.coerce.date({ message: "End time is required!" })
+    .refine((date) => {
+      const startTime = (date as any).parent?.startTime;
+      if (!startTime) return true;
+      return date > startTime;
+    }, { message: "End time must be after start time!" }),
   classId: z.coerce.number().optional(),
 });
 

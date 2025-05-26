@@ -21,16 +21,47 @@ const EmptyState = () => (
   </div>
 );
 
-export default async function AttendancePage() {
-  const { sessionClaims } = await auth();
+const AttendanceListPage = async () => {
+  const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
 
-  // Get all classes
+  // Fetch classes with their teachers
   const classes = await prisma.class.findMany({
     select: {
       id: true,
       name: true,
+      supervisor: {
+        select: {
+          id: true,
+          name: true,
+          surname: true
+        }
+      },
+      lessons: {
+        select: {
+          teacher: {
+            select: {
+              id: true,
+              name: true,
+              surname: true
+            }
+          }
+        }
+      }
     },
+    where: role === "admin" ? undefined : {
+      OR: [
+        { supervisorId: currentUserId as string },
+        {
+          lessons: {
+            some: {
+              teacherId: currentUserId as string
+            }
+          }
+        }
+      ]
+    }
   });
 
   return (
@@ -39,12 +70,15 @@ export default async function AttendancePage() {
         <div className="px-6 py-5 border-b border-gray-200">
           <PageHeader role={role || ""} />
         </div>
+        
         <div className="px-6 py-5">
           {classes.length > 0 ? (
             <ClassList 
               classes={classes.map(cls => ({
                 id: cls.id,
                 name: cls.name,
+                supervisor: cls.supervisor,
+                teachers: cls.lessons.map(lesson => lesson.teacher)
               }))} 
             />
           ) : (
@@ -54,5 +88,7 @@ export default async function AttendancePage() {
       </div>
     </div>
   );
-} 
+};
+
+export default AttendanceListPage; 
 

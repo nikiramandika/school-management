@@ -27,16 +27,25 @@ const EventForm = ({
     formState: { errors, isSubmitting },
   } = useForm<EventSchema>({
     resolver: zodResolver(eventSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      startTime: data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+    },
   });
 
   const onSubmit = useCallback(
     async (formData: EventSchema) => {
       try {
+        const submitData = {
+          ...formData,
+          startTime: new Date(formData.startTime).toISOString(),
+          endTime: new Date(formData.endTime).toISOString(),
+        };
         const action = type === "create" ? createEvent : updateEvent;
         const result = await action(
           { success: false, error: false, message: "" },
-          formData
+          submitData
         );
 
         if (result.success) {
@@ -94,7 +103,7 @@ const EventForm = ({
         <InputField
           label="Start Time"
           name="startTime"
-          defaultValue={data?.startTime ? new Date(data.startTime).toISOString().slice(0, 16) : ""}
+          defaultValue={data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
           register={register}
           error={errors?.startTime}
           type="datetime-local"
@@ -103,7 +112,7 @@ const EventForm = ({
         <InputField
           label="End Time"
           name="endTime"
-          defaultValue={data?.endTime ? new Date(data.endTime).toISOString().slice(0, 16) : ""}
+          defaultValue={data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
           register={register}
           error={errors?.endTime}
           type="datetime-local"
@@ -117,7 +126,7 @@ const EventForm = ({
             defaultValue={data?.classId}
           >
             <option value="">Select a class</option>
-            {classes.map((cls: { id: number; name: string }) => (
+            {classes?.map((cls: { id: number; name: string }) => (
               <option value={cls.id} key={cls.id}>
                 {cls.name}
               </option>

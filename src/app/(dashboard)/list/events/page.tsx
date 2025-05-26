@@ -11,47 +11,19 @@ import { EventTable } from "./event-table";
 
 type EventList = Event & { class: Class };
 
-const EventListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const EventListPage = async () => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
-
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
 
   // Fetch all classes for the form
   const classes = await prisma.class.findMany({
     select: { id: true, name: true },
   });
 
-  // URL PARAMS CONDITION
+  // ROLE CONDITIONS
   const query: Prisma.EventWhereInput = {};
 
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "classId":
-            query.classId = parseInt(value);
-            break;
-          case "search":
-            query.OR = [
-              { title: { contains: value, mode: "insensitive" } },
-              { description: { contains: value, mode: "insensitive" } },
-            ];
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  // ROLE CONDITIONS
   switch (role) {
     case "admin":
       break;
@@ -74,19 +46,16 @@ const EventListPage = async ({
       break;
   }
 
-  const [dataRes, count] = await prisma.$transaction([
-    prisma.event.findMany({
-      where: query,
-      include: {
-        class: {
-          select: {
-            name: true
-          }
+  const dataRes = await prisma.event.findMany({
+    where: query,
+    include: {
+      class: {
+        select: {
+          name: true
         }
       }
-    }),
-    prisma.event.count({ where: query }),
-  ]);
+    }
+  });
 
   const data = dataRes.map((item) => ({
     id: item.id,
@@ -94,7 +63,8 @@ const EventListPage = async ({
     description: item.description,
     startTime: item.startTime,
     endTime: item.endTime,
-    className: item.class?.name
+    className: item.class?.name,
+    classId: item.classId
   }));
 
   return (

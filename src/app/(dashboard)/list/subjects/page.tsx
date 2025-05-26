@@ -6,49 +6,21 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { SubjectTable } from "./subject-table";
 
-const SubjectListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const SubjectListPage = async () => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-
-  // URL PARAMS CONDITION
-  const query: Prisma.SubjectWhereInput = {};
-
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.name = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
+  const data = await prisma.subject.findMany({
+    include: {
+      teachers: true,
+      lessons: {
+        include: {
+          class: true,
+          teacher: true
         }
       }
-    }
-  }
-
-  const [data, count] = await prisma.$transaction([
-    prisma.subject.findMany({
-      where: query,
-      include: {
-        teachers: true,
-        lessons: {
-          include: {
-            class: true,
-            teacher: true
-          }
-        }
-      },
-    }),
-    prisma.subject.count({ where: query }),
-  ]);
+    },
+  });
 
   // Fetch all teachers for the form
   const allTeachers = await prisma.teacher.findMany({

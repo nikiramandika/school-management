@@ -6,51 +6,16 @@ import {  Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { TeacherTable } from "./teacher-table";
 
-const TeacherListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const TeacherListPage = async () => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-
-  // URL PARAMS CONDITION
-  const query: Prisma.TeacherWhereInput = {};
-
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "classId":
-            query.lessons = {
-              some: {
-                classId: parseInt(value),
-              },
-            };
-            break;
-          case "search":
-            query.name = { contains: value, mode: "insensitive" };
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  const [data, count] = await prisma.$transaction([
-    prisma.teacher.findMany({
-      where: query,
-      include: {
-        subjects: true,
-        classes: true,
-      },
-    }),
-    prisma.teacher.count({ where: query }),
-  ]);
+  const data = await prisma.teacher.findMany({
+    include: {
+      subjects: true,
+      classes: true,
+    },
+  });
 
   return (
     <div className="bg-card p-4 rounded-md flex-1 m-4 mt-0">

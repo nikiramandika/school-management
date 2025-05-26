@@ -27,7 +27,10 @@ const AnnouncementForm = ({
     formState: { errors, isSubmitting },
   } = useForm<AnnouncementSchema>({
     resolver: zodResolver(announcementSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      date: data?.date ? new Date(data.date).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+    },
   });
 
   const onSubmit = useCallback(
@@ -94,7 +97,7 @@ const AnnouncementForm = ({
         <InputField
           label="Date"
           name="date"
-          defaultValue={data?.date ? new Date(data.date).toISOString().slice(0, 16) : ""}
+          defaultValue={data?.date ? new Date(data.date).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined}
           register={register}
           error={errors?.date}
           type="datetime-local"
@@ -108,7 +111,7 @@ const AnnouncementForm = ({
             defaultValue={data?.classId}
           >
             <option value="">Select a class</option>
-            {classes.map((cls: { id: number; name: string }) => (
+            {classes?.map((cls: { id: number; name: string }) => (
               <option value={cls.id} key={cls.id}>
                 {cls.name}
               </option>

@@ -27,7 +27,11 @@ const ExamForm = ({
     formState: { errors, isSubmitting },
   } = useForm<ExamSchema>({
     resolver: zodResolver(examSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      startTime: data?.startTime ? new Date(data.startTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime).toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16) : undefined,
+    },
   });
 
   const onSubmit = useCallback(

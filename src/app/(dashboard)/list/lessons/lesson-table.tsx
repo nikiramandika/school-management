@@ -136,7 +136,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.startTime).toLocaleTimeString()}
+          {new Date(row.original.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       ),
     },
@@ -156,7 +156,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.endTime).toLocaleTimeString()}
+          {new Date(row.original.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       ),
     },

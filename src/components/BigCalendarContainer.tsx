@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import BigCalendar from "./BigCalender";
 import { adjustScheduleToCurrentWeek } from "@/lib/utils";
+import { Day } from "@prisma/client";
 
 const BigCalendarContainer = async ({
   type,
@@ -9,7 +10,7 @@ const BigCalendarContainer = async ({
 }: {
   type: "teacherId" | "classId";
   id: string | number;
-  initialData?: { title: string; start: Date; end: Date }[];
+  initialData?: { title: string; start: Date; end: Date; day: Day }[];
 }) => {
   let data;
   
@@ -28,6 +29,7 @@ const BigCalendarContainer = async ({
       title: lesson.name,
       start: lesson.startTime,
       end: lesson.endTime,
+      day: lesson.day,
     }));
   }
 

@@ -32,6 +32,7 @@ interface Lesson {
   name: string;
   class: {
     name: string;
+    supervisorId: string | null;
   };
   teacher: {
     id: string;
@@ -100,6 +101,15 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
     setHasChanges(true);
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    const newStatus: Record<string, boolean> = {};
+    students.forEach(student => {
+      newStatus[student.id] = checked;
+    });
+    setAttendanceStatus(newStatus);
+    setHasChanges(true);
+  };
+
   const handleSaveAll = async () => {
     if (!selectedLesson) {
       toast.error('Please select a lesson first');
@@ -152,11 +162,17 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
   // Filter lessons based on role and current user
   const filteredLessons = role === "admin" 
     ? lessons 
-    : lessons.filter(lesson => lesson.teacher.id === currentUserId);
+    : lessons.filter(lesson => 
+        lesson.teacher.id === currentUserId || 
+        lesson.class.supervisorId === currentUserId
+      );
 
   const selectedLessonDetails = filteredLessons.find(
     lesson => lesson.id.toString() === selectedLesson
   );
+
+  // Check if all students are present
+  const allPresent = students.length > 0 && students.every(student => attendanceStatus[student.id]);
 
   return (
     <Card className="p-4">
@@ -239,7 +255,19 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
             <thead>
               <tr className="border-b">
                 <th className="text-left p-2">Name</th>
-                <th className="text-left p-2">Attendance</th>
+                <th className="text-left p-2">
+                  <div className="flex items-center gap-2">
+                    {isEditing && (
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          checked={allPresent}
+                          onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
+                        />
+                        <span className="text-sm text-muted-foreground">Select All</span>
+                      </div>
+                    )}
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>

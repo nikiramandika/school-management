@@ -6,22 +6,11 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { LessonTable } from "./lesson-table";
 
-const LessonListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
+const LessonListPage = async () => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const query: Prisma.LessonWhereInput = {};
-
-  if (searchParams?.search) {
-    query.name = { contains: searchParams.search as string, mode: "insensitive" };
-  }
-
   const data = await prisma.lesson.findMany({
-    where: query,
     include: {
       subject: true,
       class: true,

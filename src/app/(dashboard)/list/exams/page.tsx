@@ -6,45 +6,15 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { ExamTable } from "./exam-table";
 
-const ExamListPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) => {
+const ExamListPage = async () => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
-  const { page, ...queryParams } = searchParams;
-  const p = page ? parseInt(page) : 1;
-
-  // URL PARAMS CONDITION
+  // ROLE CONDITIONS
   const query: Prisma.ExamWhereInput = {};
   query.lesson = {};
 
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "classId":
-            query.lesson.classId = parseInt(value);
-            break;
-          case "teacherId":
-            query.lesson.teacherId = value;
-            break;
-          case "search":
-            query.lesson.subject = {
-              name: { contains: value, mode: "insensitive" },
-            };
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  // ROLE CONDITIONS
   switch (role) {
     case "admin":
       break;
@@ -64,23 +34,20 @@ const ExamListPage = async ({
       break;
   }
 
-  const [data, count] = await prisma.$transaction([
-    prisma.exam.findMany({
-      where: query,
-      include: {
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            subject: { select: { name: true } },
-            teacher: { select: { name: true, surname: true } },
-            class: { select: { name: true } },
-          },
+  const data = await prisma.exam.findMany({
+    where: query,
+    include: {
+      lesson: {
+        select: {
+          id: true,
+          name: true,
+          subject: { select: { name: true } },
+          teacher: { select: { name: true, surname: true } },
+          class: { select: { name: true } },
         },
       },
-    }),
-    prisma.exam.count({ where: query }),
-  ]);
+    },
+  });
 
   // Fetch all lessons for the form
   const allLessons = await prisma.lesson.findMany({
