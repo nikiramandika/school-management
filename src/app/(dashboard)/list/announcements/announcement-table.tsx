@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AnnouncementList = {
   id: number;
@@ -18,11 +24,15 @@ type AnnouncementTableProps = {
   data: AnnouncementList[];
   role?: string;
   relatedData?: {
-    classes: { id: number; name: string; }[];
+    classes: { id: number; name: string }[];
   };
 };
 
-export const AnnouncementTable = ({ data, role, relatedData }: AnnouncementTableProps) => {
+export const AnnouncementTable = ({
+  data,
+  role,
+  relatedData,
+}: AnnouncementTableProps) => {
   const columns: ColumnDef<AnnouncementList>[] = [
     {
       accessorKey: "title",
@@ -33,6 +43,20 @@ export const AnnouncementTable = ({ data, role, relatedData }: AnnouncementTable
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "description",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Description
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -79,12 +103,22 @@ export const AnnouncementTable = ({ data, role, relatedData }: AnnouncementTable
           <div className="flex items-center gap-2">
             {role === "admin" && (
               <>
-                <FormModal
-                  table="announcement"
-                  type="update"
-                  data={announcement}
-                  relatedData={relatedData}
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <FormModal
+                          table="announcement"
+                          type="update"
+                          data={announcement}
+                          relatedData={relatedData}
+                        />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
                 <FormModal
                   table="announcement"
                   type="delete"
@@ -99,4 +133,4 @@ export const AnnouncementTable = ({ data, role, relatedData }: AnnouncementTable
   ];
 
   return <DataTable columns={columns} data={data} />;
-}; 
+};

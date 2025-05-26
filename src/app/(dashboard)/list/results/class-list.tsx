@@ -12,7 +12,8 @@ interface Teacher {
 interface Class {
   id: number;
   name: string;
-  teacher?: Teacher;
+  supervisor: Teacher | null;
+  teachers: Teacher[];
 }
 
 interface ClassListProps {
@@ -31,11 +32,11 @@ const ClassList = ({ classes }: ClassListProps) => {
           onClick={() => router.push(`/list/results/${cls.id}`)}
         >
           <h3 className="text-lg font-semibold">{cls.name}</h3>
-          {cls.teacher && (
+          <div className="mt-2">
             <p className="text-sm text-muted-foreground">
-              Teacher: {cls.teacher.name} {cls.teacher.surname}
+              Supervisor: {cls.supervisor ? `${cls.supervisor.name} ${cls.supervisor.surname}` : 'Not assigned'}
             </p>
-          )}
+          </div>
         </Card>
       ))}
     </div>

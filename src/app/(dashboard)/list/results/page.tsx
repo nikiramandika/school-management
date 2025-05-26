@@ -31,6 +31,13 @@ const ResultListPage = async () => {
     select: {
       id: true,
       name: true,
+      supervisor: {
+        select: {
+          id: true,
+          name: true,
+          surname: true
+        }
+      },
       lessons: {
         select: {
           teacher: {
@@ -42,15 +49,20 @@ const ResultListPage = async () => {
           }
         }
       }
+    },
+    where: role === "admin" ? undefined : {
+      OR: [
+        { supervisorId: currentUserId as string },
+        {
+          lessons: {
+            some: {
+              teacherId: currentUserId as string
+            }
+          }
+        }
+      ]
     }
   });
-
-  // Filter classes based on role
-  const filteredClasses = role === "admin" 
-    ? classes 
-    : classes.filter(cls => 
-        cls.lessons.some(lesson => lesson.teacher.id === currentUserId)
-      );
 
   return (
     <div className="bg-card p-4 rounded-md flex-1 m-4 mt-0">
@@ -60,12 +72,13 @@ const ResultListPage = async () => {
         </div>
         
         <div className="px-6 py-5">
-          {filteredClasses.length > 0 ? (
+          {classes.length > 0 ? (
             <ClassList 
-              classes={filteredClasses.map(cls => ({
+              classes={classes.map(cls => ({
                 id: cls.id,
                 name: cls.name,
-                teacher: cls.lessons[0]?.teacher
+                supervisor: cls.supervisor,
+                teachers: cls.lessons.map(lesson => lesson.teacher)
               }))} 
             />
           ) : (

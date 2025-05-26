@@ -156,7 +156,8 @@ const forms: {
       type={type}
       data={data}
       setOpen={setOpen}
-      relatedData={relatedData}
+      student={relatedData.student}
+      assessment={relatedData.assessment}
     />
   ),
   announcement: (setOpen, type, data, relatedData) => (
