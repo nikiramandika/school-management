@@ -8,8 +8,8 @@ const PageHeader = ({ role }: { role: string }) => (
     <h1 className="text-lg font-bold text-gray-900 dark:text-white">Nilai Kelas</h1>
     <p className="mt-2 text-gray-600 dark:text-white">
       {role === "admin" 
-        ? "Melihat dan kelola nilai untuk semua kelas" 
-        : "Melihat nilai untuk kelas yang ditugaskan"}
+        ? "Melihat dan mengelola nilai untuk semua kelas" 
+        : "Lihat nilai untuk kelas yang Anda tetapkan"}
     </p>
   </div>
 );
@@ -17,7 +17,7 @@ const PageHeader = ({ role }: { role: string }) => (
 // Empty state component
 const EmptyState = () => (
   <div className="text-center py-12 bg-gray-50 rounded-lg">
-    <p className="text-gray-500">Tidak Ada Kelas yang Tersedia Untuk Ditampilkan</p>
+    <p className="text-gray-500">Tidak ada kelas yang tersedia untuk ditampilkan</p>
   </div>
 );
 
@@ -28,25 +28,12 @@ const ResultListPage = async () => {
 
   // Fetch classes with their teachers
   const classes = await prisma.class.findMany({
-    select: {
-      id: true,
-      name: true,
-      supervisor: {
-        select: {
-          id: true,
-          name: true,
-          surname: true
-        }
-      },
+    include: {
+      supervisor: true,
+      grade: true,
       lessons: {
-        select: {
-          teacher: {
-            select: {
-              id: true,
-              name: true,
-              surname: true
-            }
-          }
+        include: {
+          teacher: true
         }
       }
     },
@@ -74,12 +61,9 @@ const ResultListPage = async () => {
         <div className="px-6 py-5">
           {classes.length > 0 ? (
             <ClassList 
-              classes={classes.map(cls => ({
-                id: cls.id,
-                name: cls.name,
-                supervisor: cls.supervisor,
-                teachers: cls.lessons.map(lesson => lesson.teacher)
-              }))} 
+              classes={classes}
+              role={role || ""}
+              userId={currentUserId || ""}
             />
           ) : (
             <EmptyState />

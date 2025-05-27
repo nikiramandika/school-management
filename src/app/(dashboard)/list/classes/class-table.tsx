@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Class, Teacher, Grade } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Users } from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
   Tooltip,
@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Link from "next/link";
 
 type ClassList = Class & {
   supervisor: Teacher | null;
@@ -146,6 +147,19 @@ export function ClassTable({
 
         return (
           <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href={`/list/classes/${classItem.id}`}>
+                      <Users className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Lihat Siswa</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             {role === "admin" && (
               <>
                 <TooltipProvider>
@@ -189,9 +203,6 @@ export function ClassTable({
     },
   ];
 
-  // Only include the actions column for admin role
-  const filteredColumns =
-    role === "admin" ? columns : columns.filter((col) => col.id !== "actions");
-
-  return <DataTable columns={filteredColumns} data={data} searchKey="name" />;
+  // Always include the actions column, but the content will be different based on role
+  return <DataTable columns={columns} data={data} searchKey="name" />;
 }

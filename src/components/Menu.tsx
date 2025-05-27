@@ -49,20 +49,14 @@ const menuItems = [
         icon: HiAcademicCap,
         label: "Guru",
         href: "/list/teachers",
-        visible: ["admin", "teacher"],
+        visible: ["admin"],
       },
       {
         icon: HiUserGroup,
         label: "Siswa",
         href: "/list/students",
-        visible: ["admin", "teacher"],
+        visible: ["admin"],
       },
-      // {
-      //   icon: HiUsers,
-      //   label: "Parents",
-      //   href: "/list/parents",
-      //   visible: ["admin", "teacher"],
-      // },
       {
         icon: HiBookOpen,
         label: "Mata Pelajaran",
@@ -119,17 +113,17 @@ const menuItems = [
       },
     ],
   },
-  {
-    title: "OTHER",
-    items: [
-      {
-        icon: HiUser,
-        label: "Profile",
-        href: "/profile",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-    ],
-  },
+  // {
+  //   title: "OTHER",
+  //   items: [
+  //     {
+  //       icon: HiUser,
+  //       label: "Profile",
+  //       href: "/profile",
+  //       visible: ["admin", "teacher", "student", "parent"],
+  //     },
+  //   ],
+  // },
 ];
 
 const Menu = () => {

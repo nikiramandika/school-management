@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { AttendanceTable } from "../attendance-table";
 import FormModal from "@/components/FormModal";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function ClassAttendancePage({
   params: { id },
@@ -43,6 +43,11 @@ export default async function ClassAttendancePage({
       !classItem.lessons.some(lesson => lesson.teacher.id === currentUserId) &&
       classItem.supervisorId !== currentUserId) {
     notFound();
+  }
+
+  // Redirect supervisor to the supervisor view
+  if (classItem.supervisorId === currentUserId) {
+    redirect(`/list/attendance/${id}/supervisor`);
   }
 
   // Get all students in this class

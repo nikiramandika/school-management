@@ -16,16 +16,28 @@ interface EventListProps {
 const EventList = ({ date }: EventListProps) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await fetch(`/api/events?date=${date.toISOString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
         const data = await response.json();
-        setEvents(data);
+        if (Array.isArray(data)) {
+          setEvents(data);
+        } else {
+          setEvents([]);
+          console.error('Invalid response format:', data);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
+        setError('Failed to load events');
+        setEvents([]);
       } finally {
         setLoading(false);
       }
@@ -36,6 +48,10 @@ const EventList = ({ date }: EventListProps) => {
 
   if (loading) {
     return <div className="text-center py-4 text-gray-500">Memuat acara...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-4 text-red-500">{error}</div>;
   }
 
   if (events.length === 0) {

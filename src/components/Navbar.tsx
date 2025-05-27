@@ -86,11 +86,45 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
 
     const fetchAnnouncements = async () => {
       try {
+        // Get announcements with role-based filtering
         const response = await fetch('/api/announcements');
         const data = await response.json();
         
         // Ensure data is an array
-        const announcementsArray = Array.isArray(data) ? data : [];
+        let announcementsArray = Array.isArray(data) ? data : [];
+
+        // Filter announcements based on role
+        if (role === "teacher") {
+          // Get teacher's classes through lessons
+          const teacherResponse = await fetch(`/api/teachers/${user?.id}/classes`);
+          const teacherData = await teacherResponse.json();
+          const teacherClassIds = teacherData.map((cls: any) => cls.id);
+
+          // Filter announcements to show only:
+          // 1. Announcements for all classes (classId is null)
+          // 2. Announcements for teacher's classes through lessons
+          announcementsArray = announcementsArray.filter((announcement: any) => {
+            return !announcement.classId || teacherClassIds.includes(announcement.classId);
+          });
+        } else if (role === "student") {
+          // Get student's class
+          const studentResponse = await fetch(`/api/students/${user?.id}`);
+          const studentData = await studentResponse.json();
+          const studentClassId = studentData?.classId;
+
+          // Filter announcements to show only:
+          // 1. Announcements for all classes (classId is null)
+          // 2. Announcements for student's class
+          announcementsArray = announcementsArray.filter((announcement: any) => {
+            return !announcement.classId || announcement.classId === studentClassId;
+          });
+        }
+
+        // Sort by date descending and take only the latest 3
+        announcementsArray = announcementsArray
+          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 3);
+
         setAnnouncements(announcementsArray);
       } catch (error) {
         console.error("Error fetching announcements:", error);

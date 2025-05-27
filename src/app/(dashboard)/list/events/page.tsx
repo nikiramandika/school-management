@@ -22,6 +22,8 @@ const EventListPage = async () => {
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
+  console.log("Current role:", role);
+
   // Fetch all classes for the form
   const classes = await prisma.class.findMany({
     select: { id: true, name: true },
@@ -32,21 +34,9 @@ const EventListPage = async () => {
 
   switch (role) {
     case "admin":
-      break;
     case "teacher":
-      query.class = {
-        supervisorId: currentUserId!,
-      };
-      break;
     case "student":
-      // Students can only see events for their class
-      const student = await prisma.student.findUnique({
-        where: { id: currentUserId! },
-        select: { classId: true },
-      });
-      if (student) {
-        query.classId = student.classId;
-      }
+      // All roles can see all events
       break;
     default:
       break;
@@ -81,7 +71,7 @@ const EventListPage = async () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-4 self-end">
            
-            {(role === "admin" || role === "teacher") && (
+            {role === "admin" && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

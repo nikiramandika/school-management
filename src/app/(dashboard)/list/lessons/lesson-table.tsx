@@ -30,7 +30,7 @@ type LessonTableProps = {
 };
 
 export function LessonTable({ data, role, relatedData }: LessonTableProps) {
-  const columns: ColumnDef<LessonList>[] = [
+  const baseColumns: ColumnDef<LessonList>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -166,6 +166,9 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
         </div>
       ),
     },
+  ];
+
+  const adminColumns: ColumnDef<LessonList>[] = [
     {
       id: "actions",
       header: "Aksi",
@@ -199,45 +202,45 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
 
         return (
           <div className="flex items-center gap-2">
-            {role === "admin" && (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal
-                          table="lesson"
-                          type="update"
-                          data={formData}
-                          relatedData={relatedData}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Ubah Pelajaran</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="inline-flex items-center justify-center">
+                    <FormModal
+                      table="lesson"
+                      type="update"
+                      data={formData}
+                      relatedData={relatedData}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Ubah Pelajaran</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal
-                          table="lesson"
-                          type="delete"
-                          id={lesson.id}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Hapus Pelajaran</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
-            )}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="inline-flex items-center justify-center">
+                    <FormModal
+                      table="lesson"
+                      type="delete"
+                      id={lesson.id}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Hapus Pelajaran</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         );
       },
     },
   ];
+
+  const columns = role === "admin" 
+    ? [...baseColumns, ...adminColumns]
+    : baseColumns;
 
   return <DataTable columns={columns} data={data} searchKey="name" />;
 }

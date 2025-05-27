@@ -3,16 +3,27 @@ import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const date = searchParams.get('date');
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
 
-  if (!startDate || !endDate) {
-    return NextResponse.json({ error: 'startDate and endDate parameters are required' }, { status: 400 });
-  }
-
   try {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    let start: Date;
+    let end: Date;
+
+    if (date) {
+      // Handle single date query
+      start = new Date(date);
+      start.setHours(0, 0, 0, 0);
+      end = new Date(date);
+      end.setHours(23, 59, 59, 999);
+    } else if (startDate && endDate) {
+      // Handle date range query
+      start = new Date(startDate);
+      end = new Date(endDate);
+    } else {
+      return NextResponse.json({ error: 'Either date or startDate and endDate parameters are required' }, { status: 400 });
+    }
 
     const events = await prisma.event.findMany({
       where: {

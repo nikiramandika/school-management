@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Row } from "@tanstack/react-table";
 
 type EventList = {
   id: number;
@@ -112,46 +113,44 @@ export function EventTable({ data, role }: EventTableProps) {
         </div>
       ),
     },
-    {
-      id: "actions",
-      header: "Aksi",
-      cell: ({ row }) => {
-        const event = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            {(role === "admin" || role === "teacher") && (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal
-                          table="event"
-                          type="update"
-                          data={event}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Ubah Acara</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+    ...(role === "admin" ? [
+      {
+        id: "actions",
+        header: "Aksi",
+        cell: ({ row }: { row: Row<EventList> }) => {
+          const event = row.original;
+          return (
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormModal
+                        table="event"
+                        type="update"
+                        data={event}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Ubah Acara</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal table="event" type="delete" id={event.id} />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Hapus Acara</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
-            )}
-          </div>
-        );
-      },
-    },
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormModal table="event" type="delete" id={event.id} />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Hapus Acara</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          );
+        },
+      }
+    ] : []),
   ];
 
   return <DataTable columns={columns} data={data} searchKey="title" />;

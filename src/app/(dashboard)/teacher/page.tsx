@@ -37,7 +37,6 @@ const TeacherPage = async () => {
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
         <div className="bg-gray-50 dark:bg-card p-4 rounded-md shadow-sm">
-          <h1 className="text-xl font-semibold mb-4">Pengumuman</h1>
           <Announcements />
         </div>
       </div>

@@ -28,25 +28,12 @@ const AttendanceListPage = async () => {
 
   // Fetch classes with their teachers
   const classes = await prisma.class.findMany({
-    select: {
-      id: true,
-      name: true,
-      supervisor: {
-        select: {
-          id: true,
-          name: true,
-          surname: true
-        }
-      },
+    include: {
+      supervisor: true,
+      grade: true,
       lessons: {
-        select: {
-          teacher: {
-            select: {
-              id: true,
-              name: true,
-              surname: true
-            }
-          }
+        include: {
+          teacher: true
         }
       }
     },
@@ -74,12 +61,9 @@ const AttendanceListPage = async () => {
         <div className="px-6 py-5">
           {classes.length > 0 ? (
             <ClassList 
-              classes={classes.map(cls => ({
-                id: cls.id,
-                name: cls.name,
-                supervisor: cls.supervisor,
-                teachers: cls.lessons.map(lesson => lesson.teacher)
-              }))} 
+              classes={classes}
+              role={role || ""}
+              userId={currentUserId || ""}
             />
           ) : (
             <EmptyState />
