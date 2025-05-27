@@ -26,8 +26,8 @@ const Announcements = async () => {
   return (
     <div className="bg-gray-50 dark:bg-card p-4 rounded-md">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold dark:text-white">Announcements</h1>
-        <span className="text-xs text-gray-400 dark:text-gray-500">View All</span>
+        <h1 className="text-xl font-semibold dark:text-white">Pengumuman</h1>
+        <span className="text-xs text-gray-400 dark:text-gray-500">Lihat Semua</span>
       </div>
       <div className="flex flex-col gap-4 mt-4">
         {data[0] && (

@@ -41,7 +41,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Title
+            Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -56,7 +56,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Subject
+            Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -71,7 +71,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Class
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -87,7 +87,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Teacher
+            Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -106,7 +106,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Start Date
+            Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -131,7 +131,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            End Date
+            Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -150,7 +150,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const exam = row.original;
         return (

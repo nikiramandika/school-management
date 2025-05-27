@@ -132,10 +132,10 @@ export default async function ClassAttendancePage({
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-            {classItem.name} Attendance
+            {classItem.name} Absensi
           </h1>
           <p className="mt-2 text-gray-600 dark:text-white">
-            View and manage attendance records for {classItem.name}
+          Melihat dan mengelola catatan absensi untuk {classItem.name}
           </p>
         </div>
       </div>

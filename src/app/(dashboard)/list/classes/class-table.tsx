@@ -29,7 +29,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Class Name
+             Nama Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -45,7 +45,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Capacity
+            Kapasitas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -61,7 +61,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Grade
+            Tingkat
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -77,7 +77,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Supervisor
+            Wali Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -90,7 +90,7 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const classItem = row.original;
         // Prepare the data in a format that matches what the form expects

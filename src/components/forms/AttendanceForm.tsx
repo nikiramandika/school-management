@@ -115,7 +115,7 @@ const AttendanceForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Lesson</Label>
+        <Label>Pelajaran</Label>
         <Input
           value={lesson.name}
           disabled
@@ -124,7 +124,7 @@ const AttendanceForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Date</Label>
+        <Label>Tanggal</Label>
         <Input
           type="date"
           {...register("date")}
@@ -141,7 +141,7 @@ const AttendanceForm = ({
           checked={watch("present")}
           onCheckedChange={(checked) => setValue("present", checked as boolean)}
         />
-        <Label htmlFor="present">Present</Label>
+        <Label htmlFor="present">Hadir</Label>
       </div>
 
       <Button

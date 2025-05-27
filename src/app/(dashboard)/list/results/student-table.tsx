@@ -55,7 +55,7 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
   const pathname = usePathname();
   const isExamPage = pathname.includes('/exam');
   const assessments = isExamPage ? exams : assignments;
-  const assessmentType = isExamPage ? 'exam' : 'assignment';
+  const assessmentType = isExamPage ? 'Ujian' : 'Tugas';
 
   const [selectedAssessment, setSelectedAssessment] = useState<string>('');
   const [scores, setScores] = useState<Record<string, string>>({});
@@ -174,8 +174,8 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
           <SelectTrigger className="w-[300px]">
             <SelectValue placeholder={
               filteredAssessments.length === 0 
-                ? `No ${assessmentType}s available` 
-                : `Select ${assessmentType}`
+                ? `Tidak ada ${assessmentType}s yang tersedia` 
+                : `Pilih ${assessmentType}`
             } />
           </SelectTrigger>
           <SelectContent>
@@ -192,7 +192,7 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
             <h3 className="font-semibold text-lg mb-2">{selectedAssessmentDetails.title}</h3>
             {selectedAssessmentDetails.date && (
               <p className="text-sm text-muted-foreground mb-1">
-                Date: {format(new Date(selectedAssessmentDetails.date), 'MMMM d, yyyy')}
+                Tanggal: {format(new Date(selectedAssessmentDetails.date), 'MMMM d, yyyy')}
               </p>
             )}
             {selectedAssessmentDetails.description && (
@@ -209,8 +209,8 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
           <div className="text-center py-8">
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <AlertCircle className="h-8 w-8 text-yellow-500" />
-              <p className="text-lg font-medium">Please select an {assessmentType} first</p>
-              <p className="text-sm">Choose an {assessmentType} from the dropdown above to view and manage grades</p>
+              <p className="text-lg font-medium">Silahkan Pilih {assessmentType} Telebih Dahulu</p>
+              <p className="text-sm">Pilih  {assessmentType} dari menu dropdown di atas untuk melihat dan mengelola nilai</p>
             </div>
           </div>
         ) : (
@@ -218,9 +218,9 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2">Name</th>
-                  <th className="text-left p-2">Score</th>
-                  <th className="text-left p-2">Action</th>
+                  <th className="text-left p-2">Nama</th>
+                  <th className="text-left p-2">Nilai</th>
+                  <th className="text-left p-2">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -261,7 +261,7 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
                             onClick={() => handleSave(student.id)}
                             disabled={!scores[student.id]}
                           >
-                            Save
+                            Simpan
                           </Button>
                         ) : (
                           <TooltipProvider>
@@ -310,7 +310,7 @@ const StudentTable = ({ students, exams, assignments, role, currentUserId, exist
         )
       ) : (
         <div className="text-center py-8 text-muted-foreground">
-          No {assessmentType}s available for this class
+          Tidak ada {assessmentType} yang tersedia untuk kelas ini
         </div>
       )}
     </Card>

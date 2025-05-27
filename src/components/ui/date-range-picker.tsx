@@ -95,7 +95,7 @@ export function DateRangePicker({
                 format(date.from, "LLL dd, y HH:mm")
               )
             ) : (
-              <span>Pick a date range</span>
+              <span>Pilih Rentang Tanggal</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -111,7 +111,7 @@ export function DateRangePicker({
             />
             <div className="flex gap-4 items-center">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Start Time</label>
+                <label className="text-sm font-medium">Waktu Mulai</label>
                 <Input
                   type="time"
                   value={startTime}
@@ -120,7 +120,7 @@ export function DateRangePicker({
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">End Time</label>
+                <label className="text-sm font-medium">Waktu Berakhir</label>
                 <Input
                   type="time"
                   value={endTime}

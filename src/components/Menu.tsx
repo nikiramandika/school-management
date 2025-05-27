@@ -28,7 +28,7 @@ const menuItems = [
     items: [
       {
         icon: HiHome,
-        label: "Home",
+        label: "Beranda",
         href: (role: string) => {
           switch (role) {
             case "admin":
@@ -47,13 +47,13 @@ const menuItems = [
       },
       {
         icon: HiAcademicCap,
-        label: "Teachers",
+        label: "Guru",
         href: "/list/teachers",
         visible: ["admin", "teacher"],
       },
       {
         icon: HiUserGroup,
-        label: "Students",
+        label: "Siswa",
         href: "/list/students",
         visible: ["admin", "teacher"],
       },
@@ -65,61 +65,61 @@ const menuItems = [
       // },
       {
         icon: HiBookOpen,
-        label: "Subjects",
+        label: "Mata Pelajaran",
         href: "/list/subjects",
         visible: ["admin"],
       },
       {
         icon: HiCollection,
-        label: "Classes",
+        label: "Kelas",
         href: "/list/classes",
         visible: ["admin", "teacher"],
       },
       {
         icon: HiDocumentText,
-        label: "Lessons",
+        label: "Pelajaran",
         href: "/list/lessons",
         visible: ["admin", "teacher"],
       },
       {
         icon: HiClipboardList,
-        label: "Exams",
+        label: "Ujian",
         href: "/list/exams",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiDocumentReport,
-        label: "Assignments",
+        label: "Tugas",
         href: "/list/assignments",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiClipboardCheck,
-        label: "Results",
+        label: "Nilai",
         href: "/list/results",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiCalendar,
-        label: "Attendance",
+        label: "Absesnsi",
         href: "/list/attendance",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiCalendar,
-        label: "Events",
+        label: "Acara",
         href: "/list/events",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiChat,
-        label: "Messages",
+        label: "Pesan",
         href: "/list/messages",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiSpeakerphone,
-        label: "Announcements",
+        label: "Pengumuman",
         href: "/list/announcements",
         visible: ["admin", "teacher", "student", "parent"],
       },
@@ -136,7 +136,7 @@ const menuItems = [
       },
       {
         icon: HiCog,
-        label: "Settings",
+        label: "Pengaturan",
         href: "/settings",
         visible: ["admin", "teacher", "student", "parent"],
       },

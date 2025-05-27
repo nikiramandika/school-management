@@ -34,7 +34,7 @@ const ClassList = ({ classes }: ClassListProps) => {
           <h3 className="text-lg font-semibold">{cls.name}</h3>
           <div className="mt-2">
             <p className="text-sm text-muted-foreground">
-              Supervisor: {cls.supervisor ? `${cls.supervisor.name} ${cls.supervisor.surname}` : 'Not assigned'}
+              Wali Kelas: {cls.supervisor ? `${cls.supervisor.name} ${cls.supervisor.surname}` : 'Not assigned'}
             </p>
           </div>
         </Card>

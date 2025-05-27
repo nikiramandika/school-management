@@ -102,7 +102,7 @@ const SingleTeacherPage = async ({
               />
               <div className="">
                 <h1 className="text-xl font-semibold dark:text-white">90%</h1>
-                <span className="text-sm text-gray-400 dark:text-gray-500">Attendance</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Kehadiran</span>
               </div>
             </div>
             {/* CARD */}
@@ -118,7 +118,7 @@ const SingleTeacherPage = async ({
                 <h1 className="text-xl font-semibold dark:text-white">
                   {teacher._count.subjects}
                 </h1>
-                <span className="text-sm text-gray-400 dark:text-gray-500">Branches</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Cabang</span>
               </div>
             </div>
             {/* CARD */}
@@ -134,7 +134,7 @@ const SingleTeacherPage = async ({
                 <h1 className="text-xl font-semibold dark:text-white">
                   {teacher._count.lessons}
                 </h1>
-                <span className="text-sm text-gray-400 dark:text-gray-500">Lessons</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Pelajaran</span>
               </div>
             </div>
             {/* CARD */}
@@ -150,51 +150,51 @@ const SingleTeacherPage = async ({
                 <h1 className="text-xl font-semibold dark:text-white">
                   {teacher._count.classes}
                 </h1>
-                <span className="text-sm text-gray-400 dark:text-gray-500">Classes</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Kelas</span>
               </div>
             </div>
           </div>
         </div>
         {/* BOTTOM */}
         <div className="mt-4 bg-gray-50 dark:bg-card rounded-md p-4 h-[800px]">
-          <h1 className="dark:text-white">Teacher&apos;s Schedule</h1>
+          <h1 className="dark:text-white">Jadwal Guru</h1>
           <BigCalendarContainer type="teacherId" id={teacher.id} />
         </div>
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
         <div className="bg-gray-50 dark:bg-card p-4 rounded-md">
-          <h1 className="text-xl font-semibold dark:text-white">Shortcuts</h1>
+          <h1 className="text-xl font-semibold dark:text-white">Pintasan</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500 dark:text-gray-400">
             <Link
               className="p-3 rounded-md bg-lamaSkyLight dark:bg-gray-700 hover:bg-lamaSky dark:hover:bg-gray-600 transition-colors"
               href={`/list/classes?supervisorId=${teacher.id}`}
             >
-              Teacher&apos;s Classes
+              Kelas Guru
             </Link>
             <Link
               className="p-3 rounded-md bg-lamaPurpleLight dark:bg-gray-700 hover:bg-lamaPurple dark:hover:bg-gray-600 transition-colors"
               href={`/list/students?teacherId=${teacher.id}`}
             >
-              Teacher&apos;s Students
+              Siswa Guru
             </Link>
             <Link
               className="p-3 rounded-md bg-lamaYellowLight dark:bg-gray-700 hover:bg-lamaYellow dark:hover:bg-gray-600 transition-colors"
               href={`/list/lessons?teacherId=${teacher.id}`}
             >
-              Teacher&apos;s Lessons
+              Pelajaran Guru
             </Link>
             <Link
               className="p-3 rounded-md bg-pink-50 dark:bg-gray-700 hover:bg-pink-100 dark:hover:bg-gray-600 transition-colors"
               href={`/list/exams?teacherId=${teacher.id}`}
             >
-              Teacher&apos;s Exams
+              Ujian Guru
             </Link>
             <Link
               className="p-3 rounded-md bg-lamaSkyLight dark:bg-gray-700 hover:bg-lamaSky dark:hover:bg-gray-600 transition-colors"
               href={`/list/assignments?teacherId=${teacher.id}`}
             >
-              Teacher&apos;s Assignments
+              Tugas Guru
             </Link>
           </div>
         </div>

@@ -27,7 +27,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-              Name
+              Nama
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -60,7 +60,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="hidden md:flex"
             >
-              Student ID
+              ID Siswa
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -78,7 +78,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="hidden md:flex"
             >
-              Class
+              Kelas
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -98,7 +98,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="hidden lg:flex"
             >
-              Phone
+              Nomor Hp
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -116,7 +116,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="hidden lg:flex"
             >
-              Address
+              Alamat
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -129,7 +129,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
         ? [
             {
               id: "actions",
-              header: "Actions",
+              header: "Aksi",
               cell: ({ row }: { row: { original: StudentList } }) => {
                 const item = row.original
                 return (

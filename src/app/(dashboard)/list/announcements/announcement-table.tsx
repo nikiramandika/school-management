@@ -42,7 +42,7 @@ export const AnnouncementTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Title
+            Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -56,7 +56,7 @@ export const AnnouncementTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Description
+            Deskripsi
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -70,7 +70,7 @@ export const AnnouncementTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Class
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -84,7 +84,7 @@ export const AnnouncementTable = ({
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Date
+            Tanggal
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -115,7 +115,7 @@ export const AnnouncementTable = ({
                         />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent>Edit</TooltipContent>
+                    <TooltipContent>Ubah</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 

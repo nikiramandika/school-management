@@ -34,7 +34,7 @@ const StudentPage = async () => {
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
         <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Schedule (4A)</h1>
+          <h1 className="text-xl font-semibold">Jadwal (4A)</h1>
           {classItem.length > 0 ? (
             <BigCalendarContainer 
               type="classId" 
@@ -43,7 +43,7 @@ const StudentPage = async () => {
             />
           ) : (
             <div className="text-center py-8 text-gray-500">
-              You are not assigned to any class yet.
+              Anda belum ditetapkan ke kelas mana pun
             </div>
           )}
         </div>

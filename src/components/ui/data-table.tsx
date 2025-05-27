@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
         {searchKey && (
           <div className="flex items-center py-4">
             <Input
-              placeholder="Search..."
+              placeholder="Cari..."
               value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn(searchKey)?.setFilterValue(event.target.value)
@@ -168,7 +168,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Tidak ada hasil.
                 </TableCell>
               </TableRow>
             )}
@@ -207,7 +207,7 @@ export function DataTable<TData, TValue>({
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div className="text-sm text-muted-foreground">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
             {table.getPageCount()}
           </div>
           <Button

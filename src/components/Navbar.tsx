@@ -68,7 +68,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     
     // Handle dynamic segments
     if (segment.match(/^[0-9]+$/)) {
-      if (segments[index - 1] === "results") return "Class Detail";
+      if (segments[index - 1] === "results") return "Detail Kelas";
       return segment;
     }
 
@@ -115,53 +115,53 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     
     // Special handling for results
     if (segment === "results") {
-      return [...acc, { path: segment, label: "Results" }];
+      return [...acc, { path: segment, label: "Nilai" }];
     }
     if (segment.match(/^[0-9]+$/) && segments[index - 1] === "results") {
-      return [...acc, { path: segment, label: "Class Detail" }];
+      return [...acc, { path: segment, label: "Detail Kelas" }];
     }
 
     // Handle other menu items
     let label = segment;
     switch (segment) {
       case "teachers":
-        label = "Teachers";
+        label = "Guru";
         break;
       case "students":
-        label = "Students";
+        label = "Siswa";
         break;
       case "subjects":
-        label = "Subjects";
+        label = "Mata Pelajaran";
         break;
       case "classes":
-        label = "Classes";
+        label = "Kelas";
         break;
       case "lessons":
-        label = "Lessons";
+        label = "Pelajaran";
         break;
       case "exams":
-        label = "Exams";
+        label = "Ujian";
         break;
       case "assignments":
-        label = "Assignments";
+        label = "Tugas";
         break;
       case "attendance":
-        label = "Attendance";
+        label = "Absensi";
         break;
       case "events":
-        label = "Events";
+        label = "Acara";
         break;
       case "messages":
-        label = "Messages";
+        label = "Pesan";
         break;
       case "announcements":
-        label = "Announcements";
+        label = "Pengumuman";
         break;
       case "profile":
         label = "Profile";
         break;
       case "settings":
-        label = "Settings";
+        label = "Pengaturan";
         break;
       default:
         label = segment.charAt(0).toUpperCase() + segment.slice(1);
@@ -190,7 +190,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         <Breadcrumb className="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
             </BreadcrumbItem>
             {filteredSegments.map((segment, index) => (
               <React.Fragment key={segment.path}>
@@ -211,7 +211,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         {/* Mobile Title */}
         <div className="md:hidden text-lg font-semibold flex items-center">
           <Link href="/" className="hover:text-foreground transition-colors">
-            Home
+            Beranda
           </Link>
           {filteredSegments.map((segment, index) => (
             <React.Fragment key={segment.path}>
@@ -251,9 +251,9 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="space-y-4">
-                  <h4 className="font-medium leading-none">Today's Events</h4>
+                  <h4 className="font-medium leading-none">Acara Hari Ini</h4>
                   {todayEvents.length === 0 ? (
-                    <p className="text-sm text-gray-500">No events for today</p>
+                    <p className="text-sm text-gray-500">Tidak ada acara hari ini</p>
                   ) : (
                     <div className="space-y-2">
                       {todayEvents.map((event) => (

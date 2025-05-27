@@ -57,7 +57,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="font-semibold"
           >
-            Subject Name
+            Nama Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -76,7 +76,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             className="hidden md:flex font-semibold"
           >
             <Users className="mr-2 h-4 w-4" />
-            Teachers
+            Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -98,7 +98,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Click to view teacher details</p>
+                      <p>Klik untuk melihat detail guru</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -111,14 +111,14 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       size="sm" 
                       className="h-6 px-2 hover:bg-secondary/80"
                     >
-                      +{remainingTeachers} more
+                      +{remainingTeachers} Lebih Banyak
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5" />
-                        Teachers for {row.original.name}
+                        Guru untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
                     <ScrollArea className="h-[300px] pr-4">
@@ -153,7 +153,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             className="hidden md:flex font-semibold"
           >
             <BookOpen className="mr-2 h-4 w-4" />
-            Lessons
+            Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -178,7 +178,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Teacher: {lesson.teacher.name} {lesson.teacher.surname}</p>
+                      <p>Guru: {lesson.teacher.name} {lesson.teacher.surname}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -191,14 +191,14 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       size="sm" 
                       className="h-6 px-2 hover:bg-secondary/80"
                     >
-                      +{remainingLessons} more lessons
+                      +{remainingLessons} Lebih banyak pelajaran
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
                         <BookOpen className="h-5 w-5" />
-                        Lessons for {row.original.name}
+                        Pelajaran untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
                     <ScrollArea className="h-[300px] pr-4">
@@ -212,11 +212,11 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                             <Separator className="my-2" />
                             <div className="space-y-1 text-sm text-muted-foreground">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium">Class:</span>
+                                <span className="font-medium">Kelas:</span>
                                 {lesson.class.name}
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="font-medium">Teacher:</span>
+                                <span className="font-medium">Guru:</span>
                                 {lesson.teacher.name} {lesson.teacher.surname}
                               </div>
                             </div>
@@ -234,7 +234,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const subject = row.original;
         return (

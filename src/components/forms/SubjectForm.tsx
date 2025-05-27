@@ -72,12 +72,12 @@ const SubjectForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new subject" : "Update the subject"}
+        {type === "create" ? "Membuat Mata Pelajaran Baru" : "Memperbarui Mata Pelajaran"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Subject name"
+          label="Nama Mata Pelajaran"
           name="name"
           defaultValue={data?.name}
           register={register}
@@ -94,7 +94,7 @@ const SubjectForm = ({
           />
         )}
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Teachers</label>
+          <label className="text-xs text-gray-500">Guru</label>
           <Controller
             control={control}
             name="teachers"
@@ -142,7 +142,7 @@ const SubjectForm = ({
         className="bg-blue-400 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

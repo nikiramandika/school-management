@@ -14,11 +14,11 @@ const Tabs = ({ classId, className }: TabsProps) => {
 
   const tabs = [
     {
-      name: 'Exams',
+      name: 'Ujian',
       href: `/list/results/${classId}/exam`,
     },
     {
-      name: 'Assignments',
+      name: 'Tugas',
       href: `/list/results/${classId}/assignment`,
     },
   ];

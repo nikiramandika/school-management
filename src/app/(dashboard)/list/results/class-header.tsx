@@ -18,7 +18,7 @@ const ClassHeader = ({ className, teacherName, teacherSurname }: ClassHeaderProp
         <h1 className="text-2xl font-semibold">{className}</h1>
         {(teacherName || teacherSurname) && (
           <p className="text-sm text-muted-foreground">
-            Teacher: {teacherName} {teacherSurname}
+            Guru: {teacherName} {teacherSurname}
           </p>
         )}
       </div>
@@ -26,7 +26,7 @@ const ClassHeader = ({ className, teacherName, teacherSurname }: ClassHeaderProp
         onClick={() => router.push("/list/results")}
         variant="default"
       >
-        Back to Classes
+        Kembali ke Kelas
       </Button>
     </div>
   );

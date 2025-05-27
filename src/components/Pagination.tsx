@@ -23,7 +23,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
           changePage(page - 1);
         }}
       >
-        Prev
+        Sebelumnya
       </button>
       <div className="flex items-center gap-2 text-sm">
         {Array.from(
@@ -53,7 +53,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
           changePage(page + 1);
         }}
       >
-        Next
+        Selanjutnya
       </button>
     </div>
   );

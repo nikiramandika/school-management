@@ -94,12 +94,12 @@ const AssignmentForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new assignment" : "Update the assignment"}
+        {type === "create" ? "Buat Tugas Baru" : "Mmeperbarui Tugas"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Assignment title"
+          label="Judul Tugas"
           name="title"
           defaultValue={data?.title}
           register={register}
@@ -107,13 +107,13 @@ const AssignmentForm = ({
         />
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Lesson</label>
+          <label className="text-xs text-gray-500">Pelajaran</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lessonId")}
             defaultValue={currentLessonId}
           >
-            <option value="">Select a lesson</option>
+            <option value="">Pilih Pelajaran</option>
             {lessons.map((lesson: { 
               id: number; 
               name: string;
@@ -134,7 +134,7 @@ const AssignmentForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Assignment Date Range</label>
+          <label className="text-xs text-gray-500">Rentang Tanggal Penugasan</label>
           <DateRangePicker
             date={dateRange}
             setDate={setDateRange}
@@ -163,7 +163,7 @@ const AssignmentForm = ({
         )}
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

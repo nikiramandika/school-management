@@ -61,7 +61,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Title
+            Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -76,7 +76,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Student
+            Siswa
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -94,7 +94,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Score
+            Nilai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -112,7 +112,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Teacher
+            Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -132,7 +132,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Class
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -150,7 +150,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Date
+            Tanggal
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -167,7 +167,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const result = row.original;
         // Find the corresponding exam or assignment from relatedData

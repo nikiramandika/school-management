@@ -66,10 +66,10 @@ const TeacherForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new teacher" : "Update the teacher"}
+        {type === "create" ? "Membuat Guru Baru" : "Memperbarui Guru"}
       </h1>
       <span className="text-xs text-gray-400 font-medium">
-        Authentication Information
+      Informasi Autentikasi
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
@@ -96,46 +96,46 @@ const TeacherForm = ({
         />
       </div>
       <span className="text-xs text-gray-400 font-medium">
-        Personal Information
+        Informasi Pribadi
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
-          label="First Name"
+          label="Nama Depan"
           name="name"
           defaultValue={data?.name}
           register={register}
           error={errors.name}
         />
         <InputField
-          label="Last Name"
+          label="Nama Belakang"
           name="surname"
           defaultValue={data?.surname}
           register={register}
           error={errors.surname}
         />
         <InputField
-          label="Phone"
+          label="Nomor Hp"
           name="phone"
           defaultValue={data?.phone}
           register={register}
           error={errors.phone}
         />
         <InputField
-          label="Address"
+          label="Alamat"
           name="address"
           defaultValue={data?.address}
           register={register}
           error={errors.address}
         />
         <InputField
-          label="Blood Type"
+          label="Golongan Darah"
           name="bloodType"
           defaultValue={data?.bloodType}
           register={register}
           error={errors.bloodType}
         />
         <InputField
-          label="Birthday"
+          label="Tanggal Lahir"
           name="birthday"
           defaultValue={data?.birthday?.toISOString().split("T")[0]}
           register={register}
@@ -155,14 +155,14 @@ const TeacherForm = ({
       </div>
       <div className="flex gap-4 w-full">
         <div className="flex flex-col gap-2 w-1/3">
-          <label className="text-xs text-gray-500">Sex</label>
+          <label className="text-xs text-gray-500">Jenis Kelamin</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
             {...register("sex")}
             defaultValue={data?.sex}
           >
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
+            <option value="MALE">Laki-Laki</option>
+            <option value="FEMALE">Perempuan</option>
           </select>
           {errors.sex?.message && (
             <p className="text-xs text-red-400">
@@ -171,7 +171,7 @@ const TeacherForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-2/3 ">
-          <label className="text-xs text-gray-500">Subjects</label>
+          <label className="text-xs text-gray-500">Mata Pelajaran</label>
           <Controller
             control={control}
             name="subjects"
@@ -199,7 +199,7 @@ const TeacherForm = ({
                   )
                 }
                 classNamePrefix="react-select"
-                placeholder="Select subjects..."
+                placeholder="Pilih Mata Pelajaran..."
                 styles={{ container: (base) => ({ ...base, width: "100%" }) }}
               />
             )}
@@ -215,7 +215,7 @@ const TeacherForm = ({
         className="bg-blue-400 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

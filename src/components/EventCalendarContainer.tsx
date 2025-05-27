@@ -17,7 +17,7 @@ const EventCalendarContainer = ({
   return (
     <div className="bg-gray-50 dark:bg-card p-6 rounded-md">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold">Calendar</h1>
+        <h1 className="text-xl font-semibold">Kalender</h1>
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       
@@ -56,7 +56,7 @@ const EventCalendarContainer = ({
 
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Events</h2>
+            <h2 className="text-lg font-semibold">Acara</h2>
           </div>
           <EventList date={selectedDate} />
         </div>

@@ -63,10 +63,10 @@ const StudentForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new student" : "Update the student"}
+        {type === "create" ? "Membuat Siswa Baru" : "Memperbarui Siswa"}
       </h1>
       <span className="text-xs text-gray-400 font-medium">
-        Authentication Information
+        Informasi Autentikasi
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
@@ -93,46 +93,46 @@ const StudentForm = ({
         />
       </div>
       <span className="text-xs text-gray-400 font-medium">
-        Personal Information
+      Informasi Pribadi
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
-          label="First Name"
+          label="Nama Depan"
           name="name"
           defaultValue={data?.name}
           register={register}
           error={errors.name}
         />
         <InputField
-          label="Last Name"
+          label="Nama Belakang"
           name="surname"
           defaultValue={data?.surname}
           register={register}
           error={errors.surname}
         />
         <InputField
-          label="Phone"
+          label="Nomor Hp"
           name="phone"
           defaultValue={data?.phone}
           register={register}
           error={errors.phone}
         />
         <InputField
-          label="Address"
+          label="Alamat"
           name="address"
           defaultValue={data?.address}
           register={register}
           error={errors.address}
         />
         <InputField
-          label="Blood Type"
+          label="Golongan Darah"
           name="bloodType"
           defaultValue={data?.bloodType}
           register={register}
           error={errors.bloodType}
         />
         <InputField
-          label="Birthday"
+          label="Tanggal Lahir"
           name="birthday"
           defaultValue={data?.birthday?.toISOString().split("T")[0]}
           register={register}
@@ -150,7 +150,7 @@ const StudentForm = ({
           />
         )}
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Sex</label>
+          <label className="text-xs text-gray-500">Jenis Kelamin</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("sex")}
@@ -166,13 +166,13 @@ const StudentForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Grade</label>
+          <label className="text-xs text-gray-500">Tingkat</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
-            <option value="">Select a grade</option>
+            <option value="">Pilih Tingkat</option>
             {grades.map((grade: { id: number; level: number }) => (
               <option value={grade.id} key={grade.id}>
                 {grade.level}
@@ -186,13 +186,13 @@ const StudentForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Class</label>
+          <label className="text-xs text-gray-500">Kelas</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId")}
             defaultValue={data?.classId}
           >
-            <option value="">Select a class</option>
+            <option value="">Pilih Kelas</option>
             {classes.map((classItem: { id: number; name: string }) => (
               <option value={classItem.id} key={classItem.id}>
                 {classItem.name}
@@ -210,7 +210,7 @@ const StudentForm = ({
         className="bg-blue-400 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

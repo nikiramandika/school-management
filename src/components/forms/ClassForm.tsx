@@ -71,19 +71,19 @@ const ClassForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new class" : "Update the class"}
+        {type === "create" ? "Membuat Kelas Baru" : "Memperbarui Kelas"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Class name"
+          label="Nama Kelas"
           name="name"
           defaultValue={data?.name}
           register={register}
           error={errors?.name}
         />
         <InputField
-          label="Capacity"
+          label="Kapasitas"
           name="capacity"
           defaultValue={data?.capacity}
           register={register}
@@ -100,13 +100,13 @@ const ClassForm = ({
           />
         )}
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Supervisor</label>
+          <label className="text-xs text-gray-500">Wali Kelas</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("supervisorId")}
             defaultValue={currentSupervisorId}
           >
-            <option value="">Select a supervisor</option>
+            <option value="">Pilih Wali Kelas</option>
             {teachers.map(
               (teacher: { id: string; name: string; surname: string; isSupervisor?: boolean }) => {
                 const isDisabled = teacher.isSupervisor && teacher.id !== currentSupervisorId;
@@ -130,13 +130,13 @@ const ClassForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Grade</label>
+          <label className="text-xs text-gray-500">Tingkat</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
-            <option value="">Select a grade</option>
+            <option value="">Pilih Tingkatan</option>
             {grades.map((grade: { id: number; level: number }) => (
               <option
                 value={grade.id}
@@ -154,7 +154,7 @@ const ClassForm = ({
         </div>
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

@@ -41,7 +41,7 @@ export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Title
+            Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -49,15 +49,15 @@ export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps
     },
     {
       accessorKey: "lesson.subject.name",
-      header: "Subject",
+      header: "Mata Pelajaran",
     },
     {
       accessorKey: "lesson.class.name",
-      header: "Class",
+      header: "Kelas",
     },
     {
       accessorKey: "lesson.teacher",
-      header: "Teacher",
+      header: "Guru",
       cell: ({ row }) => {
         const teacher = row.original.lesson.teacher;
         return `${teacher.name} ${teacher.surname}`;
@@ -65,21 +65,21 @@ export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps
     },
     {
       accessorKey: "startDate",
-      header: "Start Time",
+      header: "Waltu Mulai",
       cell: ({ row }) => {
         return new Date(row.original.startDate).toLocaleString();
       },
     },
     {
       accessorKey: "dueDate",
-      header: "End Time",
+      header: "Waktu Berakhir",
       cell: ({ row }) => {
         return new Date(row.original.dueDate).toLocaleString();
       },
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const assignment = row.original;
         return (

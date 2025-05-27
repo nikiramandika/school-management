@@ -207,10 +207,10 @@ const FormModal = ({
     return type === "delete" && id ? (
       <form onSubmit={(e) => { e.preventDefault(); handleDelete(); }} className="flex flex-col gap-4">
         <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
+        Semua data akan hilang. Apakah Anda yakin ingin menghapus ini {table}?
         </span>
         <Button variant="destructive" type="submit" className="w-max self-center text-white">
-          Delete
+          Hapus
         </Button>
       </form>
     ) : type === "create" || type === "update" ? (

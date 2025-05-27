@@ -101,12 +101,12 @@ const AnnouncementForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new announcement" : "Update the announcement"}
+        {type === "create" ? "Membuat Pengumuman Baru" : "Memperbarui Pengumuman"}
       </h1>
 
       <div className="flex flex-col gap-4">
         <InputField
-          label="Title"
+          label="Judul"
           name="title"
           defaultValue={data?.title}
           register={register}
@@ -114,7 +114,7 @@ const AnnouncementForm = ({
         />
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Description</label>
+          <label className="text-xs text-gray-500">Deskripsi</label>
           <textarea
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("description")}
@@ -129,7 +129,7 @@ const AnnouncementForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Date</label>
+          <label className="text-xs text-gray-500">Tanggal</label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -137,7 +137,7 @@ const AnnouncementForm = ({
                 className={"w-full justify-start text-left font-normal"}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                {selectedDate ? format(selectedDate, "PPP") : <span>Pilih Tanggal</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full max-w-full p-4 z-[9999]" align="start" side="bottom" sideOffset={10}>
@@ -148,7 +148,7 @@ const AnnouncementForm = ({
                 initialFocus
               />
               <div className="mt-4 flex flex-col gap-2">
-                <label className="text-xs text-gray-500">Time</label>
+                <label className="text-xs text-gray-500">Waktu</label>
                 <Input
                   type="time"
                   value={selectedTime}
@@ -166,13 +166,13 @@ const AnnouncementForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Class</label>
+          <label className="text-xs text-gray-500">Kelas</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
           >
-            <option value="">Select a class</option>
+            <option value="">Pilih Kelas</option>
             {classes?.map((cls: { id: number; name: string }) => (
               <option value={cls.id} key={cls.id}>
                 {cls.name}
@@ -202,7 +202,7 @@ const AnnouncementForm = ({
         className="bg-blue-400 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

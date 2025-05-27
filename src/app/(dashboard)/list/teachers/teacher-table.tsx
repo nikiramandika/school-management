@@ -27,7 +27,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
+            Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -60,7 +60,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Teacher ID
+             ID Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -78,7 +78,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Subjects
+            Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -98,7 +98,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Classes
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -118,7 +118,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex"
           >
-            Phone
+            Nomor Hp
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -136,7 +136,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex"
           >
-            Address
+            Alamat
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -149,7 +149,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
       ? [
           {
             id: "actions",
-            header: "Actions",
+            header: "Aksi",
             cell: ({ row }: { row: { original: TeacherList } }) => {
               const item = row.original
               return (

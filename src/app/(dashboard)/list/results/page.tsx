@@ -5,11 +5,11 @@ import ClassList from "./class-list";
 // Header component for better organization
 const PageHeader = ({ role }: { role: string }) => (
   <div className="mb-8">
-    <h1 className="text-lg font-bold text-gray-900 dark:text-white">Class Results</h1>
+    <h1 className="text-lg font-bold text-gray-900 dark:text-white">Nilai Kelas</h1>
     <p className="mt-2 text-gray-600 dark:text-white">
       {role === "admin" 
-        ? "View and manage results for all classes" 
-        : "View results for your assigned classes"}
+        ? "Melihat dan kelola nilai untuk semua kelas" 
+        : "Melihat nilai untuk kelas yang ditugaskan"}
     </p>
   </div>
 );
@@ -17,7 +17,7 @@ const PageHeader = ({ role }: { role: string }) => (
 // Empty state component
 const EmptyState = () => (
   <div className="text-center py-12 bg-gray-50 rounded-lg">
-    <p className="text-gray-500">No classes available to display</p>
+    <p className="text-gray-500">Tidak Ada Kelas yang Tersedia Untuk Ditampilkan</p>
   </div>
 );
 

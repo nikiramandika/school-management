@@ -33,7 +33,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Title
+            Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -49,7 +49,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Description
+            Deskripsi
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -67,7 +67,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Start Time
+            Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -93,7 +93,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            End Time
+            Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -119,7 +119,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Class
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -130,7 +130,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const event = row.original;
         return (

@@ -24,7 +24,7 @@ export default function ClassList({ classes }: ClassListProps) {
           onClick={() => router.push(`/list/attendance/${classItem.id}`)}
         >
           <h3 className="text-lg font-semibold">{classItem.name}</h3>
-          <p className="text-sm text-gray-500">View Attendance</p>
+          <p className="text-sm text-gray-500">Lihat Absensi</p>
         </Card>
       ))}
     </div>

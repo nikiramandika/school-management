@@ -33,7 +33,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Name
+            Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -49,7 +49,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Subject
+            Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -69,7 +69,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Class
+            Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -89,7 +89,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Teacher
+            Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -109,7 +109,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Day
+            Hari
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -129,7 +129,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            Start Time
+            Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -149,7 +149,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            End Time
+            Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -162,7 +162,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "Aksi",
       cell: ({ row }) => {
         const lesson = row.original;
         // Prepare the data in a format that matches what the form expects

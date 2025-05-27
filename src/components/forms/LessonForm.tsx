@@ -85,12 +85,12 @@ const LessonForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new lesson" : "Update the lesson"}
+        {type === "create" ? "Membuat Pelajaran Baru" : "Memperbarui Pelajaran"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Lesson name"
+          label="Nama Pelajaran"
           name="name"
           defaultValue={data?.name}
           register={register}
@@ -107,13 +107,13 @@ const LessonForm = ({
           />
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Subject</label>
+          <label className="text-xs text-gray-500">Mata Pelajaran</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("subjectId", { valueAsNumber: true })}
             defaultValue={data?.subjectId}
           >
-            <option value="">Select a subject</option>
+            <option value="">Pilih Mata Pelajaran</option>
             {subjects?.map((subject: { id: number; name: string }) => (
               <option value={subject.id} key={subject.id}>
                 {subject.name}
@@ -127,13 +127,13 @@ const LessonForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Class</label>
+          <label className="text-xs text-gray-500">Kelas</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
           >
-            <option value="">Select a class</option>
+            <option value="">Pilih Kelas</option>
             {classes?.map((class_: { id: number; name: string }) => (
               <option value={class_.id} key={class_.id}>
                 {class_.name}
@@ -147,18 +147,18 @@ const LessonForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Day</label>
+          <label className="text-xs text-gray-500">Hari</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("day")}
             defaultValue={data?.day}
           >
-            <option value="">Select a day</option>
-            <option value="MONDAY">Monday</option>
-            <option value="TUESDAY">Tuesday</option>
-            <option value="WEDNESDAY">Wednesday</option>
-            <option value="THURSDAY">Thursday</option>
-            <option value="FRIDAY">Friday</option>
+            <option value="">Pilih Hari</option>
+            <option value="MONDAY">Senin</option>
+            <option value="TUESDAY">Selasa</option>
+            <option value="WEDNESDAY">Rabu</option>
+            <option value="THURSDAY">Kamis</option>
+            <option value="FRIDAY">Jumat</option>
           </select>
           {errors.day?.message && (
             <p className="text-xs text-red-400">
@@ -167,13 +167,13 @@ const LessonForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Teacher</label>
+          <label className="text-xs text-gray-500">Guru</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("teacherId")}
             defaultValue={data?.teacherId}
           >
-            <option value="">Select a teacher</option>
+            <option value="">Pilih Guru</option>
             {teachers?.map(
               (teacher: { id: string; name: string; surname: string }) => (
                 <option value={teacher.id} key={teacher.id}>
@@ -192,7 +192,7 @@ const LessonForm = ({
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
             <InputField
-              label="Start Time"
+              label="Waktu Mulai"
               name="startTime"
               type="time"
               defaultValue={data?.startTime}
@@ -202,7 +202,7 @@ const LessonForm = ({
           </div>
           <div className="w-1/2">
             <InputField
-              label="End Time"
+              label="Waktu Berakhir"
               name="endTime"
               type="time"
               defaultValue={data?.endTime}
@@ -216,7 +216,7 @@ const LessonForm = ({
         className="bg-blue-400 text-white p-2 rounded-md disabled:opacity-50"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Saving..." : type === "create" ? "Create" : "Update"}
+        {isSubmitting ? "Saving..." : type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

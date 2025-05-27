@@ -35,11 +35,11 @@ const EventList = ({ date }: EventListProps) => {
   }, [date]);
 
   if (loading) {
-    return <div className="text-center py-4 text-gray-500">Loading events...</div>;
+    return <div className="text-center py-4 text-gray-500">Memuat acara...</div>;
   }
 
   if (events.length === 0) {
-    return <div className="text-center py-4 text-gray-500">No events for this date</div>;
+    return <div className="text-center py-4 text-gray-500">Tidak ada acara untuk tanggal ini</div>;
   }
 
   return events.map((event) => (

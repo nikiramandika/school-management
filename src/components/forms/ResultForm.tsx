@@ -103,19 +103,19 @@ const ResultForm = ({
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2">
-        <h3 className="font-semibold">Student</h3>
+        <h3 className="font-semibold">Siswa</h3>
         <p className="text-sm text-muted-foreground">
           {student.name} {student.surname}
         </p>
       </div>
 
       <div className="space-y-2">
-        <h3 className="font-semibold">Assessment</h3>
+        <h3 className="font-semibold">Ujian</h3>
         <p className="text-sm text-muted-foreground">{assessment.title}</p>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">Score</label>
+        <label className="text-sm font-medium">Nilai</label>
         <Input
           type="number"
           min="0"
@@ -143,7 +143,7 @@ const ResultForm = ({
           variant="outline"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          Batal
         </Button>
         <Button
           type="submit"

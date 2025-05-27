@@ -101,12 +101,12 @@ const EventForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new event" : "Update the event"}
+        {type === "create" ? "Membuat Acara Baru" : "Memperbarui Acara"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Title"
+          label="Judul"
           name="title"
           defaultValue={data?.title}
           register={register}
@@ -114,7 +114,7 @@ const EventForm = ({
         />
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Description</label>
+          <label className="text-xs text-gray-500">Deskripsi</label>
           <textarea
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("description")}
@@ -129,7 +129,7 @@ const EventForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Event Date Range</label>
+          <label className="text-xs text-gray-500">Rentang Tanggal Acara</label>
           <DateRangePicker
             date={dateRange}
             setDate={setDateRange}
@@ -147,13 +147,13 @@ const EventForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Class</label>
+          <label className="text-xs text-gray-500">Kelas</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
           >
-            <option value="">Select a class</option>
+            <option value="">Pilih Kelas</option>
             {classes?.map((cls: { id: number; name: string }) => (
               <option value={cls.id} key={cls.id}>
                 {cls.name}
@@ -183,7 +183,7 @@ const EventForm = ({
         className="bg-blue-400 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );

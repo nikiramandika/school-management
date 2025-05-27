@@ -186,8 +186,8 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
             <SelectTrigger className="w-[300px]">
               <SelectValue placeholder={
                 filteredLessons.length === 0 
-                  ? "No lessons available" 
-                  : "Select lesson"
+                  ? "Tidak ada pelajaran yang tersedia" 
+                  : "Pilih Pelajaran"
               } />
             </SelectTrigger>
             <SelectContent>
@@ -215,7 +215,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
                   className="flex items-center gap-2"
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit Attendance
+                  Edit Kehadiran
                 </Button>
               ) : (
                 <Button
@@ -224,7 +224,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
                   className="flex items-center gap-2"
                 >
                   <Save className="h-4 w-4" />
-                  Save All
+                  Simpan Semua
                 </Button>
               )}
             </div>
@@ -235,7 +235,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
           <div className="p-4 bg-muted rounded-lg">
             <h3 className="font-semibold text-lg mb-2">{selectedLessonDetails.name}</h3>
             <p className="text-sm text-muted-foreground">
-              Teacher: {selectedLessonDetails.teacher.name} {selectedLessonDetails.teacher.surname}
+              Guru: {selectedLessonDetails.teacher.name} {selectedLessonDetails.teacher.surname}
             </p>
           </div>
         )}
@@ -245,8 +245,8 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
         <div className="text-center py-8">
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <AlertCircle className="h-8 w-8 text-yellow-500" />
-            <p className="text-lg font-medium">Please select a lesson first</p>
-            <p className="text-sm">Choose a lesson from the dropdown above to view and manage attendance</p>
+            <p className="text-lg font-medium">Silakan pilih pelajaran terlebih dahulu</p>
+            <p className="text-sm">Pilih pelajaran dari menu dropdown di atas untuk melihat dan mengelola absensi</p>
           </div>
         </div>
       ) : filteredLessons.length > 0 ? (
@@ -254,7 +254,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="text-left p-2">Name</th>
+                <th className="text-left p-2">Nama</th>
                 <th className="text-left p-2">
                   <div className="flex items-center gap-2">
                     {isEditing && (
@@ -263,7 +263,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
                           checked={allPresent}
                           onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
                         />
-                        <span className="text-sm text-muted-foreground">Select All</span>
+                        <span className="text-sm text-muted-foreground">Pilih Semua</span>
                       </div>
                     )}
                   </div>
@@ -292,13 +292,13 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
                             onCheckedChange={(checked) => handleAttendanceChange(student.id, checked as boolean)}
                           />
                           <span className="text-sm text-muted-foreground">
-                            {attendanceStatus[student.id] ? 'Present' : 'Absent'}
+                            {attendanceStatus[student.id] ? 'Hadir' : 'Absen'}
                           </span>
                         </div>
                       ) : (
                         existingAttendance ? (
                           <span className={`px-2 py-1 rounded ${existingAttendance.present ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {existingAttendance.present ? 'Present' : 'Absent'}
+                            {existingAttendance.present ? 'Hadir' : 'Absen'}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">-</span>
@@ -313,7 +313,7 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
         </div>
       ) : (
         <div className="text-center py-8 text-muted-foreground">
-          No lessons available for this class
+          Tidak ada pelajaran yang tersedia untuk kelas ini
         </div>
       )}
     </Card>
