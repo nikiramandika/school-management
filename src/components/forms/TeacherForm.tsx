@@ -73,7 +73,7 @@ const TeacherForm = ({
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
-          label="Username"
+          label="NIP"
           name="username"
           defaultValue={data?.username}
           register={register}

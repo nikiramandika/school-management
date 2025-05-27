@@ -70,7 +70,7 @@ const StudentForm = ({
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
-          label="Username"
+          label="NISN"
           name="username"
           defaultValue={data?.username}
           register={register}

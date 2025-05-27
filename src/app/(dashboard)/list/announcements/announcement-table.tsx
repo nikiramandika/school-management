@@ -149,5 +149,5 @@ export const AnnouncementTable = ({
     },
   ];
 
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data} searchKey="title" />;
 };

@@ -65,7 +65,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-            ID Siswa
+            NISN
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );

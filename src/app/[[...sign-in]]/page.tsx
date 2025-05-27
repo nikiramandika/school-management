@@ -58,7 +58,7 @@ const LoginPage = () => {
           <Clerk.GlobalError className="text-sm text-red-400" />
           <Clerk.Field name="identifier" className="flex flex-col gap-2">
             <Clerk.Label className="text-sm text-gray-500">
-              Username
+              NISN/NIP
             </Clerk.Label>
             <Clerk.Input
               type="text"
@@ -67,7 +67,7 @@ const LoginPage = () => {
             />
             <Clerk.FieldError className="text-xs text-red-400" />
           </Clerk.Field>
-          
+            
           <Clerk.Field name="password" className="flex flex-col gap-2">
             <Clerk.Label className="text-sm text-gray-500">
               Password
