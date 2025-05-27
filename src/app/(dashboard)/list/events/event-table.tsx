@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type EventList = {
   id: number;
@@ -19,7 +25,7 @@ type EventTableProps = {
   data: EventList[];
   role?: string;
   relatedData?: {
-    classes: { id: number; name: string; }[];
+    classes: { id: number; name: string }[];
   };
 };
 
@@ -36,7 +42,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.title}</div>,
     },
@@ -52,7 +58,7 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             Deskripsi
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">{row.original.description}</div>
@@ -70,16 +76,16 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.startTime).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+          {new Date(row.original.startTime).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </div>
       ),
@@ -96,16 +102,16 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.endTime).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+          {new Date(row.original.endTime).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </div>
       ),
@@ -122,10 +128,12 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
-        <div className="hidden md:table-cell">{row.original.className || "All Classes"}</div>
+        <div className="hidden md:table-cell">
+          {row.original.className || "All Classes"}
+        </div>
       ),
     },
     {
@@ -137,24 +145,39 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
           <div className="flex items-center gap-2">
             {(role === "admin" || role === "teacher") && (
               <>
-                <FormModal 
-                  table="event" 
-                  type="update" 
-                  data={event}
-                  relatedData={relatedData}
-                />
-                <FormModal 
-                  table="event" 
-                  type="delete" 
-                  id={event.id} 
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="event"
+                          type="update"
+                          data={event}
+                          relatedData={relatedData}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Acara</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal table="event" type="delete" id={event.id} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Acara</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   return <DataTable columns={columns} data={data} searchKey="title" />;
-} 
+}

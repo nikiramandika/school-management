@@ -5,6 +5,12 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { LessonTable } from "./lesson-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const LessonListPage = async () => {
   const { sessionClaims } = await auth();
@@ -35,19 +41,30 @@ const LessonListPage = async () => {
     <div className="bg-card p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Daftar Pelajaran</h1>
+        <h1 className="hidden md:block text-lg font-semibold">
+          Daftar Pelajaran
+        </h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-4 self-end">
             {role === "admin" && (
-              <FormContainer
-                table="lesson"
-                type="create"
-                relatedData={{
-                  subjects,
-                  classes,
-                  teachers,
-                }}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormContainer
+                        table="lesson"
+                        type="create"
+                        relatedData={{
+                          subjects,
+                          classes,
+                          teachers,
+                        }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Tambah Pelajaran</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>

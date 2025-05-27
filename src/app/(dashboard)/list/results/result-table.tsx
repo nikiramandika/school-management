@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Result } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Result } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type ResultList = {
   id: number;
@@ -23,29 +29,29 @@ type ResultTableProps = {
   data: ResultList[];
   role?: string;
   relatedData?: {
-    classes: { id: string; name: string; }[];
-    students: { 
-      id: string; 
-      name: string; 
+    classes: { id: string; name: string }[];
+    students: {
+      id: string;
+      name: string;
       surname: string;
       className: string;
     }[];
-    exams: { 
-      id: string; 
+    exams: {
+      id: string;
       title: string;
       className: string;
       lesson: {
-        class: { name: string; };
-        teacher: { name: string; surname: string; };
+        class: { name: string };
+        teacher: { name: string; surname: string };
       };
     }[];
-    assignments: { 
-      id: string; 
+    assignments: {
+      id: string;
       title: string;
       className: string;
       lesson: {
-        class: { name: string; };
-        teacher: { name: string; surname: string; };
+        class: { name: string };
+        teacher: { name: string; surname: string };
       };
     }[];
   };
@@ -64,7 +70,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.title}</div>,
     },
@@ -79,7 +85,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Siswa
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div>{`${row.original.studentName} ${row.original.studentSurname}`}</div>
@@ -97,7 +103,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Nilai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">{row.original.score}</div>
@@ -115,7 +121,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
@@ -135,7 +141,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">{row.original.className}</div>
@@ -153,14 +159,14 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             Tanggal
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.startTime).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+          {new Date(row.original.startTime).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
           })}
         </div>
       ),
@@ -171,10 +177,16 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
       cell: ({ row }) => {
         const result = row.original;
         // Find the corresponding exam or assignment from relatedData
-        const exam = relatedData?.exams.find((e: any) => e.title === result.title);
-        const assignment = relatedData?.assignments.find((a: any) => a.title === result.title);
-        const student = relatedData?.students.find((s: any) => 
-          `${s.name} ${s.surname}` === `${result.studentName} ${result.studentSurname}`
+        const exam = relatedData?.exams.find(
+          (e: any) => e.title === result.title
+        );
+        const assignment = relatedData?.assignments.find(
+          (a: any) => a.title === result.title
+        );
+        const student = relatedData?.students.find(
+          (s: any) =>
+            `${s.name} ${s.surname}` ===
+            `${result.studentName} ${result.studentSurname}`
         );
 
         const formData = {
@@ -188,24 +200,43 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
           <div className="flex items-center gap-2">
             {(role === "admin" || role === "teacher") && (
               <>
-                <FormModal 
-                  table="result" 
-                  type="update" 
-                  data={formData}
-                  relatedData={relatedData}
-                />
-                <FormModal 
-                  table="result" 
-                  type="delete" 
-                  id={result.id} 
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="result"
+                          type="update"
+                          data={formData}
+                          relatedData={relatedData}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit Nilai</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="result"
+                          type="delete"
+                          id={result.id}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Nilai</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   return <DataTable columns={columns} data={data} searchKey="title" />;
-} 
+}

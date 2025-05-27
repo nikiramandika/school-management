@@ -115,15 +115,24 @@ export const AnnouncementTable = ({
                         />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent>Ubah</TooltipContent>
+                    <TooltipContent>Ubah Pengumuman</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 
-                <FormModal
-                  table="announcement"
-                  type="delete"
-                  id={announcement.id}
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="announcement"
+                          type="delete"
+                          id={announcement.id}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Pengumuman</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>

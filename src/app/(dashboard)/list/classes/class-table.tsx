@@ -1,13 +1,19 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Class, Teacher, Grade } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Class, Teacher, Grade } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-type ClassList = Class & { 
+type ClassList = Class & {
   supervisor: Teacher | null;
   grade: Grade | null;
 };
@@ -15,11 +21,16 @@ type ClassList = Class & {
 type ClassTableProps = {
   data: ClassList[];
   role?: string;
-  allTeachers: { id: string; name: string; surname: string; }[];
-  allGrades: { id: number; level: number; }[];
+  allTeachers: { id: string; name: string; surname: string }[];
+  allGrades: { id: number; level: number }[];
 };
 
-export function ClassTable({ data, role, allTeachers, allGrades }: ClassTableProps) {
+export function ClassTable({
+  data,
+  role,
+  allTeachers,
+  allGrades,
+}: ClassTableProps) {
   const columns: ColumnDef<ClassList>[] = [
     {
       accessorKey: "name",
@@ -29,10 +40,10 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-             Nama Kelas
+            Nama Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.name}</div>,
     },
@@ -48,9 +59,11 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             Kapasitas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
-      cell: ({ row }) => <div className="hidden md:table-cell">{row.original.capacity}</div>,
+      cell: ({ row }) => (
+        <div className="hidden md:table-cell">{row.original.capacity}</div>
+      ),
     },
     {
       accessorKey: "grade",
@@ -64,9 +77,13 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             Tingkat
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
-      cell: ({ row }) => <div className="hidden md:table-cell">{row.original.grade?.level || row.original.name[0]}</div>,
+      cell: ({ row }) => (
+        <div className="hidden md:table-cell">
+          {row.original.grade?.level || row.original.name[0]}
+        </div>
+      ),
     },
     {
       accessorKey: "supervisor",
@@ -80,11 +97,13 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
             Wali Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {row.original.supervisor ? `${row.original.supervisor.name} ${row.original.supervisor.surname}` : 'No supervisor assigned'}
+          {row.original.supervisor
+            ? `${row.original.supervisor.name} ${row.original.supervisor.surname}`
+            : "No supervisor assigned"}
         </div>
       ),
     },
@@ -104,51 +123,75 @@ export function ClassTable({ data, role, allTeachers, allGrades }: ClassTablePro
           supervisor: {
             id: classItem.supervisor?.id,
             name: classItem.supervisor?.name,
-            surname: classItem.supervisor?.surname
+            surname: classItem.supervisor?.surname,
           },
           grade: {
             id: classItem.grade?.id,
-            level: classItem.grade?.level
-          }
+            level: classItem.grade?.level,
+          },
         };
 
         // Get all teachers who are already supervisors
         const existingSupervisors = new Set(
           data
-            .map(item => item.supervisor?.id)
+            .map((item) => item.supervisor?.id)
             .filter((id): id is string => id !== undefined)
         );
 
         // Add supervisor status to all teachers
-        const teachersWithStatus = allTeachers.map(teacher => ({
+        const teachersWithStatus = allTeachers.map((teacher) => ({
           ...teacher,
-          isSupervisor: existingSupervisors.has(teacher.id)
+          isSupervisor: existingSupervisors.has(teacher.id),
         }));
 
         return (
           <div className="flex items-center gap-2">
             {role === "admin" && (
               <>
-                <FormModal 
-                  table="class" 
-                  type="update" 
-                  data={formData}
-                  relatedData={{
-                    teachers: teachersWithStatus,
-                    grades: allGrades
-                  }}
-                />
-                <FormModal table="class" type="delete" id={classItem.id} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="class"
+                          type="update"
+                          data={formData}
+                          relatedData={{
+                            teachers: teachersWithStatus,
+                            grades: allGrades,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Kelas</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="class"
+                          type="delete"
+                          id={classItem.id}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Kelas</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   // Only include the actions column for admin role
-  const filteredColumns = role === "admin" ? columns : columns.filter(col => col.id !== "actions");
+  const filteredColumns =
+    role === "admin" ? columns : columns.filter((col) => col.id !== "actions");
 
   return <DataTable columns={filteredColumns} data={data} searchKey="name" />;
-} 
+}

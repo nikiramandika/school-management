@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Exam } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Exam } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type ExamList = Exam & {
   title: string;
@@ -44,7 +50,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.title}</div>,
     },
@@ -59,7 +65,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.lesson.subject.name}</div>,
     },
@@ -74,7 +80,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.lesson.class.name}</div>,
     },
@@ -90,7 +96,7 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
@@ -109,16 +115,16 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div>
-          {new Date(row.original.startTime).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+          {new Date(row.original.startTime).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </div>
       ),
@@ -134,16 +140,16 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
             Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div>
-          {new Date(row.original.endTime).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+          {new Date(row.original.endTime).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
           })}
         </div>
       ),
@@ -157,25 +163,43 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
           <div className="flex items-center gap-2">
             {(role === "admin" || role === "teacher") && (
               <>
-                <FormModal 
-                  table="exam" 
-                  type="update" 
-                  data={{
-                    ...exam,
-                    lessonId: exam.lesson.id
-                  }}
-                  relatedData={{
-                    lessons: allLessons
-                  }}
-                />
-                <FormModal table="exam" type="delete" id={exam.id} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="exam"
+                          type="update"
+                          data={{
+                            ...exam,
+                            lessonId: exam.lesson.id,
+                          }}
+                          relatedData={{
+                            lessons: allLessons,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Ujian</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal table="exam" type="delete" id={exam.id} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Ujian</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   return <DataTable columns={columns} data={data} searchKey="title" />;
-} 
+}

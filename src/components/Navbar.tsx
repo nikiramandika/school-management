@@ -32,6 +32,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface NavbarProps {
   onMenuClick?: () => void;
@@ -54,7 +60,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         const data = await response.json();
         setTodayEvents(data);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
       }
     };
 
@@ -65,7 +71,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     // Handle special cases
     if (segment === "list") return "List";
     if (segment === "results") return "Results";
-    
+
     // Handle dynamic segments
     if (segment.match(/^[0-9]+$/)) {
       if (segments[index - 1] === "results") return "Detail Kelas";
@@ -110,64 +116,67 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   };
 
   // Filter segments to only show up to Class Details
-  const filteredSegments = segments.reduce((acc: { path: string; label: string }[], segment, index) => {
-    if (segment === "list") return acc; // Skip 'list' segment
-    
-    // Special handling for results
-    if (segment === "results") {
-      return [...acc, { path: segment, label: "Nilai" }];
-    }
-    if (segment.match(/^[0-9]+$/) && segments[index - 1] === "results") {
-      return [...acc, { path: segment, label: "Detail Kelas" }];
-    }
+  const filteredSegments = segments.reduce(
+    (acc: { path: string; label: string }[], segment, index) => {
+      if (segment === "list") return acc; // Skip 'list' segment
 
-    // Handle other menu items
-    let label = segment;
-    switch (segment) {
-      case "teachers":
-        label = "Guru";
-        break;
-      case "students":
-        label = "Siswa";
-        break;
-      case "subjects":
-        label = "Mata Pelajaran";
-        break;
-      case "classes":
-        label = "Kelas";
-        break;
-      case "lessons":
-        label = "Pelajaran";
-        break;
-      case "exams":
-        label = "Ujian";
-        break;
-      case "assignments":
-        label = "Tugas";
-        break;
-      case "attendance":
-        label = "Absensi";
-        break;
-      case "events":
-        label = "Acara";
-        break;
-      case "messages":
-        label = "Pesan";
-        break;
-      case "announcements":
-        label = "Pengumuman";
-        break;
-      case "profile":
-        label = "Profile";
-        break;
-      case "settings":
-        label = "Pengaturan";
-        break;
-      default:
-        label = segment.charAt(0).toUpperCase() + segment.slice(1);
-    }
-    return [...acc, { path: segment, label }];
-  }, []);
+      // Special handling for results
+      if (segment === "results") {
+        return [...acc, { path: segment, label: "Nilai" }];
+      }
+      if (segment.match(/^[0-9]+$/) && segments[index - 1] === "results") {
+        return [...acc, { path: segment, label: "Detail Kelas" }];
+      }
+
+      // Handle other menu items
+      let label = segment;
+      switch (segment) {
+        case "teachers":
+          label = "Guru";
+          break;
+        case "students":
+          label = "Siswa";
+          break;
+        case "subjects":
+          label = "Mata Pelajaran";
+          break;
+        case "classes":
+          label = "Kelas";
+          break;
+        case "lessons":
+          label = "Pelajaran";
+          break;
+        case "exams":
+          label = "Ujian";
+          break;
+        case "assignments":
+          label = "Tugas";
+          break;
+        case "attendance":
+          label = "Absensi";
+          break;
+        case "events":
+          label = "Acara";
+          break;
+        case "messages":
+          label = "Pesan";
+          break;
+        case "announcements":
+          label = "Pengumuman";
+          break;
+        case "profile":
+          label = "Profile";
+          break;
+        case "settings":
+          label = "Pengaturan";
+          break;
+        default:
+          label = segment.charAt(0).toUpperCase() + segment.slice(1);
+      }
+      return [...acc, { path: segment, label }];
+    },
+    []
+  );
 
   const buildPath = (index: number) => {
     return "/" + segments.slice(0, index + 1).join("/");
@@ -198,7 +207,9 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={buildPath(index + 1)}
-                    className={index === filteredSegments.length - 1 ? "font-medium" : ""}
+                    className={
+                      index === filteredSegments.length - 1 ? "font-medium" : ""
+                    }
                   >
                     {segment.label}
                   </BreadcrumbLink>
@@ -235,25 +246,36 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
               <LuMessageSquareText className="h-5 w-5" />
             </Button>
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="flex items-center justify-center relative"
-                >
-                  <GrAnnounce className="h-5 w-5" />
-                  {todayEvents.length > 0 && (
-                    <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs">
-                      {todayEvents.length}
-                    </div>
-                  )}
-                </Button>
-              </PopoverTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="flex items-center justify-center relative"
+                      aria-label="Acara Hari Ini"
+                    >
+                      <GrAnnounce className="h-5 w-5" />
+                      {todayEvents.length > 0 && (
+                        <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs">
+                          {todayEvents.length}
+                        </div>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  <p>Lihat Acara</p>
+                </TooltipContent>
+              </Tooltip>
+
               <PopoverContent className="w-80">
                 <div className="space-y-4">
                   <h4 className="font-medium leading-none">Acara Hari Ini</h4>
                   {todayEvents.length === 0 ? (
-                    <p className="text-sm text-gray-500">Tidak ada acara hari ini</p>
+                    <p className="text-sm text-gray-500">
+                      Tidak ada acara hari ini
+                    </p>
                   ) : (
                     <div className="space-y-2">
                       {todayEvents.map((event) => (
@@ -262,16 +284,23 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                           className="p-3 rounded-md border border-gray-200 dark:border-gray-800"
                         >
                           <div className="flex items-center justify-between">
-                            <h5 className="font-medium text-sm">{event.title}</h5>
+                            <h5 className="font-medium text-sm">
+                              {event.title}
+                            </h5>
                             <span className="text-xs text-gray-500">
-                              {new Date(event.startTime).toLocaleTimeString("en-UK", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: false,
-                              })}
+                              {new Date(event.startTime).toLocaleTimeString(
+                                "en-UK",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: false,
+                                }
+                              )}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">{event.description}</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {event.description}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -282,32 +311,50 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           </div>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-              </Button>
-            </DropdownMenuTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="relative">
+                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Ubah Tema</p>
+              </TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setTheme("light")}>
-                Light
+                Terang
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme("dark")}>
-                Dark
+                Gelap
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme("system")}>
-                System
+                Sesuai Sistem
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Desktop User Info */}
           <div className="hidden md:flex flex-col">
-            <span className="text-xs leading-3 font-medium">{user?.fullName || user?.username}</span>
+            <span className="text-xs leading-3 font-medium">
+              {user?.fullName || user?.username}
+            </span>
             <span className="text-[10px] text-gray-500 text-right">{role}</span>
           </div>
-          <UserButton />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <UserButton />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Menu Akun</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>

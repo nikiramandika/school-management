@@ -1,10 +1,16 @@
-"use server"
+"use server";
 
 import FormContainer from "@/components/FormContainer";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { AssignmentTable } from "./assignment-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AssignmentListPage = async () => {
   const { userId, sessionClaims } = await auth();
@@ -58,23 +64,23 @@ const AssignmentListPage = async () => {
       subject: {
         select: {
           id: true,
-          name: true
-        }
+          name: true,
+        },
       },
       class: {
         select: {
           id: true,
-          name: true
-        }
+          name: true,
+        },
       },
       teacher: {
         select: {
           id: true,
           name: true,
-          surname: true
-        }
-      }
-    }
+          surname: true,
+        },
+      },
+    },
   });
 
   return (
@@ -85,25 +91,30 @@ const AssignmentListPage = async () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-4 self-end">
             {(role === "admin" || role === "teacher") && (
-              <FormContainer 
-                table="assignment" 
-                type="create" 
-                relatedData={{
-                  lessons: allLessons
-                }}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormContainer
+                        table="assignment"
+                        type="create"
+                        relatedData={{
+                          lessons: allLessons,
+                        }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Tambah Tugas</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <AssignmentTable 
-        data={data} 
-        role={role} 
-        allLessons={allLessons}
-      />
+      <AssignmentTable data={data} role={role} allLessons={allLessons} />
     </div>
   );
 };
 
-export default AssignmentListPage; 
+export default AssignmentListPage;

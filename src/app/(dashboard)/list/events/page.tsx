@@ -8,6 +8,12 @@ import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { EventTable } from "./event-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type EventList = Event & { class: Class };
 
@@ -29,14 +35,14 @@ const EventListPage = async () => {
       break;
     case "teacher":
       query.class = {
-        supervisorId: currentUserId!
+        supervisorId: currentUserId!,
       };
       break;
     case "student":
       // Students can only see events for their class
       const student = await prisma.student.findUnique({
         where: { id: currentUserId! },
-        select: { classId: true }
+        select: { classId: true },
       });
       if (student) {
         query.classId = student.classId;
@@ -51,10 +57,10 @@ const EventListPage = async () => {
     include: {
       class: {
         select: {
-          name: true
-        }
-      }
-    }
+          name: true,
+        },
+      },
+    },
   });
 
   const data = dataRes.map((item) => ({
@@ -64,7 +70,7 @@ const EventListPage = async () => {
     startTime: item.startTime,
     endTime: item.endTime,
     className: item.class?.name,
-    classId: item.classId
+    classId: item.classId,
   }));
 
   return (
@@ -74,30 +80,34 @@ const EventListPage = async () => {
         <h1 className="hidden md:block text-lg font-semibold">Daftar Acara</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+           
             {(role === "admin" || role === "teacher") && (
-              <FormContainer 
-                table="event" 
-                type="create" 
-                relatedData={{
-                  classes
-                }}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormContainer
+                        table="event"
+                        type="create"
+                        relatedData={{
+                          classes,
+                        }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Tambah Acara</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <EventTable 
-        data={data} 
+      <EventTable
+        data={data}
         role={role}
         relatedData={{
-          classes
+          classes,
         }}
       />
     </div>

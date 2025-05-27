@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Assignment } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Assignment } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AssignmentList = Assignment & {
   title: string;
@@ -31,7 +37,11 @@ type AssignmentTableProps = {
   allLessons?: any[];
 };
 
-export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps) {
+export function AssignmentTable({
+  data,
+  role,
+  allLessons,
+}: AssignmentTableProps) {
   const columns: ColumnDef<AssignmentList>[] = [
     {
       accessorKey: "title",
@@ -44,7 +54,7 @@ export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
     },
     {
@@ -86,25 +96,48 @@ export function AssignmentTable({ data, role, allLessons }: AssignmentTableProps
           <div className="flex items-center gap-2">
             {(role === "admin" || role === "teacher") && (
               <>
-                <FormModal 
-                  table="assignment" 
-                  type="update" 
-                  data={{
-                    ...assignment,
-                    lessonId: assignment.lesson.id
-                  }}
-                  relatedData={{
-                    lessons: allLessons
-                  }}
-                />
-                <FormModal table="assignment" type="delete" id={assignment.id} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="assignment"
+                          type="update"
+                          data={{
+                            ...assignment,
+                            lessonId: assignment.lesson.id,
+                          }}
+                          relatedData={{
+                            lessons: allLessons,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Tugas</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="assignment"
+                          type="delete"
+                          id={assignment.id}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Tugas</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   return <DataTable columns={columns} data={data} searchKey="title" />;
-} 
+}

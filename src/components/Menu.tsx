@@ -101,7 +101,7 @@ const menuItems = [
       },
       {
         icon: HiCalendar,
-        label: "Absesnsi",
+        label: "Absensi",
         href: "/list/attendance",
         visible: ["admin", "teacher", "student", "parent"],
       },

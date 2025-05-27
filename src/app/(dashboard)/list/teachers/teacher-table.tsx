@@ -1,23 +1,28 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Class, Subject, Teacher } from "@prisma/client"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Eye } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Class, Subject, Teacher } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown, Eye } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] }
+type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 interface TeacherTableProps {
-  data: TeacherList[]
-  role?: string
+  data: TeacherList[];
+  role?: string;
 }
 
 export function TeacherTable({ data, role }: TeacherTableProps) {
-
   const columns: ColumnDef<TeacherList>[] = [
     {
       accessorKey: "name",
@@ -30,14 +35,14 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => {
-        const item = row.original
+        const item = row.original;
         return (
           <div className="flex items-center gap-4">
             <Image
-              src= "/avatar.png"
+              src="/avatar.png"
               alt=""
               width={40}
               height={40}
@@ -48,7 +53,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
               <p className="text-xs text-gray-500">{item?.email}</p>
             </div>
           </div>
-        )
+        );
       },
     },
     {
@@ -60,10 +65,10 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex"
           >
-             ID Guru
+            ID Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden md:table-cell">{row.original.username}</div>
@@ -81,7 +86,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden md:table-cell">
@@ -101,7 +106,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden md:table-cell">
@@ -121,7 +126,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Nomor Hp
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden lg:table-cell">{row.original.phone}</div>
@@ -139,7 +144,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Alamat
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden lg:table-cell">{row.original.address}</div>
@@ -151,25 +156,43 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             id: "actions",
             header: "Aksi",
             cell: ({ row }: { row: { original: TeacherList } }) => {
-              const item = row.original
+              const item = row.original;
               return (
                 <div className="flex items-center gap-2">
-                  <Link href={`/list/teachers/${item.id}`}>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <FormModal table="teacher" type="delete" id={item.id} />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={`/list/teachers/${item.id}`}>
+                          <Button variant="outline" size="icon">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>Lihat Detail Guru</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="inline-flex items-center justify-center">
+                          <FormModal
+                            table="teacher"
+                            type="delete"
+                            id={item.id}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Hapus Data Guru</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              )
+              );
             },
           },
         ]
       : []),
-  ]
+  ];
 
-  return <DataTable columns={columns} data={data} searchKey="name" />
-} 
+  return <DataTable columns={columns} data={data} searchKey="name" />;
+}

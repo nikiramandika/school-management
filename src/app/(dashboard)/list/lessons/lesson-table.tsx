@@ -1,13 +1,19 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Lesson, Subject, Class, Teacher } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Lesson, Subject, Class, Teacher } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-type LessonList = Lesson & { 
+type LessonList = Lesson & {
   subject: Subject;
   class: Class;
   teacher: Teacher;
@@ -17,9 +23,9 @@ type LessonTableProps = {
   data: LessonList[];
   role?: string;
   relatedData: {
-    subjects: { id: number; name: string; }[];
-    classes: { id: number; name: string; }[];
-    teachers: { id: string; name: string; surname: string; }[];
+    subjects: { id: number; name: string }[];
+    classes: { id: number; name: string }[];
+    teachers: { id: string; name: string; surname: string }[];
   };
 };
 
@@ -36,7 +42,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => <div>{row.original.name}</div>,
     },
@@ -52,12 +58,10 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
-        <div className="hidden md:table-cell">
-          {row.original.subject.name}
-        </div>
+        <div className="hidden md:table-cell">{row.original.subject.name}</div>
       ),
     },
     {
@@ -72,12 +76,10 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
-        <div className="hidden md:table-cell">
-          {row.original.class.name}
-        </div>
+        <div className="hidden md:table-cell">{row.original.class.name}</div>
       ),
     },
     {
@@ -92,7 +94,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
@@ -112,12 +114,10 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Hari
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
-        <div className="hidden md:table-cell">
-          {row.original.day}
-        </div>
+        <div className="hidden md:table-cell">{row.original.day}</div>
       ),
     },
     {
@@ -132,11 +132,14 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Waktu Mulai
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(row.original.startTime).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </div>
       ),
     },
@@ -152,11 +155,14 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             Waktu Berakhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="hidden md:table-cell">
-          {new Date(row.original.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(row.original.endTime).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </div>
       ),
     },
@@ -178,37 +184,60 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
           // Include the full objects for reference
           subject: {
             id: lesson.subject.id,
-            name: lesson.subject.name
+            name: lesson.subject.name,
           },
           class: {
             id: lesson.class.id,
-            name: lesson.class.name
+            name: lesson.class.name,
           },
           teacher: {
             id: lesson.teacher.id,
             name: lesson.teacher.name,
-            surname: lesson.teacher.surname
-          }
+            surname: lesson.teacher.surname,
+          },
         };
 
         return (
           <div className="flex items-center gap-2">
             {role === "admin" && (
               <>
-                <FormModal 
-                  table="lesson" 
-                  type="update" 
-                  data={formData}
-                  relatedData={relatedData}
-                />
-                <FormModal table="lesson" type="delete" id={lesson.id} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="lesson"
+                          type="update"
+                          data={formData}
+                          relatedData={relatedData}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Pelajaran</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="lesson"
+                          type="delete"
+                          id={lesson.id}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Pelajaran</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];
 
   return <DataTable columns={columns} data={data} searchKey="name" />;
-} 
+}

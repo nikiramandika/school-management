@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/ui/data-table"
-import { Subject, Teacher } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { ArrowUpDown, Users, BookOpen } from "lucide-react"
-import FormModal from "@/components/FormModal"
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "@/components/ui/data-table";
+import { Subject, Teacher } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown, Users, BookOpen } from "lucide-react";
+import FormModal from "@/components/FormModal";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
-type SubjectList = Subject & { 
+type SubjectList = Subject & {
   teachers: Teacher[];
   lessons: {
     id: number;
@@ -60,7 +60,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             Nama Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="font-medium text-primary">{row.original.name}</div>
@@ -79,7 +79,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         const teachers = row.original.teachers;
@@ -106,9 +106,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
               {remainingTeachers > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="h-6 px-2 hover:bg-secondary/80"
                     >
                       +{remainingTeachers} Lebih Banyak
@@ -124,12 +124,14 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                     <ScrollArea className="h-[300px] pr-4">
                       <div className="space-y-2">
                         {teachers.map((teacher) => (
-                          <div 
-                            key={teacher.id} 
+                          <div
+                            key={teacher.id}
                             className="flex items-center justify-between rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
                             <div>
-                              <div className="font-medium">{teacher.name} {teacher.surname}</div>
+                              <div className="font-medium">
+                                {teacher.name} {teacher.surname}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -156,7 +158,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         const lessons = row.original.lessons;
@@ -170,15 +172,14 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                 <TooltipProvider key={lesson.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge 
-                        variant="secondary" 
-                        className="w-fit cursor-help"
-                      >
+                      <Badge variant="secondary" className="w-fit cursor-help">
                         {lesson.name} - {lesson.class.name}
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Guru: {lesson.teacher.name} {lesson.teacher.surname}</p>
+                      <p>
+                        Guru: {lesson.teacher.name} {lesson.teacher.surname}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -186,9 +187,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
               {remainingLessons > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="h-6 px-2 hover:bg-secondary/80"
                     >
                       +{remainingLessons} Lebih banyak pelajaran
@@ -204,8 +205,8 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                     <ScrollArea className="h-[300px] pr-4">
                       <div className="space-y-2">
                         {lessons.map((lesson) => (
-                          <div 
-                            key={lesson.id} 
+                          <div
+                            key={lesson.id}
                             className="rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
                             <div className="font-medium">{lesson.name}</div>
@@ -241,19 +242,38 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <div className="flex items-center gap-2">
             {role === "admin" && (
               <>
-                <FormModal 
-                  table="subject" 
-                  type="update" 
-                  data={subject}
-                  relatedData={{
-                    teachers: allTeachers
-                  }}
-                />
-                <FormModal table="subject" type="delete" id={subject.id} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal
+                          table="subject"
+                          type="update"
+                          data={subject}
+                          relatedData={{
+                            teachers: allTeachers,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Ubah Mata Pelajaran</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormModal table="subject" type="delete" id={subject.id} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus Mata Pelajaran</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
-        )
+        );
       },
     },
   ];

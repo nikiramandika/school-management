@@ -9,6 +9,12 @@ import { Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const SingleTeacherPage = async ({
   params: { id },
@@ -61,7 +67,16 @@ const SingleTeacherPage = async ({
                   {teacher.name + " " + teacher.surname}
                 </h1>
                 {role === "admin" && (
-                  <FormContainer table="teacher" type="update" data={teacher} />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="inline-flex items-center justify-center">
+                          <FormContainer table="teacher" type="update" data={teacher} />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Ubah Data Guru</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider> 
                 )}
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">

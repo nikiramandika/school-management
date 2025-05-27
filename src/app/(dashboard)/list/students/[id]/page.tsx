@@ -10,6 +10,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const SingleStudentPage = async ({
   params: { id },
@@ -56,8 +62,16 @@ const SingleStudentPage = async ({
                 <h1 className="text-xl font-semibold">
                   {student.name + " " + student.surname}
                 </h1>
-                {role === "admin" && (
-                  <FormContainer table="student" type="update" data={student} />
+                {role === "admin" && (<TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="inline-flex items-center justify-center">
+                          <FormContainer table="student" type="update" data={student} />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Ubah Data Siswa</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider> 
                 )}
               </div>
               <p className="text-sm text-gray-500">
