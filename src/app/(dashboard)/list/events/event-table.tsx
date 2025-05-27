@@ -18,18 +18,14 @@ type EventList = {
   description: string;
   startTime: Date;
   endTime: Date;
-  className?: string;
 };
 
 type EventTableProps = {
   data: EventList[];
   role?: string;
-  relatedData?: {
-    classes: { id: number; name: string }[];
-  };
 };
 
-export function EventTable({ data, role, relatedData }: EventTableProps) {
+export function EventTable({ data, role }: EventTableProps) {
   const columns: ColumnDef<EventList>[] = [
     {
       accessorKey: "title",
@@ -117,26 +113,6 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
       ),
     },
     {
-      accessorKey: "className",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex"
-          >
-            Kelas
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="hidden md:table-cell">
-          {row.original.className || "All Classes"}
-        </div>
-      ),
-    },
-    {
       id: "actions",
       header: "Aksi",
       cell: ({ row }) => {
@@ -153,7 +129,6 @@ export function EventTable({ data, role, relatedData }: EventTableProps) {
                           table="event"
                           type="update"
                           data={event}
-                          relatedData={relatedData}
                         />
                       </div>
                     </TooltipTrigger>

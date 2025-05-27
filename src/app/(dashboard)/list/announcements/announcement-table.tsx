@@ -75,6 +75,14 @@ export const AnnouncementTable = ({
           </Button>
         );
       },
+      cell: ({ row }) => {
+        const className = row.getValue("className") as string | undefined;
+        return (
+          <div className="font-medium">
+            {className ? className : "Semua Kelas"}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "date",

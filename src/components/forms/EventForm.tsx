@@ -15,12 +15,10 @@ const EventForm = ({
   type,
   data,
   setOpen,
-  relatedData,
 }: {
   type: "create" | "update";
   data?: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  relatedData?: any;
 }) => {
   const router = useRouter();
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
@@ -95,9 +93,6 @@ const EventForm = ({
     [type, setOpen, router, dateRange]
   );
 
-  // Get classes from relatedData
-  const classes = relatedData?.classes || [];
-
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
@@ -142,27 +137,6 @@ const EventForm = ({
           {errors.endTime?.message && (
             <p className="text-xs text-red-400">
               {errors.endTime.message.toString()}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Kelas</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("classId", { valueAsNumber: true })}
-            defaultValue={data?.classId}
-          >
-            <option value="">Pilih Kelas</option>
-            {classes?.map((cls: { id: number; name: string }) => (
-              <option value={cls.id} key={cls.id}>
-                {cls.name}
-              </option>
-            ))}
-          </select>
-          {errors.classId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.classId.message.toString()}
             </p>
           )}
         </div>

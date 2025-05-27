@@ -89,9 +89,6 @@ const EventListPage = async () => {
                       <FormContainer
                         table="event"
                         type="create"
-                        relatedData={{
-                          classes,
-                        }}
                       />
                     </div>
                   </TooltipTrigger>
@@ -106,9 +103,6 @@ const EventListPage = async () => {
       <EventTable
         data={data}
         role={role}
-        relatedData={{
-          classes,
-        }}
       />
     </div>
   );

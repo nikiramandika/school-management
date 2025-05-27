@@ -33,6 +33,7 @@ const AnnouncementForm = ({
   const [selectedTime, setSelectedTime] = useState<string>(
     data?.date ? format(new Date(data.date), "HH:mm") : "00:00"
   );
+  const [isAllClasses, setIsAllClasses] = useState<boolean>(!data?.classId);
 
   const {
     register,
@@ -56,6 +57,14 @@ const AnnouncementForm = ({
       setValue("date", newDate);
     }
   }, [selectedDate, selectedTime, setValue]);
+
+  // Handle checkbox change
+  const handleAllClassesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsAllClasses(e.target.checked);
+    if (e.target.checked) {
+      setValue("classId", undefined);
+    }
+  };
 
   const onSubmit = useCallback(
     async (formData: AnnouncementSchema) => {
@@ -166,11 +175,21 @@ const AnnouncementForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Kelas</label>
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              id="allClasses"
+              checked={isAllClasses}
+              onChange={handleAllClassesChange}
+              className="rounded border-gray-300"
+            />
+            <label htmlFor="allClasses" className="text-sm">Semua Kelas</label>
+          </div>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
+            disabled={isAllClasses}
           >
             <option value="">Pilih Kelas</option>
             {classes?.map((cls: { id: number; name: string }) => (

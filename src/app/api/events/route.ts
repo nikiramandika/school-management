@@ -3,25 +3,45 @@ import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const date = searchParams.get('date');
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
 
-  if (!date) {
-    return NextResponse.json({ error: 'Date parameter is required' }, { status: 400 });
+  if (!startDate || !endDate) {
+    return NextResponse.json({ error: 'startDate and endDate parameters are required' }, { status: 400 });
   }
 
   try {
-    const startDate = new Date(date);
-    startDate.setHours(0, 0, 0, 0);
-    
-    const endDate = new Date(date);
-    endDate.setHours(23, 59, 59, 999);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
     const events = await prisma.event.findMany({
       where: {
-        startTime: {
-          gte: startDate,
-          lte: endDate,
-        },
+        OR: [
+          {
+            // Events that start during the period
+            startTime: {
+              gte: start,
+              lte: end,
+            },
+          },
+          {
+            // Events that end during the period
+            endTime: {
+              gte: start,
+              lte: end,
+            },
+          },
+          {
+            // Events that span the entire period
+            AND: [
+              { startTime: { lte: start } },
+              { endTime: { gte: end } },
+            ],
+          },
+        ],
+      },
+      orderBy: {
+        startTime: 'asc',
       },
     });
 

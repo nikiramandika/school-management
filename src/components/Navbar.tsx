@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { LuMessageSquareText } from "react-icons/lu";
-import { GrAnnounce } from "react-icons/gr";
+import { GrAnnounce, GrCalendar } from "react-icons/gr";
 import { UserButton, useUser, useAuth } from "@clerk/nextjs";
 import * as React from "react";
 import { Moon, Sun, Menu as MenuIcon } from "lucide-react";
@@ -11,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HiChevronRight } from "react-icons/hi";
+import prisma from "@/lib/prisma";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +47,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   const { setTheme } = useTheme();
   const pathname = usePathname();
   const [todayEvents, setTodayEvents] = useState<any[]>([]);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
   const { user } = useUser();
   const { sessionClaims } = useAuth();
   const role = (sessionClaims?.metadata as { role?: string })?.role || "";
@@ -56,16 +57,58 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     const fetchTodayEvents = async () => {
       try {
         const today = new Date();
-        const response = await fetch(`/api/events?date=${today.toISOString()}`);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        // Fetch events that are currently active (startTime <= now <= endTime)
+        const response = await fetch(`/api/events?startDate=${today.toISOString()}&endDate=${tomorrow.toISOString()}`);
         const data = await response.json();
-        setTodayEvents(data);
+        
+        // Ensure data is an array
+        const eventsArray = Array.isArray(data) ? data : [];
+        
+        // Filter events that are currently active
+        const activeEvents = eventsArray.filter((event: any) => {
+          if (!event?.startTime || !event?.endTime) return false;
+          
+          const startTime = new Date(event.startTime);
+          const endTime = new Date(event.endTime);
+          const now = new Date();
+          return startTime <= now && now <= endTime;
+        });
+        
+        setTodayEvents(activeEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
+        setTodayEvents([]); // Set empty array on error
+      }
+    };
+
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch('/api/announcements');
+        const data = await response.json();
+        
+        // Ensure data is an array
+        const announcementsArray = Array.isArray(data) ? data : [];
+        setAnnouncements(announcementsArray);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+        setAnnouncements([]); // Set empty array on error
       }
     };
 
     fetchTodayEvents();
-  }, []);
+    fetchAnnouncements();
+
+    // Refresh data every minute
+    const interval = setInterval(() => {
+      fetchTodayEvents();
+      fetchAnnouncements();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []); // Remove role dependency since filtering is now handled by the API
 
   const getBreadcrumbLabel = (segment: string, index: number) => {
     // Handle special cases
@@ -242,9 +285,6 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         <div className="ml-auto flex items-center gap-2 md:gap-4">
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline" size="icon">
-              <LuMessageSquareText className="h-5 w-5" />
-            </Button>
             <Popover>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -255,7 +295,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                       className="flex items-center justify-center relative"
                       aria-label="Acara Hari Ini"
                     >
-                      <GrAnnounce className="h-5 w-5" />
+                      <GrCalendar className="h-5 w-5" />
                       {todayEvents.length > 0 && (
                         <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs">
                           {todayEvents.length}
@@ -301,6 +341,75 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                           <p className="text-xs text-gray-500 mt-1">
                             {event.description}
                           </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="flex items-center justify-center relative"
+                      aria-label="Pengumuman"
+                    >
+                      <GrAnnounce className="h-5 w-5" />
+                      {announcements.length > 0 && (
+                        <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full text-xs">
+                          {announcements.length}
+                        </div>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  <p>Lihat Pengumuman</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <PopoverContent className="w-80">
+                <div className="space-y-4">
+                  <h4 className="font-medium leading-none">Pengumuman Terbaru</h4>
+                  {announcements.length === 0 ? (
+                    <p className="text-sm text-gray-500">
+                      Tidak ada pengumuman
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {announcements.map((announcement) => (
+                        <div
+                          key={announcement.id}
+                          className="p-3 rounded-md border border-gray-200 dark:border-gray-800"
+                        >
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-medium text-sm">
+                              {announcement.title}
+                            </h5>
+                            <span className="text-xs text-gray-500">
+                              {new Date(announcement.date).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {announcement.description}
+                          </p>
+                          <div className="mt-2 flex items-center gap-1">
+                            <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded">
+                              {announcement.class ? announcement.class.name : "Semua Kelas"}
+                            </span>
+                          </div>
                         </div>
                       ))}
                     </div>
