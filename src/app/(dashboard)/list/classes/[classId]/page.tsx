@@ -2,6 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { StudentTable } from "./student-table";
 import { notFound } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface ClassStudentsPageProps {
   params: {
@@ -13,48 +16,50 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  // Parse classId as integer
+  // ⬇⬇ Lanjutkan logika backend di sini ⬇⬇
   const classId = parseInt(params.classId);
-  
-  if (isNaN(classId)) {
-    notFound();
-  }
+  if (isNaN(classId)) notFound();
 
-  // Fetch class details
   const classData = await prisma.class.findUnique({
     where: { id: classId },
     include: {
+      students: true,
       grade: true,
-      supervisor: true,
     },
   });
 
-  if (!classData) {
-    notFound();
-  }
-
-  // Fetch students in this class
-  const students = await prisma.student.findMany({
-    where: {
-      classId: classId,
-    },
-  });
+  if (!classData) notFound();
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-lg font-semibold">Daftar Siswa Kelas {classData.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            Tingkat {classData.grade?.level} - Wali Kelas: {classData.supervisor?.name} {classData.supervisor?.surname}
-          </p>
+    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+      <div className="container mx-auto p-6 space-y-8">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-500 rounded-lg">
+            <Users className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Daftar Siswa - {classData.name}
+            </h1>
+          </div>
+          <Badge variant="secondary" className="ml-2">
+            {classData.students.length} Siswa
+          </Badge>
         </div>
+
+        {/* Table Section */}
+        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
+            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+              <div className="bg-white dark:bg-slate-600 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+            <StudentTable data={classData.students} />
+          </div>
+          </CardContent>
+        </Card>
       </div>
-      {/* LIST */}
-      <StudentTable data={students} role={role} />
     </div>
   );
 };
 
-export default ClassStudentsPage; 
+export default ClassStudentsPage;
+

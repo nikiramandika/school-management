@@ -6,7 +6,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
-import { Pencil, Save, AlertCircle } from 'lucide-react';
+import { 
+  Pencil, 
+  Save, 
+  AlertCircle, 
+  User, 
+  Calendar,
+  BookOpen,
+  UserCheck,
+  Users,
+  CheckCircle,
+  XCircle,
+  Clock
+} from 'lucide-react';
 import { createAttendance, updateAttendance } from '@/lib/actions';
 import { toast } from 'react-toastify';
 import {
@@ -16,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 interface Student {
   id: string;
@@ -175,103 +188,168 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
   const allPresent = students.length > 0 && students.every(student => attendanceStatus[student.id]);
 
   return (
-    <Card className="p-4">
-      <div className="mb-4 space-y-4">
-        <div className="flex gap-4 items-center">
-          <Select
-            value={selectedLesson}
-            onValueChange={setSelectedLesson}
-            disabled={filteredLessons.length === 0}
-          >
-            <SelectTrigger className="w-[300px]">
-              <SelectValue placeholder={
-                filteredLessons.length === 0 
-                  ? "Tidak ada pelajaran yang tersedia" 
-                  : "Pilih Pelajaran"
-              } />
-            </SelectTrigger>
-            <SelectContent>
-              {filteredLessons.map((lesson) => (
-                <SelectItem key={lesson.id} value={lesson.id.toString()}>
-                  {lesson.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="space-y-6">
+      {/* Header Controls */}
+      <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800">
+        <div className="space-y-4">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Manajemen Absensi</h2>
+              </div>
+            </div>
+          </div>
 
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="px-3 py-2 border rounded-md"
-          />
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-blue-600" />
+              <Select
+                value={selectedLesson}
+                onValueChange={setSelectedLesson}
+                disabled={filteredLessons.length === 0}
+              >
+                <SelectTrigger className="w-[280px] border-blue-200 focus:border-blue-400">
+                  <SelectValue placeholder={
+                    filteredLessons.length === 0 
+                      ? "Tidak ada pelajaran yang tersedia" 
+                      : "Pilih Pelajaran"
+                  } />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredLessons.map((lesson) => (
+                    <SelectItem key={lesson.id} value={lesson.id.toString()}>
+                      <div className="flex items-center gap-2">
+                        {lesson.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          {selectedLesson && (
-            <div className="flex gap-2">
-              {!isEditing ? (
-                <Button
-                  onClick={handleEdit}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Edit Kehadiran
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSaveAll}
-                  disabled={!hasChanges}
-                  className="flex items-center gap-2"
-                >
-                  <Save className="h-4 w-4" />
-                  Simpan Semua
-                </Button>
-              )}
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-indigo-600" />
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="px-3 py-2 border border-indigo-200 rounded-md focus:border-indigo-400 focus:outline-none"
+              />
+            </div>
+
+            {selectedLesson && (
+              <div className="flex gap-2">
+                {!isEditing ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={handleEdit}
+                          variant="outline"
+                          className="flex items-center gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-900/20"
+                        >
+                          <Pencil className="h-4 w-4" />
+                          Edit Kehadiran
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Edit kehadiran siswa</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={handleSaveAll}
+                          disabled={!hasChanges}
+                          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <Save className="h-4 w-4" />
+                          Simpan Semua
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Simpan semua perubahan kehadiran</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
+            )}
+          </div>
+
+          {selectedLessonDetails && (
+            <div className="p-4 bg-white/50 dark:bg-white/5 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300">
+                    <BookOpen className="mr-1 h-3 w-3" />
+                    {selectedLessonDetails.name}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300">
+                    <Users className="mr-1 h-3 w-3" />
+                    {selectedLessonDetails.class.name}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300">
+                    <UserCheck className="mr-1 h-3 w-3" />
+                    {selectedLessonDetails.teacher.name} {selectedLessonDetails.teacher.surname}
+                  </Badge>
+                </div>
+              </div>
             </div>
           )}
         </div>
+      </Card>
 
-        {selectedLessonDetails && (
-          <div className="p-4 bg-muted rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">{selectedLessonDetails.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              Guru: {selectedLessonDetails.teacher.name} {selectedLessonDetails.teacher.surname}
-            </p>
+      {/* Main Content */}
+      <Card className="overflow-hidden">
+        {!selectedLesson ? (
+          <div className="text-center py-12">
+            <div className="flex flex-col items-center gap-4 text-muted-foreground">
+              <div className="p-4 bg-yellow-100 dark:bg-yellow-900/20 rounded-full">
+                <AlertCircle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-lg font-medium text-gray-900 dark:text-white">Silakan pilih pelajaran terlebih dahulu</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Pilih pelajaran dari menu dropdown di atas untuk melihat dan mengelola absensi</p>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-
-      {!selectedLesson ? (
-        <div className="text-center py-8">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <AlertCircle className="h-8 w-8 text-yellow-500" />
-            <p className="text-lg font-medium">Silakan pilih pelajaran terlebih dahulu</p>
-            <p className="text-sm">Pilih pelajaran dari menu dropdown di atas untuk melihat dan mengelola absensi</p>
-          </div>
-        </div>
-      ) : filteredLessons.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Nama</th>
-                <th className="text-left p-2">
-                  <div className="flex items-center gap-2">
-                    {isEditing && (
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          checked={allPresent}
-                          onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
-                        />
-                        <span className="text-sm text-muted-foreground">Pilih Semua</span>
-                      </div>
-                    )}
+        ) : filteredLessons.length > 0 ? (
+          <div className="overflow-x-auto">
+            {/* Table Header */}
+            <div className="bg-gray-50 dark:bg-gray-800 px-6 py-4 border-b">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    <Users className="h-4 w-4 text-blue-600" />
+                    Daftar Kehadiran Siswa
+                  </h3>
+                  <Badge variant="outline" className="border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-300">
+                    {students.length} Siswa
+                  </Badge>
+                </div>
+                {isEditing && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Pilih Semua:</span>
+                    <Checkbox
+                      checked={allPresent}
+                      onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
+                      className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                    />
                   </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => {
+                )}
+              </div>
+            </div>
+
+            {/* Table Content */}
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {students.map((student, index) => {
                 const existingAttendance = existingAttendances.find(
                   attendance => 
                     attendance.lessonId === parseInt(selectedLesson) && 
@@ -279,43 +357,125 @@ export function AttendanceTable({ students, lessons, role, currentUserId, existi
                     format(new Date(attendance.date), 'yyyy-MM-dd') === selectedDate
                 );
 
+                const isPresent = attendanceStatus[student.id] || false;
+
                 return (
-                  <tr key={student.id} className="border-b">
-                    <td className="p-2">
-                      {student.name} {student.surname}
-                    </td>
-                    <td className="p-2">
-                      {isEditing ? (
-                        <div className="flex items-center gap-2">
-                          <Checkbox
-                            checked={attendanceStatus[student.id] || false}
-                            onCheckedChange={(checked) => handleAttendanceChange(student.id, checked as boolean)}
-                          />
-                          <span className="text-sm text-muted-foreground">
-                            {attendanceStatus[student.id] ? 'Hadir' : 'Absen'}
-                          </span>
+                  <div key={student.id} className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/20'}`}>
+                    <div className="flex items-center justify-between">
+                      {/* Student Info */}
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                            <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {student.name} {student.surname}
+                            </span>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs">
+                                <Users className="mr-1 h-3 w-3" />
+                                {student.class.name}
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
-                      ) : (
-                        existingAttendance ? (
-                          <span className={`px-2 py-1 rounded ${existingAttendance.present ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {existingAttendance.present ? 'Hadir' : 'Absen'}
-                          </span>
+                      </div>
+
+                      {/* Attendance Status */}
+                      <div className="flex items-center gap-4">
+                        {isEditing ? (
+                          <div className="flex items-center gap-3">
+                            <Checkbox
+                              checked={isPresent}
+                              onCheckedChange={(checked) => handleAttendanceChange(student.id, checked as boolean)}
+                              className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                            />
+                            <Badge 
+                              variant="outline" 
+                              className={`${isPresent 
+                                ? 'border-green-200 text-green-700 dark:border-green-700 dark:text-green-300' 
+                                : 'border-red-200 text-red-700 dark:border-red-700 dark:text-red-300'
+                              }`}
+                            >
+                              {isPresent ? (
+                                <>
+                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                  Hadir
+                                </>
+                              ) : (
+                                <>
+                                  <XCircle className="mr-1 h-3 w-3" />
+                                  Absen
+                                </>
+                              )}
+                            </Badge>
+                          </div>
                         ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )
-                      )}
-                    </td>
-                  </tr>
+                          <div className="flex items-center gap-2">
+                            {existingAttendance ? (
+                              <Badge 
+                                variant="outline" 
+                                className={`${existingAttendance.present 
+                                  ? 'border-green-200 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-300 dark:bg-green-900/20' 
+                                  : 'border-red-200 text-red-700 bg-red-50 dark:border-red-700 dark:text-red-300 dark:bg-red-900/20'
+                                }`}
+                              >
+                                {existingAttendance.present ? (
+                                  <>
+                                    <CheckCircle className="mr-1 h-3 w-3" />
+                                    Hadir
+                                  </>
+                                ) : (
+                                  <>
+                                    <XCircle className="mr-1 h-3 w-3" />
+                                    Absen
+                                  </>
+                                )}
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="border-gray-300 text-gray-500 dark:border-gray-600 dark:text-gray-400">
+                                <Clock className="mr-1 h-3 w-3" />
+                                Belum Dicatat
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          Tidak ada pelajaran yang tersedia untuk kelas ini
-        </div>
-      )}
-    </Card>
+            </div>
+
+            {students.length === 0 && (
+              <div className="text-center py-12">
+                <div className="flex flex-col items-center gap-4 text-muted-foreground">
+                  <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
+                    <Users className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">Tidak ada siswa ditemukan</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Belum ada siswa yang terdaftar untuk kelas ini</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="flex flex-col items-center gap-4 text-muted-foreground">
+              <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
+                <BookOpen className="h-8 w-8 text-gray-400" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-lg font-medium text-gray-900 dark:text-white">Tidak ada pelajaran tersedia</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Tidak ada pelajaran yang tersedia untuk kelas ini</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </Card>
+    </div>
   );
-} 
+}

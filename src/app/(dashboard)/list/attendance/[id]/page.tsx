@@ -3,6 +3,62 @@ import prisma from "@/lib/prisma";
 import { AttendanceTable } from "../attendance-table";
 import FormModal from "@/components/FormModal";
 import { notFound, redirect } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  UserCheck, 
+  Users, 
+  Calendar,
+  BookOpen,
+  GraduationCap,
+  ArrowLeft,
+  Clock,
+  CheckCircle,
+  School
+} from "lucide-react";
+import Link from "next/link";
+
+// Enhanced Header component with stats
+const PageHeader = ({ 
+  className, 
+  totalStudents, 
+  totalLessons,
+  totalAttendances,
+  role 
+}: { 
+  className: string;
+  totalStudents: number;
+  totalLessons: number;
+  totalAttendances: number;
+  role: string;
+}) => (
+  <div className="space-y-6">
+    {/* Navigation Breadcrumb */}
+    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+      <Link 
+        href="/list/attendance" 
+        className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Kembali ke Daftar Kelas
+      </Link>
+    </div>
+
+    {/* Main Header */}
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-green-500 rounded-lg">
+          <UserCheck className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Absensi {className}
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default async function ClassAttendancePage({
   params: { id },
@@ -132,26 +188,37 @@ export default async function ClassAttendancePage({
     },
   });
 
-  return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-            {classItem.name} Absensi
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-white">
-          Melihat dan mengelola catatan absensi untuk {classItem.name}
-          </p>
-        </div>
-      </div>
+  // Calculate stats
+  const totalStudents = students.length;
+  const totalLessons = lessons.length;
+  const totalAttendances = attendances.filter(att => att.present).length;
 
-      <AttendanceTable
-        students={students}
-        lessons={lessons}
-        role={role}
-        currentUserId={currentUserId || undefined}
-        existingAttendances={attendances}
-      />
+  return (
+    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+      <div className="container mx-auto p-6 space-y-8">
+        <PageHeader 
+          className={classItem.name}
+          totalStudents={totalStudents}
+          totalLessons={totalLessons}
+          totalAttendances={totalAttendances}
+          role={role || ""}
+        />
+        
+        {/* Main Content Section */}
+        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
+          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+              <AttendanceTable
+                students={students}
+                lessons={lessons}
+                role={role}
+                currentUserId={currentUserId || undefined}
+                existingAttendances={attendances}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
-} 
+}

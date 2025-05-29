@@ -4,7 +4,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Subject, Teacher } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Users, BookOpen } from "lucide-react";
+import { 
+  ArrowUpDown, 
+  Users, 
+  BookOpen, 
+  Edit,
+  UserCheck,
+  GraduationCap 
+} from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
   Tooltip,
@@ -47,7 +54,7 @@ type SubjectTableProps = {
 };
 
 export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
-  const columns: ColumnDef<SubjectList>[] = [
+  const baseColumns: ColumnDef<SubjectList>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -55,15 +62,25 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="font-semibold"
+            className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
           >
+            <BookOpen className="mr-2 h-4 w-4 text-blue-600" />
             Nama Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="font-medium text-primary">{row.original.name}</div>
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <BookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {row.original.name}
+            </span>
+          </div>
+        </div>
       ),
     },
     {
@@ -73,9 +90,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex font-semibold"
+            className="hidden md:flex hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold"
           >
-            <Users className="mr-2 h-4 w-4" />
+            <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -93,7 +110,11 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                 <TooltipProvider key={teacher.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="secondary" className="cursor-help">
+                      <Badge 
+                        variant="outline" 
+                        className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-help"
+                      >
+                        <UserCheck className="mr-1 h-3 w-3" />
                         {teacher.name} {teacher.surname}
                       </Badge>
                     </TooltipTrigger>
@@ -106,18 +127,18 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
               {remainingTeachers > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button
+                    <Badge
                       variant="outline"
-                      size="sm"
-                      className="h-6 px-2 hover:bg-secondary/80"
+                      className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
                     >
+                      <Users className="mr-1 h-3 w-3" />
                       +{remainingTeachers} Lebih Banyak
-                    </Button>
+                    </Badge>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
-                        <Users className="h-5 w-5" />
+                        <UserCheck className="h-5 w-5 text-orange-600" />
                         Guru untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
@@ -128,7 +149,10 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                             key={teacher.id}
                             className="flex items-center justify-between rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
-                            <div>
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                                <UserCheck className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                              </div>
                               <div className="font-medium">
                                 {teacher.name} {teacher.surname}
                               </div>
@@ -152,9 +176,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex font-semibold"
+            className="hidden lg:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4" />
+            <GraduationCap className="mr-2 h-4 w-4 text-green-600" />
             Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -166,13 +190,17 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
         const remainingLessons = lessons.length - 2;
 
         return (
-          <div className="hidden md:table-cell">
+          <div className="hidden lg:table-cell">
             <div className="flex flex-col gap-1.5">
               {displayLessons.map((lesson) => (
                 <TooltipProvider key={lesson.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="secondary" className="w-fit cursor-help">
+                      <Badge 
+                        variant="outline" 
+                        className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300 w-fit cursor-help"
+                      >
+                        <GraduationCap className="mr-1 h-3 w-3" />
                         {lesson.name} - {lesson.class.name}
                       </Badge>
                     </TooltipTrigger>
@@ -187,18 +215,18 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
               {remainingLessons > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button
+                    <Badge
                       variant="outline"
-                      size="sm"
-                      className="h-6 px-2 hover:bg-secondary/80"
+                      className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300 w-fit cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/20"
                     >
+                      <BookOpen className="mr-1 h-3 w-3" />
                       +{remainingLessons} Lebih banyak pelajaran
-                    </Button>
+                    </Badge>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
-                        <BookOpen className="h-5 w-5" />
+                        <GraduationCap className="h-5 w-5 text-green-600" />
                         Pelajaran untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
@@ -209,16 +237,31 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                             key={lesson.id}
                             className="rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
-                            <div className="font-medium">{lesson.name}</div>
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                <GraduationCap className="h-4 w-4 text-green-600 dark:text-green-400" />
+                              </div>
+                              <div className="font-medium">{lesson.name}</div>
+                            </div>
                             <Separator className="my-2" />
                             <div className="space-y-1 text-sm text-muted-foreground">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium">Kelas:</span>
-                                {lesson.class.name}
+                                <Badge 
+                                  variant="outline" 
+                                  className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
+                                >
+                                  <Users className="mr-1 h-3 w-3" />
+                                  {lesson.class.name}
+                                </Badge>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="font-medium">Guru:</span>
-                                {lesson.teacher.name} {lesson.teacher.surname}
+                                <Badge 
+                                  variant="outline" 
+                                  className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
+                                >
+                                  <UserCheck className="mr-1 h-3 w-3" />
+                                  {lesson.teacher.name} {lesson.teacher.surname}
+                                </Badge>
                               </div>
                             </div>
                           </div>
@@ -233,50 +276,57 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
         );
       },
     },
+  ];
+
+  const adminColumns: ColumnDef<SubjectList>[] = [
     {
       id: "actions",
-      header: "Aksi",
+      header: () => (
+        <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
+          <Edit className="h-4 w-4 text-indigo-600" />
+          Aksi
+        </div>
+      ),
       cell: ({ row }) => {
         const subject = row.original;
         return (
           <div className="flex items-center gap-2">
-            {role === "admin" && (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal
-                          table="subject"
-                          type="update"
-                          data={subject}
-                          relatedData={{
-                            teachers: allTeachers,
-                          }}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Ubah Mata Pelajaran</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="inline-flex items-center justify-center">
+                    <FormModal
+                      table="subject"
+                      type="update"
+                      data={subject}
+                      relatedData={{
+                        teachers: allTeachers,
+                      }}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Ubah Mata Pelajaran</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-flex items-center justify-center">
-                        <FormModal table="subject" type="delete" id={subject.id} />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>Hapus Mata Pelajaran</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
-            )}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="inline-flex items-center justify-center">
+                    <FormModal table="subject" type="delete" id={subject.id} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Hapus Mata Pelajaran</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         );
       },
     },
   ];
+
+  const columns =
+    role === "admin" ? [...baseColumns, ...adminColumns] : baseColumns;
 
   return <DataTable columns={columns} data={data} searchKey="name" />;
 }

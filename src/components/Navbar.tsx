@@ -1,6 +1,5 @@
 "use client";
 
-import { LuMessageSquareText } from "react-icons/lu";
 import { GrAnnounce, GrCalendar } from "react-icons/gr";
 import { UserButton, useUser, useAuth } from "@clerk/nextjs";
 import * as React from "react";
@@ -10,8 +9,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HiChevronRight } from "react-icons/hi";
-import prisma from "@/lib/prisma";
-
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -29,13 +26,11 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -48,6 +43,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   const pathname = usePathname();
   const [todayEvents, setTodayEvents] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [isLoadingAnnouncements, setIsLoadingAnnouncements] = useState(false);
   const { user } = useUser();
   const { sessionClaims } = useAuth();
   const role = (sessionClaims?.metadata as { role?: string })?.role || "";
@@ -59,90 +55,102 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        // Fetch events that are currently active (startTime <= now <= endTime)
-        const response = await fetch(`/api/events?startDate=${today.toISOString()}&endDate=${tomorrow.toISOString()}`);
+
+        const response = await fetch(
+          `/api/events?startDate=${today.toISOString()}&endDate=${tomorrow.toISOString()}`
+        );
+
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          setTodayEvents([]);
+          return;
+        }
+
         const data = await response.json();
-        
-        // Ensure data is an array
         const eventsArray = Array.isArray(data) ? data : [];
-        
-        // Filter events that are currently active
+
         const activeEvents = eventsArray.filter((event: any) => {
           if (!event?.startTime || !event?.endTime) return false;
-          
+
           const startTime = new Date(event.startTime);
           const endTime = new Date(event.endTime);
           const now = new Date();
           return startTime <= now && now <= endTime;
         });
-        
+
         setTodayEvents(activeEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
-        setTodayEvents([]); // Set empty array on error
+        setTodayEvents([]);
       }
     };
 
     const fetchAnnouncements = async () => {
       try {
         // Get announcements with role-based filtering
-        const response = await fetch('/api/announcements');
-        const data = await response.json();
-        
-        // Ensure data is an array
-        let announcementsArray = Array.isArray(data) ? data : [];
+        const response = await fetch("/api/announcements", {
+          cache: "no-store",
+          next: { revalidate: 0 },
+        });
 
-        // Filter announcements based on role
-        if (role === "teacher") {
-          // Get teacher's classes through lessons
-          const teacherResponse = await fetch(`/api/teachers/${user?.id}/classes`);
-          const teacherData = await teacherResponse.json();
-          const teacherClassIds = teacherData.map((cls: any) => cls.id);
-
-          // Filter announcements to show only:
-          // 1. Announcements for all classes (classId is null)
-          // 2. Announcements for teacher's classes through lessons
-          announcementsArray = announcementsArray.filter((announcement: any) => {
-            return !announcement.classId || teacherClassIds.includes(announcement.classId);
-          });
-        } else if (role === "student") {
-          // Get student's class
-          const studentResponse = await fetch(`/api/students/${user?.id}`);
-          const studentData = await studentResponse.json();
-          const studentClassId = studentData?.classId;
-
-          // Filter announcements to show only:
-          // 1. Announcements for all classes (classId is null)
-          // 2. Announcements for student's class
-          announcementsArray = announcementsArray.filter((announcement: any) => {
-            return !announcement.classId || announcement.classId === studentClassId;
-          });
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          setAnnouncements([]);
+          return;
         }
 
-        // Sort by date descending and take only the latest 3
+        const data = await response.json();
+        let announcementsArray = Array.isArray(data) ? data : [];
+
+        // Filter announcements to only show current and future dates
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to start of day
+
+        announcementsArray = announcementsArray.filter((announcement: any) => {
+          const announcementDate = new Date(announcement.date);
+          announcementDate.setHours(0, 0, 0, 0); // Set to start of day
+          return announcementDate >= today;
+        });
+
+        // Sort by date ascending (earliest first)
         announcementsArray = announcementsArray
-          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.date).getTime() - new Date(b.date).getTime()
+          )
           .slice(0, 3);
 
         setAnnouncements(announcementsArray);
       } catch (error) {
         console.error("Error fetching announcements:", error);
-        setAnnouncements([]); // Set empty array on error
+        setAnnouncements([]);
       }
     };
 
-    fetchTodayEvents();
-    fetchAnnouncements();
-
-    // Refresh data every minute
-    const interval = setInterval(() => {
+    // Only fetch data if user is authenticated
+    if (user?.id) {
       fetchTodayEvents();
       fetchAnnouncements();
-    }, 60000);
+    } else {
+      // Clear data when user is not authenticated
+      setTodayEvents([]);
+      setAnnouncements([]);
+    }
 
-    return () => clearInterval(interval);
-  }, []); // Remove role dependency since filtering is now handled by the API
+    // Only set up interval if user is authenticated
+    const interval = user?.id
+      ? setInterval(() => {
+          fetchTodayEvents();
+          fetchAnnouncements();
+        }, 30000)
+      : null;
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [user?.id, role]); // Keep these dependencies to ensure re-fetch when user or role changes
 
   const getBreadcrumbLabel = (segment: string, index: number) => {
     // Handle special cases
@@ -331,7 +339,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                     >
                       <GrCalendar className="h-5 w-5" />
                       {todayEvents.length > 0 && (
-                        <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs">
+                        <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full text-xs">
                           {todayEvents.length}
                         </div>
                       )}
@@ -351,30 +359,38 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                       Tidak ada acara hari ini
                     </p>
                   ) : (
-                    <div className="space-y-2">
-                      {todayEvents.map((event) => (
+                    <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+                      {todayEvents.map((event, idx) => (
                         <div
                           key={event.id}
-                          className="p-3 rounded-md border border-gray-200 dark:border-gray-800"
+                          className={`p-3 rounded-md border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
+                            idx === todayEvents.length - 1 ? "" : "mb-4"
+                          }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <h5 className="font-medium text-sm">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-semibold text-base text-gray-900 dark:text-gray-100">
                               {event.title}
                             </h5>
-                            <span className="text-xs text-gray-500">
-                              {new Date(event.startTime).toLocaleTimeString(
-                                "en-UK",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: false,
-                                }
-                              )}
-                            </span>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {event.description}
-                          </p>
+                          {event.description && (
+                            <div className="mt-1">
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                {event.description}
+                              </p>
+                            </div>
+                          )}
+                          <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 mt-2 inline-block">
+                            {new Date(event.startTime).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -394,10 +410,16 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                       aria-label="Pengumuman"
                     >
                       <GrAnnounce className="h-5 w-5" />
-                      {announcements.length > 0 && (
+                      {isLoadingAnnouncements ? (
                         <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full text-xs">
-                          {announcements.length}
+                          Memuat...
                         </div>
+                      ) : (
+                        announcements.length > 0 && (
+                          <div className="absolute -top-3 -right-2 w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full text-xs">
+                            {announcements.length}
+                          </div>
+                        )
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -409,8 +431,14 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
 
               <PopoverContent className="w-80">
                 <div className="space-y-4">
-                  <h4 className="font-medium leading-none">Pengumuman Terbaru</h4>
-                  {announcements.length === 0 ? (
+                  <h4 className="font-medium leading-none">
+                    Pengumuman Terbaru
+                  </h4>
+                  {isLoadingAnnouncements ? (
+                    <p className="text-sm text-gray-500">
+                      Memuat pengumuman...
+                    </p>
+                  ) : announcements.length === 0 ? (
                     <p className="text-sm text-gray-500">
                       Tidak ada pengumuman
                     </p>
@@ -441,7 +469,9 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                           </p>
                           <div className="mt-2 flex items-center gap-1">
                             <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded">
-                              {announcement.class ? announcement.class.name : "Semua Kelas"}
+                              {announcement.class
+                                ? announcement.class.name
+                                : "Semua Kelas"}
                             </span>
                           </div>
                         </div>

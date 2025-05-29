@@ -37,4 +37,4 @@ export async function GET() {
     console.error("Error fetching announcements:", error);
     return NextResponse.json({ error: "Error fetching announcements" }, { status: 500 });
   }
-} 
+}

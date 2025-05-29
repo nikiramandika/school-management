@@ -33,8 +33,8 @@ const StudentPage = async () => {
     <div className="p-4 flex gap-4 flex-col xl:flex-row">
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
-        <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Jadwal (4A)</h1>
+        <div className="h-full bg-gray-50 dark:bg-card p-4 rounded-md shadow-sm">
+          <h1 className="text-xl font-semibold mb-4">Jadwal Kelas</h1>
           {classItem.length > 0 ? (
             <BigCalendarContainer 
               type="classId" 
