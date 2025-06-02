@@ -1,22 +1,28 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  BookOpen, 
-  Users, 
-  User, 
+import {
+  BookOpen,
+  Users,
+  User,
   Award,
   Calendar,
   GraduationCap,
   UserCheck,
   TrendingUp,
   Filter,
-  Search
-} from 'lucide-react';
+  Search,
+} from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
   Tooltip,
@@ -71,37 +77,43 @@ type ResultTableProps = {
 };
 
 export function ResultTable({ data, role, relatedData }: ResultTableProps) {
-  const [selectedClass, setSelectedClass] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   // Get unique classes from data
-  const availableClasses = Array.from(new Set(data.map(item => item.className)))
-    .map(className => ({ id: className, name: className }));
+  const availableClasses = Array.from(
+    new Set(data.map((item) => item.className))
+  ).map((className) => ({ id: className, name: className }));
 
   // Filter and sort data
   const filteredData = data
-    .filter(item => {
+    .filter((item) => {
       const matchesClass = !selectedClass || item.className === selectedClass;
-      const matchesSearch = !searchQuery || 
+      const matchesSearch =
+        !searchQuery ||
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        `${item.studentName} ${item.studentSurname}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        `${item.teacherName} ${item.teacherSurname}`.toLowerCase().includes(searchQuery.toLowerCase());
+        `${item.studentName} ${item.studentSurname}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        `${item.teacherName} ${item.teacherSurname}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
       return matchesClass && matchesSearch;
     })
     .sort((a, b) => {
       let aValue, bValue;
       switch (sortBy) {
-        case 'score':
+        case "score":
           aValue = a.score;
           bValue = b.score;
           break;
-        case 'student':
+        case "student":
           aValue = `${a.studentName} ${a.studentSurname}`;
           bValue = `${b.studentName} ${b.studentSurname}`;
           break;
-        case 'title':
+        case "title":
           aValue = a.title;
           bValue = b.title;
           break;
@@ -109,8 +121,8 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
           aValue = new Date(a.startTime).getTime();
           bValue = new Date(b.startTime).getTime();
       }
-      
-      if (sortOrder === 'asc') {
+
+      if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
@@ -119,23 +131,33 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
 
   // Calculate statistics
   const totalResults = filteredData.length;
-  const averageScore = totalResults > 0 ? (filteredData.reduce((sum, item) => sum + item.score, 0) / totalResults).toFixed(1) : 0;
-  const highestScore = totalResults > 0 ? Math.max(...filteredData.map(item => item.score)) : 0;
+  const averageScore =
+    totalResults > 0
+      ? (
+          filteredData.reduce((sum, item) => sum + item.score, 0) / totalResults
+        ).toFixed(1)
+      : 0;
+  const highestScore =
+    totalResults > 0 ? Math.max(...filteredData.map((item) => item.score)) : 0;
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return 'border-green-200 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-300 dark:bg-green-900/20';
-    if (score >= 80) return 'border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:bg-blue-900/20';
-    if (score >= 70) return 'border-yellow-200 text-yellow-700 bg-yellow-50 dark:border-yellow-700 dark:text-yellow-300 dark:bg-yellow-900/20';
-    if (score >= 60) return 'border-orange-200 text-orange-700 bg-orange-50 dark:border-orange-700 dark:text-orange-300 dark:bg-orange-900/20';
-    return 'border-red-200 text-red-700 bg-red-50 dark:border-red-700 dark:text-red-300 dark:bg-red-900/20';
+    if (score >= 90)
+      return "border-green-200 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-300 dark:bg-green-900/20";
+    if (score >= 80)
+      return "border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:bg-blue-900/20";
+    if (score >= 70)
+      return "border-yellow-200 text-yellow-700 bg-yellow-50 dark:border-yellow-700 dark:text-yellow-300 dark:bg-yellow-900/20";
+    if (score >= 60)
+      return "border-orange-200 text-orange-700 bg-orange-50 dark:border-orange-700 dark:text-orange-300 dark:bg-orange-900/20";
+    return "border-red-200 text-red-700 bg-red-50 dark:border-red-700 dark:text-red-300 dark:bg-red-900/20";
   };
 
   const getScoreIcon = (score: number) => {
-    if (score >= 90) return '🏆';
-    if (score >= 80) return '🥇';
-    if (score >= 70) return '🥈';
-    if (score >= 60) return '🥉';
-    return '📝';
+    if (score >= 90) return "🏆";
+    if (score >= 80) return "🥇";
+    if (score >= 70) return "🥈";
+    if (score >= 60) return "🥉";
+    return "📝";
   };
 
   return (
@@ -149,8 +171,12 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                 <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Manajemen Nilai</h2>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Kelola dan pantau hasil nilai siswa</p>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Manajemen Nilai
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Kelola dan pantau hasil nilai siswa
+                </p>
               </div>
             </div>
           </div>
@@ -163,8 +189,12 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Total Nilai</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{totalResults}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Total Nilai
+                  </p>
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {totalResults}
+                  </p>
                 </div>
               </div>
             </div>
@@ -174,8 +204,12 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Rata-rata</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{averageScore}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Rata-rata
+                  </p>
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {averageScore}
+                  </p>
                 </div>
               </div>
             </div>
@@ -185,8 +219,12 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   <Award className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Tertinggi</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{highestScore}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Tertinggi
+                  </p>
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {highestScore}
+                  </p>
                 </div>
               </div>
             </div>
@@ -241,10 +279,10 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
 
             <Button
               variant="outline"
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
               className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
             >
-              {sortOrder === 'asc' ? '↑' : '↓'}
+              {sortOrder === "asc" ? "↑" : "↓"}
             </Button>
           </div>
         </div>
@@ -261,7 +299,10 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   <Award className="h-4 w-4 text-purple-600" />
                   Daftar Nilai Siswa
                 </h3>
-                <Badge variant="outline" className="border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-300">
+                <Badge
+                  variant="outline"
+                  className="border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-300"
+                >
                   {filteredData.length} Hasil
                 </Badge>
               </div>
@@ -307,7 +348,14 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
               };
 
               return (
-                <div key={result.id} className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/20'}`}>
+                <div
+                  key={result.id}
+                  className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
+                    index % 2 === 0
+                      ? "bg-white dark:bg-card"
+                      : "bg-gray-50/50 dark:bg-gray-800/20"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     {/* Main Info */}
                     <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -320,15 +368,24 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                             {result.title}
                           </span>
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
-                            <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs"
+                            >
                               <User className="mr-1 h-3 w-3" />
                               {result.studentName} {result.studentSurname}
                             </Badge>
-                            <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs"
+                            >
                               <Users className="mr-1 h-3 w-3" />
                               {result.className}
                             </Badge>
-                            <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs">
+                            <Badge
+                              variant="outline"
+                              className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
+                            >
                               <UserCheck className="mr-1 h-3 w-3" />
                               {result.teacherName} {result.teacherSurname}
                             </Badge>
@@ -340,9 +397,11 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                     {/* Score and Actions */}
                     <div className="flex items-center gap-4">
                       <div className="flex flex-col items-center gap-2">
-                        <Badge 
-                          variant="outline" 
-                          className={`${getScoreColor(result.score)} font-bold text-lg px-3 py-1`}
+                        <Badge
+                          variant="outline"
+                          className={`${getScoreColor(
+                            result.score
+                          )} font-bold text-lg px-3 py-1`}
                         >
                           {getScoreIcon(result.score)} {result.score}
                         </Badge>
@@ -405,13 +464,14 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                 </div>
                 <div className="space-y-2">
                   <p className="text-lg font-medium text-gray-900 dark:text-white">
-                    {searchQuery || selectedClass ? 'Tidak ada hasil yang ditemukan' : 'Belum ada nilai'}
+                    {searchQuery || selectedClass
+                      ? "Tidak ada hasil yang ditemukan"
+                      : "Belum ada nilai"}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {searchQuery || selectedClass 
-                      ? 'Coba ubah filter atau kata kunci pencarian' 
-                      : 'Belum ada nilai yang tercatat untuk siswa'
-                    }
+                    {searchQuery || selectedClass
+                      ? "Coba ubah filter atau kata kunci pencarian"
+                      : "Belum ada nilai yang tercatat untuk siswa"}
                   </p>
                 </div>
               </div>

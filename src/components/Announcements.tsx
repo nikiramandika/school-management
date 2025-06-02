@@ -42,17 +42,19 @@ const Announcements = async () => {
 
   const getPriorityColor = (index: number) => {
     const colors = [
-      "border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20",
-      "border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20",
-      "border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20",
+      "border-l-cyan-500 bg-cyan-100/50 dark:bg-cyan-950/20",
+      "border-l-teal-500 bg-teal-100/50 dark:bg-teal-950/20",
+      "border-l-indigo-500 bg-indigo-100/50 dark:bg-indigo-950/20",
     ];
     return colors[index] || colors[0];
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+    <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 px-6 py-5">
+      <div
+        className="bg-cyan-400/80 px-6 py-5"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -76,7 +78,7 @@ const Announcements = async () => {
           </div>
           <Link
             href="/list/announcements"
-            className="text-blue-100 hover:text-white text-sm font-medium transition-colors duration-200 hover:underline"
+            className="text-blue-100 hover:text-white text-sm font-medium transition-colors duration-200"
           >
             Lihat Semua
           </Link>
@@ -123,11 +125,11 @@ const Announcements = async () => {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                        <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-200">
                           {announcement.title}
                         </h3>
                         {index === 0 && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-600/30 dark:text-rose-400">
                             Terbaru
                           </span>
                         )}

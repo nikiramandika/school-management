@@ -12,27 +12,26 @@ const CountChartContainer = async () => {
   const girls = data.find((d) => d.sex === "FEMALE")?._count || 0;
 
   return (
-    <div className="bg-gray-50 dark:bg-card rounded-xl w-full h-full p-4">
+    <div className="bg-white shadow-sm dark:bg-card rounded-xl w-full h-full p-4">
       {/* TITLE */}
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Siswa</h1>
         <Image src="/moreDark.png" alt="" width={20} height={20} />
-      </div>
-      {/* CHART */}
+      </div>      {/* CHART */}
       <CountChart boys={boys} girls={girls} />
       {/* BOTTOM */}
       <div className="flex justify-center gap-16">
         <div className="flex flex-col gap-1">
-          <div className="w-5 h-5 bg-lamaSky rounded-full" />
+          <div className="w-5 h-5 bg-cyan-500 rounded-full" />
           <h1 className="font-bold">{boys}</h1>
-          <h2 className="text-xs text-gray-300">
+          <h2 className="text-xs text-gray-400">
             Laki-Laki ({Math.round((boys / (boys + girls)) * 100)}%)
           </h2>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="w-5 h-5 bg-lamaYellow rounded-full" />
+          <div className="w-5 h-5 bg-indigo-200 bg-indigo-400/80 rounded-full" />
           <h1 className="font-bold">{girls}</h1>
-          <h2 className="text-xs text-gray-300">
+          <h2 className="text-xs text-gray-400">
             Perempuan ({Math.round((girls / (boys + girls)) * 100)}%)
           </h2>
         </div>

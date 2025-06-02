@@ -4,18 +4,18 @@ import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  BookOpen, 
-  Calendar, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  BookOpen,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
   UserCheck,
   Users,
   GraduationCap,
   School,
   ArrowLeft,
   Clock,
-  CheckCircle
+  CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -79,15 +79,15 @@ type LessonWithAttendances = Lesson & {
 };
 
 // Enhanced Header component with stats
-const PageHeader = ({ 
-  className, 
+const PageHeader = ({
+  className,
   gradeLevel,
-  totalStudents, 
+  totalStudents,
   totalLessons,
   weekStart,
   weekEnd,
-  role 
-}: { 
+  role,
+}: {
   className: string;
   gradeLevel: number | null;
   totalStudents: number;
@@ -99,8 +99,8 @@ const PageHeader = ({
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-      <Link 
-        href="/list/attendance" 
+      <Link
+        href="/list/attendance"
         className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -194,7 +194,7 @@ export default async function SupervisorAttendancePage({
   return (
     <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
       <div className="container mx-auto p-6 space-y-8">
-        <PageHeader 
+        <PageHeader
           className={classData.name}
           gradeLevel={classData.grade?.level || null}
           totalStudents={totalStudents}
@@ -203,7 +203,7 @@ export default async function SupervisorAttendancePage({
           weekEnd={weekEnd}
           role={role || ""}
         />
-        
+
         {/* Main Content Section */}
         <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
           <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
@@ -212,7 +212,10 @@ export default async function SupervisorAttendancePage({
                 {lessonsWithAttendances.length > 0 ? (
                   <Accordion type="single" collapsible className="w-full">
                     {lessonsWithAttendances.map((lesson) => (
-                      <AccordionItem key={lesson.id} value={lesson.id.toString()}>
+                      <AccordionItem
+                        key={lesson.id}
+                        value={lesson.id.toString()}
+                      >
                         <AccordionTrigger className="hover:no-underline">
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
@@ -223,8 +226,11 @@ export default async function SupervisorAttendancePage({
                                 {lesson.name}
                               </span>
                               <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center">
-                                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" /> 
+                                <Badge
+                                  variant="outline"
+                                  className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
+                                >
+                                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
                                   {lesson.teacher.name} {lesson.teacher.surname}
                                 </Badge>
                               </div>
@@ -257,8 +263,13 @@ export default async function SupervisorAttendancePage({
                                     </Button>
                                     <div className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">
                                       <span className="text-sm font-medium">
-                                        {format(weekStart, "d MMM", { locale: id })} -{" "}
-                                        {format(weekEnd, "d MMM yyyy", { locale: id })}
+                                        {format(weekStart, "d MMM", {
+                                          locale: id,
+                                        })}{" "}
+                                        -{" "}
+                                        {format(weekEnd, "d MMM yyyy", {
+                                          locale: id,
+                                        })}
                                       </span>
                                     </div>
                                     <Button
@@ -282,7 +293,7 @@ export default async function SupervisorAttendancePage({
                                 <div className="overflow-x-auto">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-gray-50 dark:bg-gray-900">
+                                      <TableRow className="bg-gray-50 dark:bg-card">
                                         <TableHead className="min-w-[150px] font-semibold">
                                           Nama Siswa
                                         </TableHead>
@@ -293,10 +304,14 @@ export default async function SupervisorAttendancePage({
                                           >
                                             <div className="flex flex-col items-center">
                                               <span className="text-xs font-semibold">
-                                                {format(date, "EEE", { locale: id })}
+                                                {format(date, "EEE", {
+                                                  locale: id,
+                                                })}
                                               </span>
                                               <span className="text-xs text-gray-500">
-                                                {format(date, "d MMM", { locale: id })}
+                                                {format(date, "d MMM", {
+                                                  locale: id,
+                                                })}
                                               </span>
                                             </div>
                                           </TableHead>
@@ -304,74 +319,86 @@ export default async function SupervisorAttendancePage({
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                      {classData.students.map((student, index) => (
-                                        <TableRow 
-                                          key={student.id}
-                                          className={index % 2 === 0 ? "bg-gray-50/50 dark:bg-gray-900/50" : ""}
-                                        >
-                                          <TableCell className="font-medium sticky left-0 bg-background z-10">
-                                            <div className="flex items-center gap-2">
-                                              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                                                  {student.name.charAt(0)}
+                                      {classData.students.map(
+                                        (student, index) => (
+                                          <TableRow
+                                            key={student.id}
+                                            className={
+                                              index % 2 === 0
+                                                ? "bg-gray-50/50 dark:bg-card/50"
+                                                : ""
+                                            }
+                                          >
+                                            <TableCell className="font-medium sticky left-0 bg-background z-10">
+                                              <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                                  <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                                    {student.name.charAt(0)}
+                                                  </span>
+                                                </div>
+                                                <span className="font-medium">
+                                                  {student.name}{" "}
+                                                  {student.surname}
                                                 </span>
                                               </div>
-                                              <span className="font-medium">
-                                                {student.name} {student.surname}
-                                              </span>
-                                            </div>
-                                          </TableCell>
-                                          {weekDates.map((date) => {
-                                            let status = null;
-                                            let present = null;
-                                            // Cek kehadiran di semua lesson untuk hari tsb
-                                            for (const lessonCheck of lessonsWithAttendances) {
-                                              const att = lessonCheck.attendancesByDate[
-                                                format(date, "yyyy-MM-dd")
-                                              ]?.find(
-                                                (a) => a.studentId === student.id
-                                              );
-                                              if (att) {
-                                                present = att.present;
-                                                break;
+                                            </TableCell>
+                                            {weekDates.map((date) => {
+                                              let status = null;
+                                              let present = null;
+                                              // Cek kehadiran di semua lesson untuk hari tsb
+                                              for (const lessonCheck of lessonsWithAttendances) {
+                                                const att =
+                                                  lessonCheck.attendancesByDate[
+                                                    format(date, "yyyy-MM-dd")
+                                                  ]?.find(
+                                                    (a) =>
+                                                      a.studentId === student.id
+                                                  );
+                                                if (att) {
+                                                  present = att.present;
+                                                  break;
+                                                }
                                               }
-                                            }
-                                            if (present === true)
-                                              status = (
-                                                <div className="flex items-center justify-center">
-                                                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                    <CheckCircle className="h-3 w-3 inline mr-1" />
-                                                    Hadir
-                                                  </span>
-                                                </div>
+                                              if (present === true)
+                                                status = (
+                                                  <div className="flex items-center justify-center">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                      <CheckCircle className="h-3 w-3 inline mr-1" />
+                                                      Hadir
+                                                    </span>
+                                                  </div>
+                                                );
+                                              else if (present === false)
+                                                status = (
+                                                  <div className="flex items-center justify-center">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                                      ✗ Tidak Hadir
+                                                    </span>
+                                                  </div>
+                                                );
+                                              else
+                                                status = (
+                                                  <div className="flex items-center justify-center">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                                      - Belum Ada Data
+                                                    </span>
+                                                  </div>
+                                                );
+                                              return (
+                                                <TableCell
+                                                  key={format(
+                                                    date,
+                                                    "yyyy-MM-dd"
+                                                  )}
+                                                  className="text-center"
+                                                >
+                                                  {status}
+                                                </TableCell>
                                               );
-                                            else if (present === false)
-                                              status = (
-                                                <div className="flex items-center justify-center">
-                                                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                                    ✗ Tidak Hadir
-                                                  </span>
-                                                </div>
-                                              );
-                                            else
-                                              status = (
-                                                <div className="flex items-center justify-center">
-                                                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                                                    - Belum Ada Data
-                                                  </span>
-                                                </div>
-                                              );
-                                            return (
-                                              <TableCell
-                                                key={format(date, "yyyy-MM-dd")}
-                                                className="text-center"
-                                              >
-                                                {status}
-                                              </TableCell>
-                                            );
-                                          })}
-                                        </TableRow>
-                                      ))}
+                                            })}
+                                          </TableRow>
+                                        )
+                                      )}
                                     </TableBody>
                                   </Table>
                                 </div>
@@ -394,7 +421,8 @@ export default async function SupervisorAttendancePage({
                             Belum Ada Mata Pelajaran
                           </h3>
                           <p className="text-gray-500 dark:text-gray-400 max-w-md">
-                            Belum ada mata pelajaran yang terdaftar untuk kelas ini.
+                            Belum ada mata pelajaran yang terdaftar untuk kelas
+                            ini.
                           </p>
                         </div>
                       </div>

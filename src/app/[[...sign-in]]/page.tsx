@@ -37,23 +37,26 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center bg-lamaSkyLight dark:bg-card">
+    <div className="bg-signin h-screen flex flex-col items-center justify-between w-screen p-16 gap-16">
+      <div className="p-8 rounded-md shadow-2xl flex flex-row gap-2 iniya">
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Image
+            src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png"
+            alt="logo"
+            width={32}
+            height={32}
+            unoptimized
+          />{" "}
+          SMAN 5 Medan
+        </h1>
+      </div>
       <SignIn.Root>
         <SignIn.Step
           name="start"
-          className="bg-white dark:bg-gray-800 p-12 rounded-md shadow-2xl flex flex-col gap-2"
+          className="p-12 rounded-md shadow-2xl  w-xl flex-col gap-8 iniya flex"
         >
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Image
-              src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png"
-              alt="logo"
-              width={32}
-              height={32}
-              unoptimized
-            />{" "}
-            SMAN 5 Medan
-          </h1>
-          <h1 className="text-gray-400">Sign in to your account</h1>
+          <h1 className="text-xl font-bold">Welcome Back</h1>
+          <h1 className="text-gray-400 mb-4">Sign in to your account</h1>
 
           <Clerk.GlobalError className="text-sm text-red-400" />
           <Clerk.Field name="identifier" className="flex flex-col gap-2">
@@ -67,7 +70,7 @@ const LoginPage = () => {
             />
             <Clerk.FieldError className="text-xs text-red-400" />
           </Clerk.Field>
-            
+
           <Clerk.Field name="password" className="flex flex-col gap-2">
             <Clerk.Label className="text-sm text-gray-500">
               Password

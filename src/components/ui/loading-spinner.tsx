@@ -13,13 +13,17 @@ export const LoadingSpinner = ({ className, size = "md" }: LoadingSpinnerProps) 
   };
 
   return (
-    <div className={cn("flex items-center justify-center", className)}>
-      <div
-        className={cn(
-          "animate-spin rounded-full border-4 border-gray-200 border-t-blue-500",
-          sizeClasses[size]
-        )}
-      />
+    // <div className={cn("flex items-center justify-center", className)}>
+    //   <div
+    //     className={cn(
+    //       "animate-spin rounded-full border-4 border-gray-200 border-t-blue-500",
+    //       sizeClasses[size]
+    //     )}
+    //   />
+    // </div>
+
+    <div className="flex justify-center items-center h-screen">
+      <div className={cn("rounded-full bg-cyan-500 animate-ping", sizeClasses[size])}></div>
     </div>
   );
 }; 

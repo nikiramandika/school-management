@@ -1,16 +1,31 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-lamaSky: #C3EBFA;
-  --color-lamaSkyLight: #EDF9FD;
-  --color-lamaPurple: #CFCEFF;
-  --color-lamaPurpleLight: #F1F0FF;
-  --color-lamaYellow: #FAE27C;
-  --color-lamaYellowLight: #FEFCE8; 
+  --color-lamaSky: #fff;
+  --color-lamaSkyLight: #edf9fd;
+  --color-lamaPurple: #cfceff;
+  --color-lamaPurpleLight: #f1f0ff;
+  --color-lamaYellow: #fae27c;
+  --color-lamaYellowLight: #fefce8;
+
+  --color-softdark: rgba(33,33,41,0.88);
+  --color-softlight: rgba(255, 255, 255, 0.79); /* Keep it clean */
 }
+
+
+/* C3EBFA */
+
+@layer utilities {
+  .dark-soft-dark {
+    @apply border border-gray-800 backdrop-blur bg-[rgba(33,33,41,0.88)];
+  }
+}
+
 
 .react-calendar {
   background-color: rgb(249 250 251) !important; /* bg-gray-50 */
@@ -24,7 +39,7 @@
 }
 
 .react-calendar__tile--active {
-  background-color: #c3ebfa !important;
+  background-color: #b3eaf5 !important;
   color: black !important;
 }
 
@@ -70,20 +85,20 @@
   color: var(--muted-foreground) !important;
 }
 
-.rbc-btn-group:first-child{
+.rbc-btn-group:first-child {
   display: none !important;
 }
 
 .rbc-toolbar-label {
   text-align: right !important;
-  padding : 0px 20px !important
+  padding: 0px 20px !important;
 }
 
-.rbc-btn-group:last-child{
+.rbc-btn-group:last-child {
   font-size: 13px !important;
 }
 
-.rbc-btn-group:last-child button{
+.rbc-btn-group:last-child button {
   border: none !important;
   background-color: #f1f0ff !important;
   margin-left: 2px !important;
@@ -110,7 +125,7 @@
   font-size: 12px !important;
 }
 
-.rbc-time-gutter.rbc-time-column .rbc-timeslot-group{
+.rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
   padding: 0px 20px !important;
 }
 
@@ -130,36 +145,36 @@
   width: 99% !important;
 }
 
-.rbc-event:nth-child(1){
+.rbc-event:nth-child(1) {
   background-color: #e2f8ff !important;
 }
 
-.rbc-event:nth-child(2){
+.rbc-event:nth-child(2) {
   background-color: #fefce8 !important;
 }
 
-.rbc-event:nth-child(3){
+.rbc-event:nth-child(3) {
   background-color: #f2f1ff !important;
 }
 
-.rbc-event:nth-child(4){
+.rbc-event:nth-child(4) {
   background-color: #fdf2fb !important;
 }
 
-.rbc-event:nth-child(5){
+.rbc-event:nth-child(5) {
   background-color: #e2f8ff !important;
 }
 
-.rbc-event:nth-child(6){
+.rbc-event:nth-child(6) {
   background-color: #fefce8 !important;
 }
 
-.rbc-event:nth-child(7){
+.rbc-event:nth-child(7) {
   background-color: #f2f1ff !important;
 }
 
-.rbc-event:nth-child(8){
-  background-color: #fdf2fb!important;
+.rbc-event:nth-child(8) {
+  background-color: #fdf2fb !important;
 }
 
 .rbc-event-label {
@@ -202,14 +217,15 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring); 
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 :root {
+  font-family: "Inter", sans-serif !important;
+  font-optical-sizing: auto;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(1 0 none);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -237,13 +253,47 @@
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0); 
+  --sidebar-ring: oklch(0.708 0 0);
+
+  --bg-img-light: url("/bg-light.png");
+
+  --bg-img-dark: url("/bg-dark.png");
+
+  /***** Section *****/
+
+  --bg-signin: url("/makan.png");
+
+  --bg-coba: cyan;
+
+  --Dark-Mode-Container-Border: rgba(255, 255, 255, 0.07);
+
+  /***** End Section *****/
 }
 
+/* .bg-card{
+  background-image: var(--bg-light)!important;
+} */
+
+.bg-img-light {
+  background-image: var(--bg-img-light);
+  background-repeat: no-repeat;
+  background-size: cover; /* keeps original size */
+  background-position: center;
+}
+
+.bg-img-dark {
+  background-image: var(--bg-img-dark) !important;
+  background-repeat: no-repeat;
+  background-size: cover; /* keeps original size */
+  background-position: center;
+}
+html.dark body {
+  background-image: var(--bg-signin); /* when dark mode is active */
+}
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.14 0 none / 0.22);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.31 0.0094 268.36 / 0.68);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -271,14 +321,81 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0); 
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+.bg-signin {
+  background-image: var(--bg-signin)!important;
+  background-repeat: no-repeat;
+  background-size: cover; /* keeps original size */
+  background-position: center; /* center it on the screen */
+}
+
+.bg-card {
+  background-repeat: no-repeat;
+  background-size: cover; /* keeps original size */
+  background-position: center; /* center it on the screen */
+}
+
+.soft-light {
+  border: 2px solid rgba(225, 225, 225, 0.085);
+  backdrop-filter: blur(20px);
+}
+.soft-light::before {
+  mix-blend-mode: soft-light;
+}
+
+
+
+
+
+.iniya {
+  position: relative;
+  overflow: hidden; /* Ensures ::before doesn't overflow */
+  border: 2px solid rgba(206, 206, 206, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0px 50px 100px rgba(255, 255, 255, 0.15),
+    0px 5px 10px rgba(0, 0, 0, 0.05), 0px 15px 30px rgba(0, 0, 0, 0.05),
+    0px 30px 60px rgba(0, 0, 0, 0.1);
+  background: transparent; /* Keep it clean */
+}
+
+/* Pseudo-element to hold the background blend */
+.iniya::before {
+  mix-blend-mode: soft-light;
+}
+
+.iniya > * {
+  position: relative;
+  z-index: 1;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50; 
+    @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground; 
-  } 
+    @apply text-foreground;
+  }
+}
+
+/* Works in most modern browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #96bac6;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }

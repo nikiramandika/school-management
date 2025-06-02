@@ -88,9 +88,11 @@ const AnnouncementListPage = async () => {
 
   // Calculate stats
   const totalAnnouncements = data.length;
-  const totalGeneral = data.filter(announcement => !announcement.classId).length;
-  const totalClass = data.filter(announcement => announcement.classId).length;
-  const totalToday = data.filter(announcement => {
+  const totalGeneral = data.filter(
+    (announcement) => !announcement.classId
+  ).length;
+  const totalClass = data.filter((announcement) => announcement.classId).length;
+  const totalToday = data.filter((announcement) => {
     const today = new Date();
     const announcementDate = new Date(announcement.date);
     return announcementDate.toDateString() === today.toDateString();
@@ -139,7 +141,7 @@ const AnnouncementListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -155,11 +157,11 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r from-teal-500 to-teal-600 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-green-100 text-sm font-medium">
+                    <p className="text-teal-100 text-sm font-medium">
                       Pengumuman Umum
                     </p>
                     <p className="text-3xl font-bold">{totalGeneral}</p>
@@ -171,7 +173,7 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -219,9 +221,9 @@ const AnnouncementListPage = async () => {
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+          <Card className="border-0 shadow-md bg-transparent rounded-xl">
+            <CardContent className="p-5 bg-gray-100 dark:bg-card rounded-xl">
+              <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-600 p-4">
                 <AnnouncementTable
                   data={data}
                   role={role}

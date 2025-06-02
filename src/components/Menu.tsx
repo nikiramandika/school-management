@@ -157,8 +157,8 @@ const Menu = () => {
                   key={item.label}
                   className={`flex items-center gap-4 text-gray-500 dark:text-white py-3 px-4 rounded-md transition-colors ${
                     isActive
-                      ? "bg-blue-500 text-white font-semibold hover:bg-blue-600 dark:hover:bg-blue-600"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-cyan-500 text-white font-semibold hover:bg-cyan-600 dark:hover:bg-cyan-600"
+                      : "hover:bg-white dark:hover:bg-gray-800"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />

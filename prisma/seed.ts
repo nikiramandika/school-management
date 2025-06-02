@@ -7,12 +7,14 @@ async function main() {
     data: {
       id: "admin1",
       username: "admin1",
+      clerkUserId: "user_2xLdZtTt6m6OXbuhydRHYAcA2LT",
     },
   });
   await prisma.admin.create({
     data: {
       id: "admin2",
       username: "admin2",
+      clerkUserId: "user_2xLqP9H4NweBouMxRH4puobqgzf",
     },
   });
 

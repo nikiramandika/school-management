@@ -32,13 +32,13 @@ const TeacherListPage = async () => {
   const totalSubjects = [...new Set(data.flatMap((teacher) => teacher.subjects.map((subject) => subject.id)))].length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-500 rounded-lg">
+              <div className="p-2 bg-indigo-400 rounded-lg">
                 <UserCheck className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -67,11 +67,11 @@ const TeacherListPage = async () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-0 shadow-lg">
+          <Card className="bg-indigo-400 text-white border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-emerald-100 text-sm font-medium">
+                  <p className="text-indigo-100 text-sm font-medium">
                     Total Guru
                   </p>
                   <p className="text-3xl font-bold">{totalTeachers}</p>
@@ -83,11 +83,11 @@ const TeacherListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg">
+          <Card className="bg-indigo-400 text-white border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">
+                  <p className="text-indigo-100 text-sm font-medium">
                     Guru Wali Kelas
                   </p>
                   <p className="text-3xl font-bold">{teachersWithClasses}</p>
@@ -103,20 +103,20 @@ const TeacherListPage = async () => {
         {/* Main Teachers Table Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500 rounded-lg">
+            <div className="p-2 bg-indigo-400 rounded-lg">
               <UserCheck className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white/90">
               Data Guru
             </h1>
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 bg-indigo-500/30">
               {totalTeachers} Guru
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+          <Card className="border-0 shadow-lg bg-white dark:bg-transparent rounded-xl">
+            <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
+              <div className="bg-white dark:bg-card rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
                 <TeacherTable data={data} role={role} />
               </div>
             </CardContent>

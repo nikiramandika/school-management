@@ -268,8 +268,8 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   };
 
   return (
-    <div className="sticky top-0 mb-4 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center px-4">
+    <div className="rounded-b-3xl sticky top-0 mb-4 z-40 border soft-light bg-softlight dark:bg-softdark mx-4 shadow-md">
+      <div className="flex h-16 items-center px-4 ">
         {/* Mobile Menu Button */}
         <Button
           variant="outline"

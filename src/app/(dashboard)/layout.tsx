@@ -30,10 +30,10 @@ export default function DashboardLayout({
   return (
     <div className="h-screen flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col lg:w-[16%] xl:w-[14%] bg-gray-50 dark:bg-card">
+      <aside className="hidden md:flex flex-col lg:w-[16%] xl:w-[14%]  rounded-r-4xl soft-light bg-softlight dark:bg-softdark shadow-md">
         {/* Logo dan Header dengan bayangan dinamis */}
         <div
-          className={`px-4 pt-4 pb-4 bg-inherit z-10 ${
+          className={`bg-transparent rounded-4xl px-4 pt-4 pb-4 bg-inherit z-10 ${
             showShadow ? "shadow-md" : ""
           } transition-shadow`}
         >
@@ -67,10 +67,7 @@ export default function DashboardLayout({
         }`}
       >
         <div className="px-4 pt-4 pb-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2"
-          >
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png"
               alt="logo"
@@ -89,7 +86,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="w-full md:w-[92%] lg:w-[84%] xl:w-[86%] bg-background overflow-scroll flex flex-col">
+      <div className="w-full md:w-[92%] lg:w-[84%] xl:w-[86%] bg-transparent overflow-scroll flex flex-col">
         <Navbar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         {children}
       </div>
@@ -97,7 +94,7 @@ export default function DashboardLayout({
       {/* Overlay for mobile menu */}
       {isMobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="md:hidden fixed inset-0 backdrop-blur-md bg-opacity-50 z-40"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
