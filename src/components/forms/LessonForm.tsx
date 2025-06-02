@@ -213,7 +213,7 @@ const LessonForm = ({
         </div>
       </div>
       <button
-        className="bg-blue-400 text-white p-2 rounded-md disabled:opacity-50"
+        className="bg-cyan-500 text-white p-2 rounded-md disabled:opacity-50"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Saving..." : type === "create" ? "Buat" : "Perbarui"}

@@ -5,7 +5,13 @@ import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { examSchema, ExamSchema } from "@/lib/formValidationSchemas";
 import { createExam, updateExam } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
@@ -148,10 +154,7 @@ const ExamForm = ({
 
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Rentang Tanggal Ujian</label>
-          <DateRangePicker
-            date={dateRange}
-            setDate={setDateRange}
-          />
+          <DateRangePicker date={dateRange} setDate={setDateRange} />
           {errors.startTime?.message && (
             <p className="text-xs text-red-400">
               {errors.startTime.message.toString()}
@@ -176,7 +179,7 @@ const ExamForm = ({
         )}
       </div>
       <button
-        className="bg-blue-400 text-white p-2 rounded-md"
+        className="bg-cyan-500 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

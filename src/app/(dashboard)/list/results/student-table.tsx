@@ -250,7 +250,7 @@ const StudentTable = ({
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
                 {isExamPage ? (
                   <BarChart2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 ) : (
@@ -300,7 +300,7 @@ const StudentTable = ({
 
             {selectedAssessmentDetails?.date && (
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-indigo-600" />
+                <Calendar className="h-4 w-4 text-cyan-600" />
                 <Badge
                   variant="outline"
                   className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
@@ -419,7 +419,7 @@ const StudentTable = ({
                   </Badge>
                   <Badge
                     variant="outline"
-                    className="border-green-300 text-green-600 dark:border-green-600 dark:text-green-300"
+                    className="border-teal-300 text-teal-600 dark:border-teal-600 dark:text-teal-300"
                   >
                     {currentGrades.length} Nilai Tersimpan
                   </Badge>
@@ -450,7 +450,7 @@ const StudentTable = ({
                       {/* Student Info */}
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                          <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
                             <User className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                           </div>
                           <div className="flex flex-col">
@@ -494,7 +494,7 @@ const StudentTable = ({
                                         size="sm"
                                         onClick={() => handleSave(student.id)}
                                         disabled={!scores[student.id]}
-                                        className="h-8 w-8 p-0 bg-green-600 hover:bg-green-700 text-white"
+                                        className="h-8 w-8 p-0 bg-teal-600 hover:bg-teal-700 text-white"
                                       >
                                         <Check className="h-4 w-4" />
                                       </Button>
@@ -528,7 +528,7 @@ const StudentTable = ({
                                   variant="outline"
                                   className={`px-3 py-1 text-base font-semibold ${
                                     existingGrade.score >= 80
-                                      ? "border-green-200 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-300 dark:bg-green-900/20"
+                                      ? "border-teal-200 text-teal-700 bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:bg-teal-900/20"
                                       : existingGrade.score >= 70
                                       ? "border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:bg-blue-900/20"
                                       : existingGrade.score >= 60

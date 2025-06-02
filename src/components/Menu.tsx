@@ -24,7 +24,6 @@ import { usePathname } from "next/navigation";
 
 const menuItems = [
   {
-    title: "MENU",
     items: [
       {
         icon: HiHome,
@@ -145,9 +144,9 @@ const Menu = () => {
     <div className="text-sm px-4 lg:px-0">
       {menuItems.map((section) => (
         <div className="flex flex-col gap-2" key={section.title}>
-          <span className="text-gray-400 font-light my-4">
+          {/* <span className="text-gray-400 font-light my-4">
             {section.title}
-          </span>
+          </span> */}
           {section.items.map((item) => {
             if (item.visible.includes(role)) {
               const isActive = checkIsActive(typeof item.href === "function" ? item.href(role) : item.href);

@@ -3,13 +3,26 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { announcementSchema, AnnouncementSchema } from "@/lib/formValidationSchemas";
+import {
+  announcementSchema,
+  AnnouncementSchema,
+} from "@/lib/formValidationSchemas";
 import { createAnnouncement, updateAnnouncement } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -69,15 +82,19 @@ const AnnouncementForm = ({
   const onSubmit = useCallback(
     async (formData: AnnouncementSchema) => {
       try {
-        const action = type === "create" ? createAnnouncement : updateAnnouncement;
+        const action =
+          type === "create" ? createAnnouncement : updateAnnouncement;
         // Build submitData without undefined id
         const submitData: any = {
           title: formData.title,
           description: formData.description,
-          date: formData.date instanceof Date ? formData.date.toISOString() : formData.date,
+          date:
+            formData.date instanceof Date
+              ? formData.date.toISOString()
+              : formData.date,
           classId: formData.classId,
         };
-        if (typeof formData.id === 'number') {
+        if (typeof formData.id === "number") {
           submitData.id = formData.id;
         }
         const result = await action(
@@ -87,13 +104,16 @@ const AnnouncementForm = ({
 
         if (result.success) {
           toast.success(
-            `Announcement has been ${type === "create" ? "created" : "updated"}!`
+            `Announcement has been ${
+              type === "create" ? "created" : "updated"
+            }!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save announcement data. Please try again."
+            result.message ||
+              "Failed to save announcement data. Please try again."
           );
         }
       } catch (error) {
@@ -110,7 +130,9 @@ const AnnouncementForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Membuat Pengumuman Baru" : "Memperbarui Pengumuman"}
+        {type === "create"
+          ? "Membuat Pengumuman Baru"
+          : "Memperbarui Pengumuman"}
       </h1>
 
       <div className="flex flex-col gap-4">
@@ -146,10 +168,19 @@ const AnnouncementForm = ({
                 className={"w-full justify-start text-left font-normal"}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {selectedDate ? format(selectedDate, "PPP") : <span>Pilih Tanggal</span>}
+                {selectedDate ? (
+                  format(selectedDate, "PPP")
+                ) : (
+                  <span>Pilih Tanggal</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full max-w-full p-4 z-[9999]" align="start" side="bottom" sideOffset={10}>
+            <PopoverContent
+              className="w-full max-w-full p-4 z-[9999]"
+              align="start"
+              side="bottom"
+              sideOffset={10}
+            >
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -161,7 +192,7 @@ const AnnouncementForm = ({
                 <Input
                   type="time"
                   value={selectedTime}
-                  onChange={e => setSelectedTime(e.target.value)}
+                  onChange={(e) => setSelectedTime(e.target.value)}
                   className="w-[120px]"
                 />
               </div>
@@ -183,7 +214,9 @@ const AnnouncementForm = ({
               onChange={handleAllClassesChange}
               className="rounded border-gray-300"
             />
-            <label htmlFor="allClasses" className="text-sm">Semua Kelas</label>
+            <label htmlFor="allClasses" className="text-sm">
+              Semua Kelas
+            </label>
           </div>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
@@ -218,7 +251,7 @@ const AnnouncementForm = ({
       </div>
 
       <button
-        className="bg-blue-400 text-white p-2 rounded-md"
+        className="bg-cyan-500 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}
@@ -227,4 +260,4 @@ const AnnouncementForm = ({
   );
 };
 
-export default AnnouncementForm; 
+export default AnnouncementForm;

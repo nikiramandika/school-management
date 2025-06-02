@@ -42,9 +42,9 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
+            className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <User className="mr-2 h-4 w-4 text-blue-600" />
+            <User className="mr-2 h-4 w-4 text-cyan-600" />
             Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -80,9 +80,9 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+            className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <UserCheck className="mr-2 h-4 w-4 text-green-600" />
+            <UserCheck className="mr-2 h-4 w-4 text-teal-600" />
             NIP
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -91,14 +91,14 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
       cell: ({ row }) => (
         <div className="hidden md:flex justify-center">
           <div className="hidden md:flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300 text-xs"
-          >
-            <UserCheck className="mr-1 h-3 w-3" />
-            {row.original.username}
-          </Badge>
-        </div>
+            <Badge
+              variant="outline"
+              className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs"
+            >
+              <UserCheck className="mr-1 h-3 w-3" />
+              {row.original.username}
+            </Badge>
+          </div>
         </div>
       ),
     },
@@ -115,7 +115,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        );  
+        );
       },
       cell: ({ row }: { row: { original: TeacherList } }) => (
         <div className="hidden md:flex flex-wrap gap-1">
@@ -158,25 +158,25 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
       cell: ({ row }) => (
         <div className="hidden md:flex justify-center">
           <div className="hidden md:flex flex-wrap gap-1">
-          {row.original.classes.slice(0, 2).map((classItem, index) => (
-            <Badge
-              key={classItem.id}
-              variant="outline"
-              className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
-            >
-              <GraduationCap className="mr-1 h-3 w-3" />
-              {classItem.name}
-            </Badge>
-          ))}
-          {row.original.classes.length > 2 && (
-            <Badge
-              variant="secondary"
-              className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 text-xs"
-            >
-              +{row.original.classes.length - 2}
-            </Badge>
-          )}
-        </div>
+            {row.original.classes.slice(0, 2).map((classItem, index) => (
+              <Badge
+                key={classItem.id}
+                variant="outline"
+                className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
+              >
+                <GraduationCap className="mr-1 h-3 w-3" />
+                {classItem.name}
+              </Badge>
+            ))}
+            {row.original.classes.length > 2 && (
+              <Badge
+                variant="secondary"
+                className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 text-xs"
+              >
+                +{row.original.classes.length - 2}
+              </Badge>
+            )}
+          </div>
         </div>
       ),
     },
@@ -189,7 +189,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
           >
-            <Phone className="mr-2 h-4 w-4 text-indigo-600" />
+            <Phone className="mr-2 h-4 w-4 text-indigo-500" />
             Nomor Hp
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -198,14 +198,14 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
       cell: ({ row }) => (
         <div className="hidden md:flex justify-center">
           <div className="hidden lg:flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300 text-xs"
-          >
-            <Phone className="mr-1 h-3 w-3" />
-            {row.original.phone}
-          </Badge>
-        </div>
+            <Badge
+              variant="outline"
+              className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300 text-xs"
+            >
+              <Phone className="mr-1 h-3 w-3" />
+              {row.original.phone}
+            </Badge>
+          </div>
         </div>
       ),
     },
@@ -242,7 +242,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-indigo-600" />
+          <Edit className="h-4 w-4 text-cyan-500" />
           Aksi
         </div>
       ),
@@ -254,12 +254,12 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link href={`/list/teachers/${item.id}`}>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="icon"
-                      className="hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-blue-900/20"
+                      className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
                     >
-                      <Eye className="h-4 w-4 text-blue-600" />
+                      <Eye className="h-4 w-4 text-cyan-600" />
                     </Button>
                   </Link>
                 </TooltipTrigger>
@@ -271,11 +271,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="inline-flex items-center justify-center">
-                    <FormModal
-                      table="teacher"
-                      type="delete"
-                      id={item.id}
-                    />
+                    <FormModal table="teacher" type="delete" id={item.id} />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>Hapus Data Guru</TooltipContent>

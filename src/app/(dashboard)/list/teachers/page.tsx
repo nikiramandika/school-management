@@ -67,7 +67,7 @@ const TeacherListPage = async () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-indigo-400 text-white border-0 shadow-lg">
+          <Card className="bg-indigo-400 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -83,7 +83,7 @@ const TeacherListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-indigo-400 text-white border-0 shadow-lg">
+          <Card className="bg-indigo-400 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -114,9 +114,9 @@ const TeacherListPage = async () => {
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-lg bg-white dark:bg-transparent rounded-xl">
+          <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
             <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
-              <div className="bg-white dark:bg-card rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+              <div className="bg-white dark:bg-card rounded-lg  border border-gray-200 dark:border-slate-900 p-4">
                 <TeacherTable data={data} role={role} />
               </div>
             </CardContent>

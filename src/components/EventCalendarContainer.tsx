@@ -73,7 +73,7 @@ const EventCalendarContainer = ({
                 day: "h-10 w-10 p-0 font-medium aria-selected:opacity-100 hover:bg-indigo-400 rounded-lg transition-all duration-200 hover:scale-105",
                 day_range_end: "day-range-end",
                 day_selected:
-                  "bg-indigo-500 focus:bg-indigo-500 hover:bg-indigo-400 shadow-lg font-bold transform scale-105",
+                  "text-white bg-indigo-500 focus:bg-indigo-500 hover:bg-indigo-400 shadow-lg font-bold transform scale-105",
                 day_today:
                   "bg-cyan-500 text-white font-bold border-2 border-cyan-300 shadow-lg transform scale-105",
                 day_outside:

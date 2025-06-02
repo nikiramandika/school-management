@@ -31,11 +31,11 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
   if (!classData) notFound();
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-500 rounded-lg">
+          <div className="p-2 bg-cyan-500  rounded-lg">
             <Users className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -43,17 +43,17 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
               Daftar Siswa - {classData.name}
             </h1>
           </div>
-          <Badge variant="secondary" className="ml-2">
+          <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
             {classData.students.length} Siswa
           </Badge>
         </div>
 
         {/* Table Section */}
         <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-              <div className="bg-white dark:bg-slate-600 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
-            <StudentTable data={classData.students} />
-          </div>
+          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+            <div className="bg-white dark:bg-slate-600 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+              <StudentTable data={classData.students} />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -62,4 +62,3 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
 };
 
 export default ClassStudentsPage;
-

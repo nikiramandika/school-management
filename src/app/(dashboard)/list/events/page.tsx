@@ -68,23 +68,27 @@ const EventListPage = async () => {
 
   // Calculate stats
   const totalEvents = data.length;
-  const totalClasses = new Set(data.map(event => event.classId).filter(Boolean)).size;
-  const upcomingEvents = data.filter(event => new Date(event.startTime) > new Date()).length;
-  const todayEvents = data.filter(event => {
+  const totalClasses = new Set(
+    data.map((event) => event.classId).filter(Boolean)
+  ).size;
+  const upcomingEvents = data.filter(
+    (event) => new Date(event.startTime) > new Date()
+  ).length;
+  const todayEvents = data.filter((event) => {
     const eventDate = new Date(event.startTime);
     const today = new Date();
     return eventDate.toDateString() === today.toDateString();
   }).length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Conditional Header Section - Only show management header for admin */}
         {role === "admin" && (
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-500 rounded-lg">
+                <div className="p-2 bg-teal-500/90 rounded-lg">
                   <Calendar className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -100,10 +104,7 @@ const EventListPage = async () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="inline-flex items-center justify-center">
-                      <FormContainer
-                        table="event"
-                        type="create"
-                      />
+                      <FormContainer table="event" type="create" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>Tambah Acara</TooltipContent>
@@ -116,11 +117,11 @@ const EventListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-teal-500/90 text-white border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-indigo-100 text-sm font-medium">
+                    <p className="text-teal-100 text-sm font-medium">
                       Total Acara
                     </p>
                     <p className="text-3xl font-bold">{totalEvents}</p>
@@ -132,11 +133,11 @@ const EventListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-teal-500/90 text-white border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-green-100 text-sm font-medium">
+                    <p className="text-teal-100 text-sm font-medium">
                       Acara Mendatang
                     </p>
                     <p className="text-3xl font-bold">{upcomingEvents}</p>
@@ -148,11 +149,11 @@ const EventListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-teal-500/90 text-white border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-orange-100 text-sm font-medium">
+                    <p className="text-teal-100 text-sm font-medium">
                       Acara Hari Ini
                     </p>
                     <p className="text-3xl font-bold">{todayEvents}</p>
@@ -164,11 +165,11 @@ const EventListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-teal-500/90 text-white border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-purple-100 text-sm font-medium">
+                    <p className="text-teal-100 text-sm font-medium">
                       Kelas Terlibat
                     </p>
                     <p className="text-3xl font-bold">{totalClasses}</p>
@@ -185,24 +186,21 @@ const EventListPage = async () => {
         {/* Main Events Table Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-500 rounded-lg">
+            <div className="p-2 bg-teal-500/90 rounded-lg">
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Daftar Acara
             </h1>
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 bg-teal-500/80">
               {totalEvents} Acara
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
-                <EventTable
-                  data={data}
-                  role={role}
-                />
+          <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+            <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
+              <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-900 p-4">
+                <EventTable data={data} role={role} />
               </div>
             </CardContent>
           </Card>

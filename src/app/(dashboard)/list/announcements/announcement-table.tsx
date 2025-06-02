@@ -75,15 +75,17 @@ export const AnnouncementTable = ({
       header: ({ column }) => {
         return (
           <div className="hidden md:flex justify-center">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
-          >
-            <FileText className="mr-2 h-4 w-4 text-green-600" />
-            Deskripsi
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
+            >
+              <FileText className="mr-2 h-4 w-4 text-teal-600" />
+              Deskripsi
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         );
       },
@@ -102,15 +104,17 @@ export const AnnouncementTable = ({
       header: ({ column }) => {
         return (
           <div className="hidden md:flex justify-center">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
-          >
-            <Users className="mr-2 h-4 w-4 text-purple-600" />
-            Kelas
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
+            >
+              <Users className="mr-2 h-4 w-4 text-purple-600" />
+              Kelas
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         );
       },
@@ -138,15 +142,17 @@ export const AnnouncementTable = ({
       header: ({ column }) => {
         return (
           <div className="hidden md:flex justify-center">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden lg:flex hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
-          >
-            <Calendar className="mr-2 h-4 w-4 text-indigo-600" />
-            Tanggal
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              className="hidden lg:flex hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
+            >
+              <Calendar className="mr-2 h-4 w-4 text-cyan-600" />
+              Tanggal
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         );
       },
@@ -172,7 +178,7 @@ export const AnnouncementTable = ({
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-indigo-600" />
+          <Edit className="h-4 w-4 text-cyan-600" />
           Aksi
         </div>
       ),

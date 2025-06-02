@@ -379,7 +379,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                               </p>
                             </div>
                           )}
-                          <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 mt-2 inline-block">
+                          <span className="text-xs px-2 py-1 rounded-full bg-cyan-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 mt-2 inline-block">
                             {new Date(event.startTime).toLocaleDateString(
                               "id-ID",
                               {

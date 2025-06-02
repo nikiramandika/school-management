@@ -116,7 +116,7 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-blue-500 rounded-lg">
+        <div className="p-2 bg-cyan-500  rounded-lg">
           <Award className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -220,7 +220,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
   );
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={classData.name}
@@ -246,7 +246,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                     Ujian
                     <Badge
                       variant="secondary"
-                      className="ml-2 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300"
+                      className="ml-2 bg-cyan-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300"
                     >
                       {totalExams}
                     </Badge>
@@ -259,7 +259,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                     Tugas
                     <Badge
                       variant="secondary"
-                      className="ml-2 bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300"
+                      className="ml-2 bg-cyan-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300"
                     >
                       {totalAssignments}
                     </Badge>
@@ -283,7 +283,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                           >
                             <AccordionTrigger className="hover:no-underline px-6 py-4">
                               <div className="flex items-center gap-3 text-left">
-                                <div className="p-2 bg-blue-500 rounded-lg">
+                                <div className="p-2 bg-cyan-500  rounded-lg">
                                   <BarChart2 className="h-4 w-4 text-white" />
                                 </div>
                                 <div>
@@ -316,10 +316,10 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                     <CardHeader className="bg-gray-50 dark:bg-slate-700/50 rounded-t-lg">
                                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                                         <CardTitle className="text-base flex items-center gap-2">
-                                          <Award className="h-4 w-4 text-green-600" />
+                                          <Award className="h-4 w-4 text-teal-600" />
                                           {exam.title}
                                         </CardTitle>
-                                        <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
+                                        <Badge className="bg-cyan-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
                                           {exam.results.length} Hasil
                                         </Badge>
                                       </div>
@@ -462,10 +462,10 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                     <CardHeader className="bg-gray-50 dark:bg-slate-700/50 rounded-t-lg">
                                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                                         <CardTitle className="text-base flex items-center gap-2">
-                                          <Award className="h-4 w-4 text-green-600" />
+                                          <Award className="h-4 w-4 text-teal-600" />
                                           {assignment.title}
                                         </CardTitle>
-                                        <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
+                                        <Badge className="bg-cyan-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
                                           {assignment.results.length} Hasil
                                         </Badge>
                                       </div>

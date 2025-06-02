@@ -4,13 +4,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Subject, Teacher } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowUpDown, 
-  Users, 
-  BookOpen, 
+import {
+  ArrowUpDown,
+  Users,
+  BookOpen,
   Edit,
   UserCheck,
-  GraduationCap 
+  GraduationCap,
 } from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
@@ -62,9 +62,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
+            className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4 text-blue-600" />
+            <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
             Nama Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -72,8 +72,8 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
       },
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <BookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+            <BookOpen className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -110,8 +110,8 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                 <TooltipProvider key={teacher.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-help"
                       >
                         <UserCheck className="mr-1 h-3 w-3" />
@@ -131,8 +131,8 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       variant="outline"
                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
                     >
-                      <Users className="mr-1 h-3 w-3" />
-                      +{remainingTeachers} Lebih Banyak
+                      <Users className="mr-1 h-3 w-3" />+{remainingTeachers}{" "}
+                      Lebih Banyak
                     </Badge>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
@@ -150,7 +150,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                             className="flex items-center justify-between rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                              <div className="p-2 bg-cyan-100 dark:bg-orange-900/30 rounded-lg">
                                 <UserCheck className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                               </div>
                               <div className="font-medium">
@@ -176,9 +176,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden lg:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+            className="hidden lg:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-green-600" />
+            <GraduationCap className="mr-2 h-4 w-4 text-teal-600" />
             Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -196,9 +196,9 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                 <TooltipProvider key={lesson.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge 
-                        variant="outline" 
-                        className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300 w-fit cursor-help"
+                      <Badge
+                        variant="outline"
+                        className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 w-fit cursor-help"
                       >
                         <GraduationCap className="mr-1 h-3 w-3" />
                         {lesson.name} - {lesson.class.name}
@@ -217,16 +217,16 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                   <DialogTrigger asChild>
                     <Badge
                       variant="outline"
-                      className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300 w-fit cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/20"
+                      className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 w-fit cursor-pointer hover:bg-teal-50 dark:hover:bg-teal-900/20"
                     >
-                      <BookOpen className="mr-1 h-3 w-3" />
-                      +{remainingLessons} Lebih banyak pelajaran
+                      <BookOpen className="mr-1 h-3 w-3" />+{remainingLessons}{" "}
+                      Lebih banyak pelajaran
                     </Badge>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
-                        <GraduationCap className="h-5 w-5 text-green-600" />
+                        <GraduationCap className="h-5 w-5 text-teal-600" />
                         Pelajaran untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
@@ -238,16 +238,16 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                             className="rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
                           >
                             <div className="flex items-center gap-3 mb-2">
-                              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                <GraduationCap className="h-4 w-4 text-green-600 dark:text-green-400" />
+                              <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                                <GraduationCap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                               </div>
                               <div className="font-medium">{lesson.name}</div>
                             </div>
                             <Separator className="my-2" />
                             <div className="space-y-1 text-sm text-muted-foreground">
                               <div className="flex items-center gap-2">
-                                <Badge 
-                                  variant="outline" 
+                                <Badge
+                                  variant="outline"
                                   className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
                                 >
                                   <Users className="mr-1 h-3 w-3" />
@@ -255,8 +255,8 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                                 </Badge>
                               </div>
                               <div className="flex items-center gap-2">
-                                <Badge 
-                                  variant="outline" 
+                                <Badge
+                                  variant="outline"
                                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
                                 >
                                   <UserCheck className="mr-1 h-3 w-3" />
@@ -283,7 +283,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-indigo-600" />
+          <Edit className="h-4 w-4 text-cyan-600" />
           Aksi
         </div>
       ),

@@ -261,7 +261,7 @@ const FormModal = ({
         {getIcon()}
       </Button>
       {open && (
-        <div className="fixed inset-0 bg-white/75 dark:bg-black/70 backdrop-blur-xs z-50 flex items-start justify-center rounded-3xl pt-16">
+        <div className="fixed inset-0 bg-white/75 dark:bg-black/70 backdrop-blur-xs z-50 flex items-start justify-center rounded-3xl pt-16  ">
           <div className="soft-light bg-softlight dark:bg-softdark  p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <Button

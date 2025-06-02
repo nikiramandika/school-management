@@ -99,14 +99,14 @@ const AnnouncementListPage = async () => {
   }).length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Conditional Header Section - Only show management header for admin */}
         {role === "admin" && (
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500 rounded-lg">
+                <div className="p-2 bg-cyan-500  rounded-lg">
                   <Megaphone className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -141,11 +141,11 @@ const AnnouncementListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-md">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-blue-100 text-sm font-medium">
+                    <p className="text-cyan-100 text-sm font-medium">
                       Total Pengumuman
                     </p>
                     <p className="text-3xl font-bold">{totalAnnouncements}</p>
@@ -157,11 +157,11 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-teal-500 to-teal-600 text-white border-0 shadow-md">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-teal-100 text-sm font-medium">
+                    <p className="text-cyan-100 text-sm font-medium">
                       Pengumuman Umum
                     </p>
                     <p className="text-3xl font-bold">{totalGeneral}</p>
@@ -173,11 +173,11 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-md">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-purple-100 text-sm font-medium">
+                    <p className="text-cyan-100 text-sm font-medium">
                       Pengumuman Kelas
                     </p>
                     <p className="text-3xl font-bold">{totalClass}</p>
@@ -189,11 +189,11 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-orange-100 text-sm font-medium">
+                    <p className="text-cyan-100 text-sm font-medium">
                       Hari Ini
                     </p>
                     <p className="text-3xl font-bold">{totalToday}</p>
@@ -210,13 +210,13 @@ const AnnouncementListPage = async () => {
         {/* Main Announcements Table Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-500 rounded-lg">
+            <div className="p-2 bg-cyan-500  rounded-lg">
               <Megaphone className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Daftar Pengumuman
             </h1>
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
               {totalAnnouncements} Pengumuman
             </Badge>
           </div>

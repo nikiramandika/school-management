@@ -3,9 +3,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { assignmentSchema, AssignmentSchema } from "@/lib/formValidationSchemas";
+import {
+  assignmentSchema,
+  AssignmentSchema,
+} from "@/lib/formValidationSchemas";
 import { createAssignment, updateAssignment } from "@/lib/actions";
-import { Dispatch, SetStateAction, useCallback, useState, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
@@ -57,33 +66,44 @@ const AssignmentForm = ({
     }
   }, [dateRange, setValue]);
 
-  const onSubmit = useCallback(async (formData: AssignmentSchema) => {
-    try {
-      if (!dateRange?.from || !dateRange?.to) {
-        toast.error("Please select both start and end dates");
-        return;
-      }
+  const onSubmit = useCallback(
+    async (formData: AssignmentSchema) => {
+      try {
+        if (!dateRange?.from || !dateRange?.to) {
+          toast.error("Please select both start and end dates");
+          return;
+        }
 
-      const submitData = {
-        ...formData,
-        startTime: dateRange.from,
-        endTime: dateRange.to,
-      };
-      const action = type === "create" ? createAssignment : updateAssignment;
-      const result = await action({ success: false, error: false, message: "" }, submitData);
+        const submitData = {
+          ...formData,
+          startTime: dateRange.from,
+          endTime: dateRange.to,
+        };
+        const action = type === "create" ? createAssignment : updateAssignment;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          submitData
+        );
 
-      if (result.success) {
-        toast.success(`Assignment has been ${type === "create" ? "created" : "updated"}!`);
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.message || "Failed to save assignment data. Please try again.");
+        if (result.success) {
+          toast.success(
+            `Assignment has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message ||
+              "Failed to save assignment data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }, [type, setOpen, router, dateRange]);
+    },
+    [type, setOpen, router, dateRange]
+  );
 
   // Get lessons from relatedData
   const lessons = relatedData?.lessons || [];
@@ -114,17 +134,20 @@ const AssignmentForm = ({
             defaultValue={currentLessonId}
           >
             <option value="">Pilih Pelajaran</option>
-            {lessons.map((lesson: { 
-              id: number; 
-              name: string;
-              subject: { id: number; name: string };
-              class: { id: number; name: string };
-              teacher: { id: string; name: string; surname: string };
-            }) => (
-              <option value={lesson.id} key={lesson.id}>
-                {lesson.subject.name} - {lesson.class.name} ({lesson.name}) - {lesson.teacher.name} {lesson.teacher.surname}
-              </option>
-            ))}
+            {lessons.map(
+              (lesson: {
+                id: number;
+                name: string;
+                subject: { id: number; name: string };
+                class: { id: number; name: string };
+                teacher: { id: string; name: string; surname: string };
+              }) => (
+                <option value={lesson.id} key={lesson.id}>
+                  {lesson.subject.name} - {lesson.class.name} ({lesson.name}) -{" "}
+                  {lesson.teacher.name} {lesson.teacher.surname}
+                </option>
+              )
+            )}
           </select>
           {errors.lessonId?.message && (
             <p className="text-xs text-red-400">
@@ -134,11 +157,10 @@ const AssignmentForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Rentang Tanggal Penugasan</label>
-          <DateRangePicker
-            date={dateRange}
-            setDate={setDateRange}
-          />
+          <label className="text-xs text-gray-500">
+            Rentang Tanggal Penugasan
+          </label>
+          <DateRangePicker date={dateRange} setDate={setDateRange} />
           {errors.startTime?.message && (
             <p className="text-xs text-red-400">
               {errors.startTime.message.toString()}
@@ -162,11 +184,14 @@ const AssignmentForm = ({
           />
         )}
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
+      <button
+        className="bg-cyan-500 text-white p-2 rounded-md"
+        disabled={isSubmitting}
+      >
         {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>
   );
 };
 
-export default AssignmentForm; 
+export default AssignmentForm;

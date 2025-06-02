@@ -5,15 +5,15 @@ import StudentTable from "../../student-table";
 import Tabs from "../tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  FileText, 
-  Users, 
+import {
+  FileText,
+  Users,
   BookOpen,
   GraduationCap,
   ArrowLeft,
   Award,
   TrendingUp,
-  Calendar
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -24,14 +24,14 @@ interface AssignmentPageProps {
 }
 
 // Enhanced Header component with stats
-const PageHeader = ({ 
-  className, 
-  totalStudents, 
+const PageHeader = ({
+  className,
+  totalStudents,
   totalExams,
   totalAssignments,
   completedAssignments,
-  role 
-}: { 
+  role,
+}: {
   className: string;
   totalStudents: number;
   totalExams: number;
@@ -42,8 +42,8 @@ const PageHeader = ({
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-      <Link 
-        href="/list/results" 
+      <Link
+        href="/list/results"
         className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -54,7 +54,7 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-blue-500 rounded-lg">
+        <div className="p-2 bg-cyan-500  rounded-lg">
           <FileText className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -92,12 +92,12 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
             select: {
               id: true,
               name: true,
-              surname: true
-            }
-          }
-        }
-      }
-    }
+              surname: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!selectedClass) {
@@ -105,135 +105,148 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
   }
 
   // Check if user has access to this class
-  if (role !== "admin" && 
-      !selectedClass.lessons.some(lesson => lesson.teacher.id === currentUserId) &&
-      selectedClass.supervisorId !== currentUserId) {
+  if (
+    role !== "admin" &&
+    !selectedClass.lessons.some(
+      (lesson) => lesson.teacher.id === currentUserId
+    ) &&
+    selectedClass.supervisorId !== currentUserId
+  ) {
     notFound();
   }
 
   // Fetch students, exams, assignments, and existing grades for this class
-  const [students, exams, assignments, existingGrades] = await prisma.$transaction([
-    prisma.student.findMany({
-      where: { classId },
-      select: { 
-        id: true, 
-        name: true, 
-        surname: true,
-        class: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
-      },
-    }),
-    prisma.exam.findMany({
-      where: { 
-        lesson: { 
-          classId,
-          ...(role !== "admin" ? {
-            OR: [
-              { teacherId: currentUserId! },
-              { class: { supervisorId: currentUserId! } }
-            ]
-          } : {})
-        }
-      },
-      select: { 
-        id: true, 
-        title: true,
-        startTime: true,
-        endTime: true,
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            class: { select: { id: true, name: true } },
-            teacher: { select: { id: true, name: true, surname: true } },
-          }
-        }
-      },
-    }),
-    prisma.assignment.findMany({
-      where: { 
-        lesson: { 
-          classId,
-          ...(role !== "admin" ? {
-            OR: [
-              { teacherId: currentUserId! },
-              { class: { supervisorId: currentUserId! } }
-            ]
-          } : {})
-        }
-      },
-      select: { 
-        id: true, 
-        title: true,
-        startDate: true,
-        dueDate: true,
-        lesson: {
-          select: {
-            id: true,
-            name: true,
-            class: { select: { id: true, name: true } },
-            teacher: { select: { id: true, name: true, surname: true } },
-          }
-        }
-      },
-    }),
-    prisma.result.findMany({
-      where: {
-        OR: [
-          {
-            exam: {
-              lesson: { 
-                classId,
-                ...(role !== "admin" ? {
-                  OR: [
-                    { teacherId: currentUserId! },
-                    { class: { supervisorId: currentUserId! } }
-                  ]
-                } : {})
-              }
-            }
+  const [students, exams, assignments, existingGrades] =
+    await prisma.$transaction([
+      prisma.student.findMany({
+        where: { classId },
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+          class: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
-          {
-            assignment: {
-              lesson: { 
-                classId,
-                ...(role !== "admin" ? {
+        },
+      }),
+      prisma.exam.findMany({
+        where: {
+          lesson: {
+            classId,
+            ...(role !== "admin"
+              ? {
                   OR: [
                     { teacherId: currentUserId! },
-                    { class: { supervisorId: currentUserId! } }
-                  ]
-                } : {})
-              }
-            }
-          }
-        ]
-      },
-      select: {
-        id: true,
-        score: true,
-        examId: true,
-        assignmentId: true,
-        studentId: true
-      }
-    })
-  ]);
+                    { class: { supervisorId: currentUserId! } },
+                  ],
+                }
+              : {}),
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          startTime: true,
+          endTime: true,
+          lesson: {
+            select: {
+              id: true,
+              name: true,
+              class: { select: { id: true, name: true } },
+              teacher: { select: { id: true, name: true, surname: true } },
+            },
+          },
+        },
+      }),
+      prisma.assignment.findMany({
+        where: {
+          lesson: {
+            classId,
+            ...(role !== "admin"
+              ? {
+                  OR: [
+                    { teacherId: currentUserId! },
+                    { class: { supervisorId: currentUserId! } },
+                  ],
+                }
+              : {}),
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          startDate: true,
+          dueDate: true,
+          lesson: {
+            select: {
+              id: true,
+              name: true,
+              class: { select: { id: true, name: true } },
+              teacher: { select: { id: true, name: true, surname: true } },
+            },
+          },
+        },
+      }),
+      prisma.result.findMany({
+        where: {
+          OR: [
+            {
+              exam: {
+                lesson: {
+                  classId,
+                  ...(role !== "admin"
+                    ? {
+                        OR: [
+                          { teacherId: currentUserId! },
+                          { class: { supervisorId: currentUserId! } },
+                        ],
+                      }
+                    : {}),
+                },
+              },
+            },
+            {
+              assignment: {
+                lesson: {
+                  classId,
+                  ...(role !== "admin"
+                    ? {
+                        OR: [
+                          { teacherId: currentUserId! },
+                          { class: { supervisorId: currentUserId! } },
+                        ],
+                      }
+                    : {}),
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          score: true,
+          examId: true,
+          assignmentId: true,
+          studentId: true,
+        },
+      }),
+    ]);
 
   // Calculate stats
   const totalStudents = students.length;
   const totalExams = exams.length;
   const totalAssignments = assignments.length;
-  const completedAssignments = assignments.filter(assignment => 
-    existingGrades.some(grade => grade.assignmentId === assignment.id)
+  const completedAssignments = assignments.filter((assignment) =>
+    existingGrades.some((grade) => grade.assignmentId === assignment.id)
   ).length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
-        <PageHeader 
+        <PageHeader
           className={selectedClass.name}
           totalStudents={totalStudents}
           totalExams={totalExams}
@@ -241,49 +254,48 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           completedAssignments={completedAssignments}
           role={role || ""}
         />
-        
+
         {/* Tabs Navigation */}
-        <Tabs 
-          classId={params.classId} 
+        <Tabs
+          classId={params.classId}
           totalExams={totalExams}
           totalAssignments={totalAssignments}
-          className="mb-6" 
+          className="mb-6"
         />
-        
+
         {/* Main Content Section */}
         <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
           <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-6">
-              
-
-              <StudentTable 
-                students={students.map(student => ({
+              <StudentTable
+                students={students.map((student) => ({
                   id: student.id.toString(),
                   name: student.name,
                   surname: student.surname,
-                  className: student.class.name
+                  className: student.class.name,
                 }))}
-                exams={exams.map(exam => ({
+                exams={exams.map((exam) => ({
                   id: exam.id.toString(),
                   title: exam.title,
                   className: exam.lesson.class.name,
                   teacherId: exam.lesson.teacher.id,
-                  date: exam.startTime.toISOString()
+                  date: exam.startTime.toISOString(),
                 }))}
-                assignments={assignments.map(assignment => ({
+                assignments={assignments.map((assignment) => ({
                   id: assignment.id.toString(),
                   title: assignment.title,
-                  className: assignment.lesson.class.name,  
+                  className: assignment.lesson.class.name,
                   teacherId: assignment.lesson.teacher.id,
-                  date: assignment.startDate.toISOString()
+                  date: assignment.startDate.toISOString(),
                 }))}
                 role={role}
                 currentUserId={currentUserId || undefined}
-                existingGrades={existingGrades.map(grade => ({
+                existingGrades={existingGrades.map((grade) => ({
                   id: grade.id.toString(),
                   score: grade.score,
-                  assessmentId: (grade.examId || grade.assignmentId)?.toString() || '',
-                  studentId: grade.studentId
+                  assessmentId:
+                    (grade.examId || grade.assignmentId)?.toString() || "",
+                  studentId: grade.studentId,
                 }))}
               />
             </div>

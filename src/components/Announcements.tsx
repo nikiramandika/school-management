@@ -52,9 +52,7 @@ const Announcements = async () => {
   return (
     <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
       {/* Header */}
-      <div
-        className="bg-cyan-400/80 px-6 py-5"
-      >
+      <div className="bg-cyan-500 px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -78,7 +76,7 @@ const Announcements = async () => {
           </div>
           <Link
             href="/list/announcements"
-            className="text-blue-100 hover:text-white text-sm font-medium transition-colors duration-200"
+            className="text-cyan-100 hover:text-white text-sm font-medium transition-colors duration-200"
           >
             Lihat Semua
           </Link>

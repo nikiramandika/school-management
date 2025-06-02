@@ -142,7 +142,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
 
   const getScoreColor = (score: number) => {
     if (score >= 90)
-      return "border-green-200 text-green-700 bg-green-50 dark:border-green-700 dark:text-green-300 dark:bg-green-900/20";
+      return "border-teal-200 text-teal-700 bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:bg-teal-900/20";
     if (score >= 80)
       return "border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:bg-blue-900/20";
     if (score >= 70)
@@ -167,7 +167,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
                 <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
@@ -200,8 +200,8 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             </div>
             <div className="p-4 bg-white/50 dark:bg-white/5 rounded-lg border border-purple-200 dark:border-purple-800">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                  <TrendingUp className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -253,7 +253,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-indigo-600" />
+              <Search className="h-4 w-4 text-cyan-600" />
               <Input
                 placeholder="Cari siswa, judul, atau guru..."
                 value={searchQuery}
@@ -263,9 +263,9 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-green-600" />
+              <Filter className="h-4 w-4 text-teal-600" />
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[150px] border-green-200 focus:border-green-400">
+                <SelectTrigger className="w-[150px] border-teal-200 focus:border-teal-400">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -280,7 +280,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             <Button
               variant="outline"
               onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
+              className="border-teal-200 text-teal-700 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20"
             >
               {sortOrder === "asc" ? "↑" : "↓"}
             </Button>
@@ -360,7 +360,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                     {/* Main Info */}
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
                           <BookOpen className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div className="flex flex-col min-w-0">

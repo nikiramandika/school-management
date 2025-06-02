@@ -48,9 +48,9 @@ export function ClassTable({
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
+            className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-blue-600" />
+            <GraduationCap className="mr-2 h-4 w-4 text-cyan-600" />
             Nama Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -58,8 +58,8 @@ export function ClassTable({
       },
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+            <GraduationCap className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -79,9 +79,9 @@ export function ClassTable({
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+            className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <Users className="mr-2 h-4 w-4 text-green-600" />
+            <Users className="mr-2 h-4 w-4 text-teal-600" />
             Kapasitas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -91,9 +91,9 @@ export function ClassTable({
         <div className="hidden lg:flex">
           <Badge
             variant="outline"
-            className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+            className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
           >
-            <Users className="mr-2 h-4 w-4 text-green-600" />
+            <Users className="mr-2 h-4 w-4 text-teal-600" />
             {row.original.capacity} siswa
           </Badge>
         </div>
@@ -119,8 +119,8 @@ export function ClassTable({
           <Badge
             variant="outline"
             className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
-          >             
-          <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
+          >
+            <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
             Tingkat {row.original.grade?.level || row.original.name[0]}
           </Badge>
         </div>
@@ -153,7 +153,9 @@ export function ClassTable({
                 <Badge
                   variant="outline"
                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
-                > <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                >
+                  {" "}
+                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
                   Wali Kelas
                 </Badge>
               </div>
@@ -178,7 +180,7 @@ export function ClassTable({
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-indigo-600" />
+          <Edit className="h-4 w-4 text-cyan-600" />
           Aksi
         </div>
       ),
@@ -225,7 +227,7 @@ export function ClassTable({
                     variant="ghost"
                     size="sm"
                     asChild
-                    className="h-9 w-9 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                    className="h-9 w-9 p-0 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-colors"
                   >
                     <Link href={`/list/classes/${classItem.id}`}>
                       <Users className="h-4 w-4" />
@@ -282,4 +284,3 @@ export function ClassTable({
   // Always include the actions column, but the content will be different based on role
   return <DataTable columns={columns} data={data} searchKey="name" />;
 }
-

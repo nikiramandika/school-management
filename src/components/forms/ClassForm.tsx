@@ -3,14 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import {
-  classSchema,
-  ClassSchema,
-} from "@/lib/formValidationSchemas";
-import {
-  createClass,
-  updateClass,
-} from "@/lib/actions";
+import { classSchema, ClassSchema } from "@/lib/formValidationSchemas";
+import { createClass, updateClass } from "@/lib/actions";
 import { useFormState } from "react-dom";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -43,23 +37,33 @@ const ClassForm = ({
     defaultValues: data,
   });
 
-  const onSubmit = useCallback(async (formData: ClassSchema) => {
-    try {
-      const action = type === "create" ? createClass : updateClass;
-      const result = await action({ success: false, error: false, message: "" }, formData);
+  const onSubmit = useCallback(
+    async (formData: ClassSchema) => {
+      try {
+        const action = type === "create" ? createClass : updateClass;
+        const result = await action(
+          { success: false, error: false, message: "" },
+          formData
+        );
 
-      if (result.success) {
-        toast.success(`Class has been ${type === "create" ? "created" : "updated"}!`);
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.message || "Failed to save class data. Please try again.");
+        if (result.success) {
+          toast.success(
+            `Class has been ${type === "create" ? "created" : "updated"}!`
+          );
+          setOpen(false);
+          router.refresh();
+        } else {
+          toast.error(
+            result.message || "Failed to save class data. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }, [type, setOpen, router]);
+    },
+    [type, setOpen, router]
+  );
 
   // Get teachers and grades from relatedData
   const teachers = relatedData?.teachers || [];
@@ -108,8 +112,14 @@ const ClassForm = ({
           >
             <option value="">Pilih Wali Kelas</option>
             {teachers.map(
-              (teacher: { id: string; name: string; surname: string; isSupervisor?: boolean }) => {
-                const isDisabled = teacher.isSupervisor && teacher.id !== currentSupervisorId;
+              (teacher: {
+                id: string;
+                name: string;
+                surname: string;
+                isSupervisor?: boolean;
+              }) => {
+                const isDisabled =
+                  teacher.isSupervisor && teacher.id !== currentSupervisorId;
                 return (
                   <option
                     value={teacher.id}
@@ -138,10 +148,7 @@ const ClassForm = ({
           >
             <option value="">Pilih Tingkatan</option>
             {grades.map((grade: { id: number; level: number }) => (
-              <option
-                value={grade.id}
-                key={grade.id}
-              >
+              <option value={grade.id} key={grade.id}>
                 {grade.level}
               </option>
             ))}
@@ -153,7 +160,10 @@ const ClassForm = ({
           )}
         </div>
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md" disabled={isSubmitting}>
+      <button
+        className="bg-cyan-500 text-white p-2 rounded-md"
+        disabled={isSubmitting}
+      >
         {type === "create" ? "Buat" : "Perbarui"}
       </button>
     </form>

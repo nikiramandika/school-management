@@ -76,9 +76,9 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden md:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+            className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4 text-green-600" />
+            <BookOpen className="mr-2 h-4 w-4 text-teal-600" />
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -88,7 +88,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
         <div className="hidden md:flex items-center gap-2">
           <Badge
             variant="outline"
-            className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+            className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
           >
             <BookOpen className="mr-1 h-3 w-3" />
             {row.original.subject.name}
@@ -168,7 +168,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
           >
-            <Calendar className="mr-2 h-4 w-4 text-indigo-600" />
+            <Calendar className="mr-2 h-4 w-4 text-cyan-600" />
             Hari
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -259,7 +259,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-indigo-600" />
+          <Edit className="h-4 w-4 text-cyan-600" />
           Aksi
         </div>
       ),

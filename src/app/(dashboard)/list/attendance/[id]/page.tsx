@@ -5,27 +5,27 @@ import FormModal from "@/components/FormModal";
 import { notFound, redirect } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  UserCheck, 
-  Users, 
+import {
+  UserCheck,
+  Users,
   Calendar,
   BookOpen,
   GraduationCap,
   ArrowLeft,
   Clock,
   CheckCircle,
-  School
+  School,
 } from "lucide-react";
 import Link from "next/link";
 
 // Enhanced Header component with stats
-const PageHeader = ({ 
-  className, 
-  totalStudents, 
+const PageHeader = ({
+  className,
+  totalStudents,
   totalLessons,
   totalAttendances,
-  role 
-}: { 
+  role,
+}: {
   className: string;
   totalStudents: number;
   totalLessons: number;
@@ -35,8 +35,8 @@ const PageHeader = ({
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-      <Link 
-        href="/list/attendance" 
+      <Link
+        href="/list/attendance"
         className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -47,7 +47,7 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-green-500 rounded-lg">
+        <div className="p-2 bg-teal-500 rounded-lg">
           <UserCheck className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -82,12 +82,12 @@ export default async function ClassAttendancePage({
             select: {
               id: true,
               name: true,
-              surname: true
-            }
-          }
-        }
-      }
-    }
+              surname: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!classItem) {
@@ -95,9 +95,11 @@ export default async function ClassAttendancePage({
   }
 
   // Check if user has access to this class
-  if (role !== "admin" && 
-      !classItem.lessons.some(lesson => lesson.teacher.id === currentUserId) &&
-      classItem.supervisorId !== currentUserId) {
+  if (
+    role !== "admin" &&
+    !classItem.lessons.some((lesson) => lesson.teacher.id === currentUserId) &&
+    classItem.supervisorId !== currentUserId
+  ) {
     notFound();
   }
 
@@ -118,9 +120,9 @@ export default async function ClassAttendancePage({
       class: {
         select: {
           id: true,
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
   });
 
@@ -128,12 +130,14 @@ export default async function ClassAttendancePage({
   const lessons = await prisma.lesson.findMany({
     where: {
       classId: parseInt(id),
-      ...(role !== "admin" ? {
-        OR: [
-          { teacherId: currentUserId! },
-          { class: { supervisorId: currentUserId! } }
-        ]
-      } : {})
+      ...(role !== "admin"
+        ? {
+            OR: [
+              { teacherId: currentUserId! },
+              { class: { supervisorId: currentUserId! } },
+            ],
+          }
+        : {}),
     },
     select: {
       id: true,
@@ -159,12 +163,14 @@ export default async function ClassAttendancePage({
     where: {
       lesson: {
         classId: parseInt(id),
-        ...(role !== "admin" ? {
-          OR: [
-            { teacherId: currentUserId! },
-            { class: { supervisorId: currentUserId! } }
-          ]
-        } : {})
+        ...(role !== "admin"
+          ? {
+              OR: [
+                { teacherId: currentUserId! },
+                { class: { supervisorId: currentUserId! } },
+              ],
+            }
+          : {}),
       },
     },
     select: {
@@ -191,19 +197,19 @@ export default async function ClassAttendancePage({
   // Calculate stats
   const totalStudents = students.length;
   const totalLessons = lessons.length;
-  const totalAttendances = attendances.filter(att => att.present).length;
+  const totalAttendances = attendances.filter((att) => att.present).length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
-        <PageHeader 
+        <PageHeader
           className={classItem.name}
           totalStudents={totalStudents}
           totalLessons={totalLessons}
           totalAttendances={totalAttendances}
           role={role || ""}
         />
-        
+
         {/* Main Content Section */}
         <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
           <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">

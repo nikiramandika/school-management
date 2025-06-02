@@ -111,7 +111,7 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-green-500 rounded-lg">
+        <div className="p-2 bg-teal-500 rounded-lg">
           <UserCheck className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -192,7 +192,7 @@ export default async function SupervisorAttendancePage({
   const totalLessons = classData.lessons.length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={classData.name}
@@ -243,7 +243,7 @@ export default async function SupervisorAttendancePage({
                               <CardHeader className="pb-4">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                   <CardTitle className="text-base flex items-center gap-2">
-                                    <Calendar className="h-4 w-4 text-green-600" />
+                                    <Calendar className="h-4 w-4 text-teal-600" />
                                     Kehadiran Minggu Ini
                                   </CardTitle>
                                   <div className="flex items-center gap-2">
@@ -362,7 +362,7 @@ export default async function SupervisorAttendancePage({
                                               if (present === true)
                                                 status = (
                                                   <div className="flex items-center justify-center">
-                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
                                                       <CheckCircle className="h-3 w-3 inline mr-1" />
                                                       Hadir
                                                     </span>

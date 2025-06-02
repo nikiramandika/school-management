@@ -84,7 +84,7 @@ const LoginPage = () => {
           </Clerk.Field>
           <SignIn.Action
             submit
-            className="bg-blue-500 text-white my-1 rounded-md text-sm p-[10px] hover:bg-blue-600 transition-colors w-full"
+            className="bg-cyan-500  text-white my-1 rounded-md text-sm p-[10px] hover:bg-blue-600 transition-colors w-full"
             onClick={() => setIsButtonLoading(true)}
           >
             {isButtonLoading ? (

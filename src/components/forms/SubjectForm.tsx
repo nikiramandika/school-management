@@ -72,7 +72,9 @@ const SubjectForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Membuat Mata Pelajaran Baru" : "Memperbarui Mata Pelajaran"}
+        {type === "create"
+          ? "Membuat Mata Pelajaran Baru"
+          : "Memperbarui Mata Pelajaran"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
@@ -101,21 +103,28 @@ const SubjectForm = ({
             render={({ field }) => {
               const selectedIds = field.value || [];
               const selectedOptions = selectedIds.map((id: string) => {
-                const teacher = teachers.find((t: { id: string }) => t.id === id);
+                const teacher = teachers.find(
+                  (t: { id: string }) => t.id === id
+                );
                 return teacher
-                  ? { value: teacher.id, label: teacher.name + " " + teacher.surname }
+                  ? {
+                      value: teacher.id,
+                      label: teacher.name + " " + teacher.surname,
+                    }
                   : { value: id, label: id };
               });
               const mergedOptions = [
-                ...teachers.map((teacher: { id: string; name: string; surname: string }) => ({
-                  value: teacher.id,
-                  label: teacher.name + " " + teacher.surname,
-                })),
-                ...selectedOptions
+                ...teachers.map(
+                  (teacher: { id: string; name: string; surname: string }) => ({
+                    value: teacher.id,
+                    label: teacher.name + " " + teacher.surname,
+                  })
+                ),
+                ...selectedOptions,
               ];
               // Hilangkan duplikat berdasarkan value
               const uniqueOptions = Array.from(
-                new Map(mergedOptions.map(opt => [opt.value, opt])).values()
+                new Map(mergedOptions.map((opt) => [opt.value, opt])).values()
               );
               return (
                 <Select
@@ -123,23 +132,27 @@ const SubjectForm = ({
                   isSearchable
                   options={uniqueOptions}
                   value={selectedOptions}
-                  onChange={(selected) => field.onChange(selected ? selected.map((s: any) => s.value) : [])}
+                  onChange={(selected) =>
+                    field.onChange(
+                      selected ? selected.map((s: any) => s.value) : []
+                    )
+                  }
                   classNamePrefix="react-select"
                   placeholder="Select teachers..."
-                  styles={{ container: (base) => ({ ...base, width: '100%' }) }}
+                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}
                 />
               );
             }}
           />
           {errors.teachers?.message && (
-            <p className="text-xs text-red-400">
+            <p className="text-xs text-red-400 ">
               {errors.teachers.message.toString()}
             </p>
           )}
         </div>
       </div>
       <button
-        className="bg-blue-400 text-white p-2 rounded-md"
+        className="bg-cyan-500 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

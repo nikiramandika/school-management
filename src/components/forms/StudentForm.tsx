@@ -93,7 +93,7 @@ const StudentForm = ({
         />
       </div>
       <span className="text-xs text-gray-400 font-medium">
-      Informasi Pribadi
+        Informasi Pribadi
       </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
@@ -207,7 +207,7 @@ const StudentForm = ({
         </div>
       </div>
       <button
-        className="bg-blue-400 text-white p-2 rounded-md"
+        className="bg-cyan-500 text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

@@ -264,7 +264,7 @@ export function AttendanceTable({
             </div>
 
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-indigo-600" />
+              <Calendar className="h-4 w-4 text-cyan-600" />
               <input
                 type="date"
                 value={selectedDate}

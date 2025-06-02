@@ -51,7 +51,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
         >
-          <Contact className="mr-2 h-4 w-4 text-indigo-600" />
+          <Contact className="mr-2 h-4 w-4 text-cyan-600" />
           Nama Belakang
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -68,9 +68,9 @@ export function StudentTable({ data, role }: StudentTableProps) {
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hidden md:flex hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+          className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
         >
-          <Mail className="mr-2 h-4 w-4 text-green-600" />
+          <Mail className="mr-2 h-4 w-4 text-teal-600" />
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -95,7 +95,10 @@ export function StudentTable({ data, role }: StudentTableProps) {
         </Button>
       ),
       cell: ({ row }) => (
-        <Badge variant="outline" className="text-yellow-700 border-yellow-300 dark:text-yellow-300 dark:border-yellow-700">
+        <Badge
+          variant="outline"
+          className="text-yellow-700 border-yellow-300 dark:text-yellow-300 dark:border-yellow-700"
+        >
           {row.original.nis}
         </Badge>
       ),
@@ -104,12 +107,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
 
   return (
     <div className="w-full max-w-6xl mx-auto rounded-lg overflow-hidden">
-      <DataTable
-        columns={columns}
-        data={data}
-        searchKey="name"
-      />
+      <DataTable columns={columns} data={data} searchKey="name" />
     </div>
   );
 }
-

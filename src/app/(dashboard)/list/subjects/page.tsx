@@ -38,23 +38,30 @@ const SubjectListPage = async () => {
 
   // Calculate stats
   const totalSubjects = data.length;
-  const totalTeachers = new Set(data.flatMap(subject => subject.teachers.map(teacher => teacher.id))).size;
-  const totalLessons = data.reduce((acc, subject) => acc + subject.lessons.length, 0);
-  const totalClasses = new Set(data.flatMap(subject => subject.lessons.map(lesson => lesson.class.id))).size;
+  const totalTeachers = new Set(
+    data.flatMap((subject) => subject.teachers.map((teacher) => teacher.id))
+  ).size;
+  const totalLessons = data.reduce(
+    (acc, subject) => acc + subject.lessons.length,
+    0
+  );
+  const totalClasses = new Set(
+    data.flatMap((subject) => subject.lessons.map((lesson) => lesson.class.id))
+  ).size;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500 rounded-lg">
+              <div className="p-2 bg-cyan-500 rounded-lg">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Manajemen Mata Pelajaran
+                  Mata Pelajaran
                 </h2>
               </div>
             </div>
@@ -84,11 +91,11 @@ const SubjectListPage = async () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-lg">
+          <Card className="bg-cyan-500 text-white border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium">
+                  <p className="text-cyan-100 text-sm font-medium">
                     Total Mata Pelajaran
                   </p>
                   <p className="text-3xl font-bold">{totalSubjects}</p>
@@ -100,11 +107,11 @@ const SubjectListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg">
+          <Card className="bg-cyan-500 text-white border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium">
+                  <p className="text-teal-100 text-sm font-medium">
                     Total Pelajaran
                   </p>
                   <p className="text-3xl font-bold">{totalLessons}</p>
@@ -116,11 +123,11 @@ const SubjectListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg">
+          <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">
+                  <p className="text-cyan-100 text-sm font-medium">
                     Total Pengajar
                   </p>
                   <p className="text-3xl font-bold">{totalTeachers}</p>
@@ -136,21 +143,25 @@ const SubjectListPage = async () => {
         {/* Main Subjects Table Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-500 rounded-lg">
+            <div className="p-2 bg-cyan-500 rounded-lg">
               <BookOpen className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Semua Mata Pelajaran
             </h1>
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
               {totalSubjects} Mata Pelajaran
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
-                <SubjectTable data={data} role={role} allTeachers={allTeachers} />
+          <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+            <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
+              <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-900 p-4">
+                <SubjectTable
+                  data={data}
+                  role={role}
+                  allTeachers={allTeachers}
+                />
               </div>
             </CardContent>
           </Card>
