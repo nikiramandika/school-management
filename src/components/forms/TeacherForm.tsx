@@ -269,7 +269,7 @@ const TeacherForm = ({
                       selected ? selected.map((s: any) => s.value) : []
                     );
                   }}
-                  classNamePrefix="react-select"
+                  classNamePrefix="react-select custom-select"
                   placeholder="Pilih Mata Pelajaran..."
                   styles={{ container: (base) => ({ ...base, width: "100%" }) }}
                 />

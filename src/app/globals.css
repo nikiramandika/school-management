@@ -294,6 +294,26 @@
 html.dark body {
   background-image: var(--bg-signin); /* when dark mode is active */
 }
+/* Normal background */
+.custom-select__control {
+  background-color: #fff;
+}
+
+/* Dark mode background */
+.dark .custom-select__control {
+  background-color: #27272e;
+  color: white;
+}
+
+.dark .custom-select__menu {
+  background-color: #27272e;
+}
+
+.dark .custom-select__option {
+  background-color: #27272e;
+  color: white;
+}
+
 .dark {
     --primary: #00b8db !important;
   --accent: #1e2939 !important;
