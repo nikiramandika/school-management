@@ -16,6 +16,8 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
+import { DownloadButton } from "../components/download-button";
+import DownloadAllResultsPDFButton from "../components/download-all-results-pdf";
 
 interface ExamPageProps {
   params: {
@@ -231,6 +233,52 @@ const ExamPage = async ({ params }: ExamPageProps) => {
           examId: true,
           assignmentId: true,
           studentId: true,
+          exam: {
+            select: {
+              title: true,
+              lesson: {
+                select: {
+                  teacher: {
+                    select: {
+                      name: true,
+                      surname: true,
+                    },
+                  },
+                  class: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          assignment: {
+            select: {
+              title: true,
+              lesson: {
+                select: {
+                  teacher: {
+                    select: {
+                      name: true,
+                      surname: true,
+                    },
+                  },
+                  class: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          student: {
+            select: {
+              name: true,
+              surname: true,
+            },
+          },
         },
       }),
     ]);
@@ -243,6 +291,36 @@ const ExamPage = async ({ params }: ExamPageProps) => {
     existingGrades.some((grade) => grade.examId === exam.id)
   ).length;
 
+  // Gabungkan hasil ujian dan tugas
+  const allResults = [
+    ...existingGrades
+      .filter((grade) => grade.examId !== null && grade.exam)
+      .map((grade) => ({
+        type: "Ujian",
+        title: grade.exam?.title || "-",
+        studentName: `${grade.student.name} ${grade.student.surname}`,
+        score: grade.score,
+        teacherName: grade.exam
+          ? `${grade.exam.lesson.teacher.name} ${grade.exam.lesson.teacher.surname}`
+          : "-",
+        className: grade.exam?.lesson.class.name || "-",
+        date: grade.exam?.lesson?.class?.name ? new Date().toLocaleDateString("id-ID") : "-",
+      })),
+    ...existingGrades
+      .filter((grade) => grade.assignmentId !== null && grade.assignment)
+      .map((grade) => ({
+        type: "Tugas",
+        title: grade.assignment?.title || "-",
+        studentName: `${grade.student.name} ${grade.student.surname}`,
+        score: grade.score,
+        teacherName: grade.assignment
+          ? `${grade.assignment.lesson.teacher.name} ${grade.assignment.lesson.teacher.surname}`
+          : "-",
+        className: grade.assignment?.lesson.class.name || "-",
+        date: grade.assignment?.lesson?.class?.name ? new Date().toLocaleDateString("id-ID") : "-",
+      })),
+  ];
+
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
@@ -254,6 +332,36 @@ const ExamPage = async ({ params }: ExamPageProps) => {
           completedExams={completedExams}
           role={role || ""}
         />
+
+        <div className="flex justify-end mb-4">
+          <DownloadAllResultsPDFButton
+            students={students.map((student) => ({
+              id: student.id.toString(),
+              name: student.name,
+              surname: student.surname,
+            }))}
+            exams={exams.map((exam) => ({
+              id: exam.id.toString(),
+              title: exam.title,
+              type: "Ujian",
+            }))}
+            assignments={assignments.map((assignment) => ({
+              id: assignment.id.toString(),
+              title: assignment.title,
+              type: "Tugas",
+            }))}
+            existingGrades={existingGrades.map((grade) => ({
+              studentId: grade.studentId,
+              assessmentId: grade.examId != null
+                ? `E-${grade.examId}`
+                : grade.assignmentId != null
+                ? `A-${grade.assignmentId}`
+                : "",
+              score: grade.score,
+            }))}
+            className={selectedClass.name}
+          />
+        </div>
 
         {/* Tabs Navigation */}
         <Tabs
@@ -293,8 +401,11 @@ const ExamPage = async ({ params }: ExamPageProps) => {
                 existingGrades={existingGrades.map((grade) => ({
                   id: grade.id.toString(),
                   score: grade.score,
-                  assessmentId:
-                    (grade.examId || grade.assignmentId)?.toString() || "",
+                  assessmentId: grade.examId != null
+                    ? `E-${grade.examId}`
+                    : grade.assignmentId != null
+                    ? `A-${grade.assignmentId}`
+                    : "",
                   studentId: grade.studentId,
                 }))}
               />
