@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { HiAcademicCap, HiCollection, HiUserGroup } from "react-icons/hi";
 
 type ClassList = Class & {
   supervisor: Teacher | null;
@@ -50,7 +51,7 @@ export function ClassTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-cyan-600" />
+            <HiCollection className="mr-2 h-4 w-4 text-cyan-600" />
             Nama Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -59,7 +60,7 @@ export function ClassTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
-            <GraduationCap className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+            <HiCollection className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -81,7 +82,7 @@ export function ClassTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <Users className="mr-2 h-4 w-4 text-teal-600" />
+            <HiUserGroup className="mr-2 h-4 w-4 text-teal-600" />
             Kapasitas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -93,7 +94,7 @@ export function ClassTable({
             variant="outline"
             className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
           >
-            <Users className="mr-2 h-4 w-4 text-teal-600" />
+            <HiUserGroup className="mr-2 h-4 w-4 text-teal-600" />
             {row.original.capacity} siswa
           </Badge>
         </div>
@@ -108,7 +109,7 @@ export function ClassTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
+            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
             Tingkat
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -120,7 +121,7 @@ export function ClassTable({
             variant="outline"
             className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
+            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
             Tingkat {row.original.grade?.level || row.original.name[0]}
           </Badge>
         </div>
@@ -135,7 +136,7 @@ export function ClassTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold"
           >
-            <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+            <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
             Wali Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -155,7 +156,7 @@ export function ClassTable({
                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                 >
                   {" "}
-                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                  <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
                   Wali Kelas
                 </Badge>
               </div>
@@ -163,7 +164,7 @@ export function ClassTable({
           ) : (
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                <UserCheck className="h-4 w-4 text-gray-400" />
+                <HiAcademicCap className="h-4 w-4 text-gray-400" />
               </div>
               <Badge
                 variant="outline"
@@ -230,7 +231,7 @@ export function ClassTable({
                     className="h-9 w-9 p-0 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-colors"
                   >
                     <Link href={`/list/classes/${classItem.id}`}>
-                      <Users className="h-4 w-4" />
+                      <HiUserGroup className="h-4 w-4" />
                     </Link>
                   </Button>
                 </TooltipTrigger>

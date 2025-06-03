@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import FormContainer from "@/components/FormContainer";
 import prisma from "@/lib/prisma";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserCheck, Users, BookOpen } from "lucide-react";
+import { HiAcademicCap } from "react-icons/hi";
 import { Badge } from "@/components/ui/badge";
 
 const TeacherListPage = async () => {
@@ -28,8 +29,14 @@ const TeacherListPage = async () => {
 
   // Calculate stats
   const totalTeachers = data.length;
-  const teachersWithClasses = data.filter((teacher) => teacher.classes.length > 0).length;
-  const totalSubjects = [...new Set(data.flatMap((teacher) => teacher.subjects.map((subject) => subject.id)))].length;
+  const teachersWithClasses = data.filter(
+    (teacher) => teacher.classes.length > 0
+  ).length;
+  const totalSubjects = [
+    ...new Set(
+      data.flatMap((teacher) => teacher.subjects.map((subject) => subject.id))
+    ),
+  ].length;
 
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
@@ -39,7 +46,7 @@ const TeacherListPage = async () => {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-indigo-400 rounded-lg">
-                <UserCheck className="h-6 w-6 text-white" />
+                <HiAcademicCap className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -77,7 +84,7 @@ const TeacherListPage = async () => {
                   <p className="text-3xl font-bold">{totalTeachers}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <UserCheck className="h-6 w-6" />
+                  <HiAcademicCap className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -93,7 +100,7 @@ const TeacherListPage = async () => {
                   <p className="text-3xl font-bold">{teachersWithClasses}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <Users className="h-6 w-6" />
+                  <HiAcademicCap className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -104,7 +111,7 @@ const TeacherListPage = async () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-indigo-400 rounded-lg">
-              <UserCheck className="h-5 w-5 text-white" />
+              <HiAcademicCap className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white/90">
               Data Guru

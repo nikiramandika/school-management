@@ -45,6 +45,7 @@ import {
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { AttendancePDFDownload } from "@/components/AttendancePDFDownload";
+import { HiAcademicCap } from "react-icons/hi";
 
 interface ClassPageProps {
   params: {
@@ -109,7 +110,7 @@ const PageHeader = ({
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-green-500 rounded-lg">
-          <UserCheck className="h-6 w-6 text-white" />
+          <HiAcademicCap className="h-6 w-6 text-white" />
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -202,8 +203,8 @@ export default async function SupervisorAttendancePage({
         />
 
         {/* Main Content Section */}
-        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
+          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
               <div className="space-y-4">
                 {lessonsWithAttendances.length > 0 ? (
@@ -227,7 +228,7 @@ export default async function SupervisorAttendancePage({
                                   variant="outline"
                                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                                 >
-                                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                                  <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
                                   {lesson.teacher.name} {lesson.teacher.surname}
                                 </Badge>
                               </div>
@@ -438,4 +439,3 @@ export default async function SupervisorAttendancePage({
     </div>
   );
 }
-

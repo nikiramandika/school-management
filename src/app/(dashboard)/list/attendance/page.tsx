@@ -11,6 +11,7 @@ import {
   BookOpen,
   School,
 } from "lucide-react";
+import { HiCollection, HiUserGroup } from "react-icons/hi";
 
 // Enhanced Header component with visual improvements
 const PageHeader = ({
@@ -52,7 +53,7 @@ const PageHeader = ({
                 <p className="text-3xl font-bold">{totalClasses}</p>
               </div>
               <div className="p-3 bg-white/20 rounded-full">
-                <School className="h-6 w-6" />
+                <HiCollection className="h-6 w-6" />
               </div>
             </div>
           </CardContent>
@@ -66,7 +67,7 @@ const PageHeader = ({
                 <p className="text-3xl font-bold">{totalStudents}</p>
               </div>
               <div className="p-3 bg-white/20 rounded-full">
-                <Users className="h-6 w-6" />
+                <HiUserGroup className="h-6 w-6" />
               </div>
             </div>
           </CardContent>
@@ -91,19 +92,6 @@ const PageHeader = ({
     )}
 
     {/* Main Section Header */}
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-cyan-500 rounded-lg">
-          <UserCheck className="h-5 w-5 text-white" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Absensi Kelas
-        </h1>
-        <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
-          {totalClasses} Kelas
-        </Badge>
-      </div>
-    </div>
   </div>
 );
 
@@ -113,7 +101,7 @@ const EmptyState = ({ role }: { role: string }) => (
     <CardContent className="p-12 text-center">
       <div className="flex flex-col items-center gap-4">
         <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-          <Users className="h-8 w-8 text-gray-400" />
+          <HiCollection className="h-8 w-8 text-gray-400" />
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -182,9 +170,9 @@ const AttendanceListPage = async () => {
         />
 
         {/* Main Content Section */}
-        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+        <Card className="text-card-foreground border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+          <CardContent className="bg-gray-100 dark:bg-transparent rounded-xl p-0">
+            <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-900 p-4">
               {classes.length > 0 ? (
                 <ClassList
                   classes={classes}

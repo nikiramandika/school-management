@@ -103,7 +103,7 @@ export function EventTable({ data, role }: EventTableProps) {
               }
               className="hidden lg:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
             >
-              <Clock className="mr-2 h-4 w-4 text-purple-600" />
+              <Clock className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
               Waktu Mulai
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>

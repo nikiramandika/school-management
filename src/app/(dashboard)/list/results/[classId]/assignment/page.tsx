@@ -264,8 +264,8 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
         />
 
         {/* Main Content Section */}
-        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
+          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-6">
               <StudentTable
                 students={students.map((student) => ({

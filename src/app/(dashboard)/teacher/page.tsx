@@ -20,15 +20,19 @@ const TeacherPage = async () => {
   }));
 
   return (
-    <div className="flex-1 p-4 flex gap-4 flex-col xl:flex-row">
+    //   <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
+    // <div className="container mx-auto p-6 space-y-8">
+    //   {/* Header Section */}
+    //   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl"></div>
+    <div className=" flex-1 p-4 flex gap-4 flex-col xl:flex-row">
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
-        <div className="h-full bg-gray-50 dark:bg-card p-4 rounded-md shadow-sm">
+        <div className="soft-light bg-softlight dark:bg-softdark h-full  p-6 rounded-3xl shadow-md">
           <h1 className="text-xl font-semibold mb-4">Jadwal Mengajar</h1>
           <div className="h-[calc(100%-3rem)]">
-            <BigCalendarContainer 
-              type="teacherId" 
-              id={userId!} 
+            <BigCalendarContainer
+              type="teacherId"
+              id={userId!}
               initialData={initialData}
             />
           </div>

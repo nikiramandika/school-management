@@ -12,15 +12,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  FileText,
-  BookOpen,
-  Users,
-  GraduationCap,
-  Clock,
-  Plus,
-} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { HiDocumentReport, HiBookOpen, HiCollection, HiAcademicCap } from "react-icons/hi";
 
 const AssignmentListPage = async () => {
   const { userId, sessionClaims } = await auth();
@@ -117,7 +110,7 @@ const AssignmentListPage = async () => {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-cyan-500 rounded-lg">
-                  <FileText className="h-6 w-6 text-white" />
+                  <HiDocumentReport className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -161,7 +154,7 @@ const AssignmentListPage = async () => {
                     <p className="text-3xl font-bold">{totalAssignments}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <FileText className="h-6 w-6" />
+                    <HiDocumentReport className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -177,7 +170,7 @@ const AssignmentListPage = async () => {
                     <p className="text-3xl font-bold">{totalSubjects}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <BookOpen className="h-6 w-6" />
+                    <HiBookOpen className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -193,7 +186,7 @@ const AssignmentListPage = async () => {
                     <p className="text-3xl font-bold">{totalClasses}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Users className="h-6 w-6" />
+                    <HiCollection className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -209,7 +202,7 @@ const AssignmentListPage = async () => {
                     <p className="text-3xl font-bold">{totalTeachers}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <GraduationCap className="h-6 w-6" />
+                    <HiAcademicCap className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -222,7 +215,7 @@ const AssignmentListPage = async () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-cyan-500 rounded-lg">
-                <FileText className="h-5 w-5 text-white" />
+                <HiDocumentReport className="h-5 w-5 text-white" />
               </div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Daftar Tugas

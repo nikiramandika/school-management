@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
+import { HiUserGroup } from "react-icons/hi";
 interface ClassStudentsPageProps {
   params: {
     classId: string;
@@ -36,7 +36,7 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="p-2 bg-cyan-500  rounded-lg">
-            <Users className="h-6 w-6 text-white" />
+            <HiUserGroup className="h-6 w-6 text-white" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -49,9 +49,9 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
         </div>
 
         {/* Table Section */}
-        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
-            <div className="bg-white dark:bg-slate-600 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-4">
+        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
+          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
+            <div className="bg-white dark:bg-slate-600 rounded-lg border border-gray-200 dark:border-slate-600 p-4">
               <StudentTable data={classData.students} />
             </div>
           </CardContent>

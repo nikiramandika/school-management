@@ -336,7 +336,7 @@ const StudentTable = ({
                       variant="outline"
                       className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300"
                     >
-                      <Users className="mr-1 h-3 w-3" />
+                      <HiUserGroup className="mr-1 h-3 w-3" />
                       {selectedAssessmentDetails.className}
                     </Badge>
                   </div>
@@ -408,7 +408,7 @@ const StudentTable = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Users className="h-4 w-4 text-purple-600" />
+                    <HiUserGroup className="h-4 w-4 text-purple-600" />
                     Daftar Nilai Siswa
                   </h3>
                   <Badge
@@ -462,7 +462,7 @@ const StudentTable = ({
                                 variant="outline"
                                 className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs"
                               >
-                                <Users className="mr-1 h-3 w-3" />
+                                <HiUserGroup className="mr-1 h-3 w-3" />
                                 {student.className}
                               </Badge>
                             </div>
@@ -581,7 +581,7 @@ const StudentTable = ({
               <div className="text-center py-12">
                 <div className="flex flex-col items-center gap-4 text-muted-foreground">
                   <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                    <Users className="h-8 w-8 text-gray-400" />
+                    <HiUserGroup className="h-8 w-8 text-gray-400" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-lg font-medium text-gray-900 dark:text-white">

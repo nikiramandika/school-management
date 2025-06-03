@@ -12,6 +12,7 @@ import {
   School,
   Trophy,
 } from "lucide-react";
+import { HiAcademicCap, HiClipboardCheck, HiCollection, HiUserGroup} from "react-icons/hi";
 
 // Enhanced Header component with visual improvements
 const PageHeader = ({
@@ -30,7 +31,7 @@ const PageHeader = ({
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-500  rounded-lg">
-              <Award className="h-6 w-6 text-white" />
+              <HiClipboardCheck className="h-6 w-6 text-white" />
             </div>
             <div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -53,7 +54,7 @@ const PageHeader = ({
                 <p className="text-3xl font-bold">{totalClasses}</p>
               </div>
               <div className="p-3 bg-white/20 rounded-full">
-                <School className="h-6 w-6" />
+                <HiCollection className="h-6 w-6" />
               </div>
             </div>
           </CardContent>
@@ -67,7 +68,7 @@ const PageHeader = ({
                 <p className="text-3xl font-bold">{totalStudents}</p>
               </div>
               <div className="p-3 bg-white/20 rounded-full">
-                <Users className="h-6 w-6" />
+                <HiUserGroup className="h-6 w-6" />
               </div>
             </div>
           </CardContent>
@@ -92,10 +93,10 @@ const PageHeader = ({
     )}
 
     {/* Main Section Header */}
-    <div className="space-y-6">
+    {/* <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-cyan-500  rounded-lg">
-          <Trophy className="h-5 w-5 text-white" />
+          <HiClipboardCheck className="h-6 w-6 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Nilai Kelas
@@ -104,7 +105,7 @@ const PageHeader = ({
           {totalClasses} Kelas
         </Badge>
       </div>
-    </div>
+    </div> */}
   </div>
 );
 
@@ -114,7 +115,7 @@ const EmptyState = ({ role }: { role: string }) => (
     <CardContent className="p-12 text-center">
       <div className="flex flex-col items-center gap-4">
         <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-          <GraduationCap className="h-8 w-8 text-gray-400" />
+          <HiAcademicCap className="h-8 w-8 text-gray-400" />
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

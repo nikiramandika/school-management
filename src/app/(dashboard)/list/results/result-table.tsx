@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
+import { HiAcademicCap, HiClipboardCheck, HiUserGroup } from "react-icons/hi";
 
 type ResultList = {
   id: number;
@@ -186,7 +187,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
             <div className="p-4 bg-white/50 dark:bg-white/5 rounded-lg border border-purple-200 dark:border-purple-800">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <HiClipboardCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -233,7 +234,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
           {/* Filters */}
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-purple-600" />
+              <HiUserGroup className="h-4 w-4 text-purple-600" />
               <Select value={selectedClass} onValueChange={setSelectedClass}>
                 <SelectTrigger className="w-[200px] border-purple-200 focus:border-purple-400">
                   <SelectValue placeholder="Semua Kelas" />
@@ -243,7 +244,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   {availableClasses.map((cls) => (
                     <SelectItem key={cls.id} value={cls.id}>
                       <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-purple-600" />
+                        <HiUserGroup className="h-4 w-4 text-purple-600" />
                         {cls.name}
                       </div>
                     </SelectItem>
@@ -379,14 +380,14 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                               variant="outline"
                               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs"
                             >
-                              <Users className="mr-1 h-3 w-3" />
+                              <HiUserGroup className="mr-1 h-3 w-3" />
                               {result.className}
                             </Badge>
                             <Badge
                               variant="outline"
                               className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
                             >
-                              <UserCheck className="mr-1 h-3 w-3" />
+                              <HiAcademicCap className="mr-1 h-3 w-3" />
                               {result.teacherName} {result.teacherSurname}
                             </Badge>
                           </div>

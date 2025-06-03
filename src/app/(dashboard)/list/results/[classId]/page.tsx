@@ -233,8 +233,8 @@ const ClassPage = async ({ params }: ClassPageProps) => {
         />
 
         {/* Main Content Section */}
-        <Card className="border-0 shadow-lg bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-5 bg-gray-100 dark:bg-slate-700 rounded-xl">
+        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
+          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-6">
               <Tabs defaultValue="exam" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-slate-700 p-1 rounded-lg">
@@ -295,7 +295,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                       variant="outline"
                                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                                     >
-                                      <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                                      <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
                                       {lesson.teacher.name}{" "}
                                       {lesson.teacher.surname}
                                     </Badge>
@@ -441,7 +441,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                       variant="outline"
                                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                                     >
-                                      <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                                      <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
                                       {lesson.teacher.name}{" "}
                                       {lesson.teacher.surname}
                                     </Badge>

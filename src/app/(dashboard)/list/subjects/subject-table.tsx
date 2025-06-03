@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { HiAcademicCap, HiCollection, HiDocumentText } from "react-icons/hi";
 
 type SubjectList = Subject & {
   teachers: Teacher[];
@@ -92,7 +93,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold"
           >
-            <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+            <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -114,7 +115,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                         variant="outline"
                         className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-help"
                       >
-                        <UserCheck className="mr-1 h-3 w-3" />
+                        <HiAcademicCap className="mr-1 h-3 w-3" />
                         {teacher.name} {teacher.surname}
                       </Badge>
                     </TooltipTrigger>
@@ -131,14 +132,14 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       variant="outline"
                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
                     >
-                      <Users className="mr-1 h-3 w-3" />+{remainingTeachers}{" "}
-                      Lebih Banyak
+                      <HiAcademicCap className="mr-1 h-3 w-3" />+
+                      {remainingTeachers} Lebih Banyak
                     </Badge>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
-                        <UserCheck className="h-5 w-5 text-orange-600" />
+                        <HiAcademicCap className="h-5 w-5 text-orange-600" />
                         Guru untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
@@ -151,7 +152,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                           >
                             <div className="flex items-center gap-3">
                               <div className="p-2 bg-cyan-100 dark:bg-orange-900/30 rounded-lg">
-                                <UserCheck className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                                <HiAcademicCap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                               </div>
                               <div className="font-medium">
                                 {teacher.name} {teacher.surname}
@@ -178,7 +179,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-teal-600" />
+            <HiDocumentText className="mr-2 h-4 w-4 text-teal-600" />
             Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -200,7 +201,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                         variant="outline"
                         className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 w-fit cursor-help"
                       >
-                        <GraduationCap className="mr-1 h-3 w-3" />
+                        <HiDocumentText className="mr-1 h-3 w-3" />
                         {lesson.name} - {lesson.class.name}
                       </Badge>
                     </TooltipTrigger>
@@ -226,7 +227,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
-                        <GraduationCap className="h-5 w-5 text-teal-600" />
+                        <HiDocumentText className="h-5 w-5 text-teal-600" />
                         Pelajaran untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
@@ -239,7 +240,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                           >
                             <div className="flex items-center gap-3 mb-2">
                               <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
-                                <GraduationCap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                                <HiCollection className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                               </div>
                               <div className="font-medium">{lesson.name}</div>
                             </div>
@@ -250,7 +251,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                                   variant="outline"
                                   className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
                                 >
-                                  <Users className="mr-1 h-3 w-3" />
+                                  <HiDocumentText className="mr-1 h-3 w-3" />
                                   {lesson.class.name}
                                 </Badge>
                               </div>
@@ -259,7 +260,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                                   variant="outline"
                                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
                                 >
-                                  <UserCheck className="mr-1 h-3 w-3" />
+                                  <HiAcademicCap className="mr-1 h-3 w-3" />
                                   {lesson.teacher.name} {lesson.teacher.surname}
                                 </Badge>
                               </div>

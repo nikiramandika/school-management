@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { HiAcademicCap, HiCollection, HiUserGroup } from "react-icons/hi";
 
 type AssignmentList = Assignment & {
   title: string;
@@ -119,7 +120,7 @@ export function AssignmentTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
+            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -132,7 +133,7 @@ export function AssignmentTable({
               variant="outline"
               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
             >
-              <Users className="mr-1 h-3 w-3" />
+              <HiCollection className="mr-1 h-3 w-3" />
               {row.original.lesson.class.name}
             </Badge>
           </div>

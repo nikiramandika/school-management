@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Users, GraduationCap, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TeacherTable } from "../teachers/teacher-table";
+import { HiCollection, HiUserGroup } from "react-icons/hi";
 
 const StudentListPage = async () => {
   const { sessionClaims } = await auth();
@@ -39,7 +40,7 @@ const StudentListPage = async () => {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-cyan-500 rounded-lg">
-                <Users className="h-6 w-6 text-white" />
+                <HiUserGroup className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -77,7 +78,7 @@ const StudentListPage = async () => {
                   <p className="text-3xl font-bold">{totalStudents}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <Users className="h-6 w-6" />
+                  <HiUserGroup className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -93,7 +94,7 @@ const StudentListPage = async () => {
                   <p className="text-3xl font-bold">{totalClasses}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <GraduationCap className="h-6 w-6" />
+                  <HiCollection className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -104,7 +105,7 @@ const StudentListPage = async () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-500 rounded-lg">
-              <Users className="h-5 w-5 text-white" />
+              <HiUserGroup className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Data Siswa

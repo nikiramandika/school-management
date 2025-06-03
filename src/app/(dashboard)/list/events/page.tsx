@@ -175,7 +175,7 @@ const EventListPage = async () => {
                     <p className="text-3xl font-bold">{totalClasses}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Users className="h-6 w-6" />
+                    <HiUserGroup className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>

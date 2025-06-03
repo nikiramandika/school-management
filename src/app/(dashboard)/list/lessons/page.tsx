@@ -14,6 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, GraduationCap, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { HiDocumentText, HiCollection, HiBookOpen, HiAcademicCap } from "react-icons/hi";
+
 
 const LessonListPage = async () => {
   const { sessionClaims } = await auth();
@@ -55,7 +57,7 @@ const LessonListPage = async () => {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-cyan-500 rounded-lg">
-                  <BookOpen className="h-6 w-6 text-white" />
+                  <HiDocumentText className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -101,7 +103,7 @@ const LessonListPage = async () => {
                     <p className="text-3xl font-bold">{totalLessons}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <BookOpen className="h-6 w-6" />
+                    <HiDocumentText className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -117,7 +119,7 @@ const LessonListPage = async () => {
                     <p className="text-3xl font-bold">{totalSubjects}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <GraduationCap className="h-6 w-6" />
+                    <HiBookOpen className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -133,7 +135,7 @@ const LessonListPage = async () => {
                     <p className="text-3xl font-bold">{totalClasses}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Users className="h-6 w-6" />
+                    <HiCollection className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -149,7 +151,7 @@ const LessonListPage = async () => {
                     <p className="text-3xl font-bold">{totalTeachers}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Clock className="h-6 w-6" />
+                    <HiAcademicCap className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -161,7 +163,7 @@ const LessonListPage = async () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-500 rounded-lg">
-              <BookOpen className="h-5 w-5 text-white" />
+              <HiDocumentText className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Daftar Pelajaran

@@ -45,6 +45,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { HiUserGroup } from "react-icons/hi";
+
 
 interface Student {
   id: string;
@@ -131,7 +133,8 @@ export function AttendanceTable({
   const [isEditing, setIsEditing] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [selectedHistoryItem, setSelectedHistoryItem] = useState<AttendanceHistory | null>(null);
+  const [selectedHistoryItem, setSelectedHistoryItem] =
+    useState<AttendanceHistory | null>(null);
 
   // Initialize attendance status from existing records when lesson and date are selected
   useEffect(() => {
@@ -252,8 +255,8 @@ export function AttendanceTable({
     existingAttendances.forEach((attendance) => {
       const dateKey = format(new Date(attendance.date), "yyyy-MM-dd");
       const historyKey = `${dateKey}-${attendance.lessonId}`;
-      
-      const lesson = lessons.find(l => l.id === attendance.lessonId);
+
+      const lesson = lessons.find((l) => l.id === attendance.lessonId);
       if (!lesson) return;
 
       if (!historyMap.has(historyKey)) {
@@ -273,7 +276,7 @@ export function AttendanceTable({
       const historyItem = historyMap.get(historyKey)!;
       historyItem.attendances.push(attendance);
       historyItem.totalStudents++;
-      
+
       if (attendance.present) {
         historyItem.presentStudents++;
       } else {
@@ -281,15 +284,16 @@ export function AttendanceTable({
       }
     });
 
-    return Array.from(historyMap.values())
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return Array.from(historyMap.values()).sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
   };
 
   const attendanceHistory = generateAttendanceHistory();
 
   // Filter history based on selected lesson if any
-  const filteredHistory = selectedLesson 
-    ? attendanceHistory.filter(h => h.lessonId === parseInt(selectedLesson))
+  const filteredHistory = selectedLesson
+    ? attendanceHistory.filter((h) => h.lessonId === parseInt(selectedLesson))
     : attendanceHistory;
 
   return (
@@ -315,7 +319,10 @@ export function AttendanceTable({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300">
+                    <Badge
+                      variant="outline"
+                      className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+                    >
                       {filteredHistory.length} Riwayat
                     </Badge>
                     {isHistoryOpen ? (
@@ -327,13 +334,16 @@ export function AttendanceTable({
                 </div>
               </div>
             </CollapsibleTrigger>
-            
+
             <CollapsibleContent>
               <div className="max-h-96 overflow-y-auto">
                 {filteredHistory.length > 0 ? (
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     {filteredHistory.map((historyItem, index) => (
-                      <div key={`${historyItem.date}-${historyItem.lessonId}`} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                      <div
+                        key={`${historyItem.date}-${historyItem.lessonId}`}
+                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -344,14 +354,20 @@ export function AttendanceTable({
                                 <span className="font-semibold text-gray-900 dark:text-white">
                                   {historyItem.lessonName}
                                 </span>
-                                <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs"
+                                >
                                   {historyItem.className}
                                 </Badge>
                               </div>
                               <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                                 <div className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
-                                  {format(new Date(historyItem.date), "dd MMM yyyy")}
+                                  {format(
+                                    new Date(historyItem.date),
+                                    "dd MMM yyyy"
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <UserCheck className="h-3 w-3" />
@@ -360,15 +376,21 @@ export function AttendanceTable({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-3">
                             <div className="text-right">
                               <div className="flex gap-2 mb-1">
-                                <Badge variant="outline" className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs"
+                                >
                                   <CheckCircle className="mr-1 h-3 w-3" />
                                   {historyItem.presentStudents} Hadir
                                 </Badge>
-                                <Badge variant="outline" className="border-red-200 text-red-700 dark:border-red-700 dark:text-red-300 text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="border-red-200 text-red-700 dark:border-red-700 dark:text-red-300 text-xs"
+                                >
                                   <XCircle className="mr-1 h-3 w-3" />
                                   {historyItem.absentStudents} Absen
                                 </Badge>
@@ -377,7 +399,7 @@ export function AttendanceTable({
                                 Total: {historyItem.totalStudents} siswa
                               </p>
                             </div>
-                            
+
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -385,7 +407,14 @@ export function AttendanceTable({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => {
-                                      setSelectedHistoryItem(selectedHistoryItem?.date === historyItem.date && selectedHistoryItem?.lessonId === historyItem.lessonId ? null : historyItem);
+                                      setSelectedHistoryItem(
+                                        selectedHistoryItem?.date ===
+                                          historyItem.date &&
+                                          selectedHistoryItem?.lessonId ===
+                                            historyItem.lessonId
+                                          ? null
+                                          : historyItem
+                                      );
                                     }}
                                     className="border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-900/20"
                                   >
@@ -393,57 +422,68 @@ export function AttendanceTable({
                                     Detail
                                   </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>Lihat detail absensi</TooltipContent>
+                                <TooltipContent>
+                                  Lihat detail absensi
+                                </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
                           </div>
                         </div>
 
                         {/* Detail Attendance for Selected History Item */}
-                        {selectedHistoryItem?.date === historyItem.date && selectedHistoryItem?.lessonId === historyItem.lessonId && (
-                          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                              <Users className="h-4 w-4" />
-                              Detail Kehadiran Siswa
-                            </h4>
-                            <div className="grid gap-2 max-h-32 overflow-y-auto">
-                              {historyItem.attendances.map((attendance) => {
-                                const student = students.find(s => s.id === attendance.studentId);
-                                const studentName = student ? `${student.name} ${student.surname}` : 
-                                  attendance.student ? `${attendance.student.name} ${attendance.student.surname}` : 
-                                  'Unknown Student';
-                                
-                                return (
-                                  <div key={attendance.id} className="flex items-center justify-between py-1">
-                                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                                      {studentName}
-                                    </span>
-                                    <Badge
-                                      variant="outline"
-                                      className={`text-xs ${
-                                        attendance.present
-                                          ? "border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
-                                          : "border-red-200 text-red-700 dark:border-red-700 dark:text-red-300"
-                                      }`}
+                        {selectedHistoryItem?.date === historyItem.date &&
+                          selectedHistoryItem?.lessonId ===
+                            historyItem.lessonId && (
+                            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                              <h4 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <HiUserGroup className="h-4 w-4" />
+                                Detail Kehadiran Siswa
+                              </h4>
+                              <div className="grid gap-2 max-h-32 overflow-y-auto">
+                                {historyItem.attendances.map((attendance) => {
+                                  const student = students.find(
+                                    (s) => s.id === attendance.studentId
+                                  );
+                                  const studentName = student
+                                    ? `${student.name} ${student.surname}`
+                                    : attendance.student
+                                    ? `${attendance.student.name} ${attendance.student.surname}`
+                                    : "Unknown Student";
+
+                                  return (
+                                    <div
+                                      key={attendance.id}
+                                      className="flex items-center justify-between py-1"
                                     >
-                                      {attendance.present ? (
-                                        <>
-                                          <CheckCircle className="mr-1 h-2 w-2" />
-                                          Hadir
-                                        </>
-                                      ) : (
-                                        <>
-                                          <XCircle className="mr-1 h-2 w-2" />
-                                          Absen
-                                        </>
-                                      )}
-                                    </Badge>
-                                  </div>
-                                );
-                              })}
+                                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                                        {studentName}
+                                      </span>
+                                      <Badge
+                                        variant="outline"
+                                        className={`text-xs ${
+                                          attendance.present
+                                            ? "border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300"
+                                            : "border-red-200 text-red-700 dark:border-red-700 dark:text-red-300"
+                                        }`}
+                                      >
+                                        {attendance.present ? (
+                                          <>
+                                            <CheckCircle className="mr-1 h-2 w-2" />
+                                            Hadir
+                                          </>
+                                        ) : (
+                                          <>
+                                            <XCircle className="mr-1 h-2 w-2" />
+                                            Absen
+                                          </>
+                                        )}
+                                      </Badge>
+                                    </div>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                       </div>
                     ))}
                   </div>
@@ -454,7 +494,9 @@ export function AttendanceTable({
                         <History className="h-6 w-6 text-gray-400" />
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {selectedLesson ? "Belum ada riwayat absensi untuk pelajaran ini" : "Belum ada riwayat absensi"}
+                        {selectedLesson
+                          ? "Belum ada riwayat absensi untuk pelajaran ini"
+                          : "Belum ada riwayat absensi"}
                       </p>
                     </div>
                   </div>
@@ -578,7 +620,7 @@ export function AttendanceTable({
                     variant="outline"
                     className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
                   >
-                    <Users className="mr-1 h-3 w-3" />
+                    <HiUserGroup className="mr-1 h-3 w-3" />
                     {selectedLessonDetails.class.name}
                   </Badge>
                 </div>
@@ -624,7 +666,7 @@ export function AttendanceTable({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Users className="h-4 w-4 text-blue-600" />
+                    <HiUserGroup className="h-4 w-4 text-blue-600" />
                     Daftar Kehadiran Siswa
                   </h3>
                   <Badge
@@ -689,7 +731,7 @@ export function AttendanceTable({
                                 variant="outline"
                                 className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs"
                               >
-                                <Users className="mr-1 h-3 w-3" />
+                                <HiUserGroup className="mr-1 h-3 w-3" />
                                 {student.class.name}
                               </Badge>
                             </div>
@@ -777,7 +819,7 @@ export function AttendanceTable({
               <div className="text-center py-12">
                 <div className="flex flex-col items-center gap-4 text-muted-foreground">
                   <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                    <Users className="h-8 w-8 text-gray-400" />
+                    <HiUserGroup className="h-8 w-8 text-gray-400" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-lg font-medium text-gray-900 dark:text-white">

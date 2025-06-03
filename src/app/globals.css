@@ -390,7 +390,7 @@ html.dark body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #96bac6;
+  background-color: #587c8837;
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: content-box;

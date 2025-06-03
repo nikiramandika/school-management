@@ -111,7 +111,7 @@ export const AnnouncementTable = ({
               }
               className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
             >
-              <Users className="mr-2 h-4 w-4 text-purple-600" />
+              <HiUserGroup className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500 dark:text-puple-500" />
               Kelas
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
@@ -130,7 +130,7 @@ export const AnnouncementTable = ({
                   : "border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300"
               }
             >
-              <Users className="mr-1 h-3 w-3" />
+              <HiUserGroup className="mr-1 h-3 w-3" />
               {className ? className : "Semua Kelas"}
             </Badge>
           </div>

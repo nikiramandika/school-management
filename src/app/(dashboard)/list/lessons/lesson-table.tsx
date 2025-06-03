@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { HiAcademicCap, HiCollection, HiUserGroup } from "react-icons/hi";
 
 type LessonList = Lesson & {
   subject: Subject;
@@ -105,7 +106,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
           >
-            <GraduationCap className="mr-2 h-4 w-4 text-purple-600" />
+            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
             Kelas
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -118,7 +119,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
               variant="outline"
               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
             >
-              <Users className="mr-1 h-3 w-3" />
+              <HiUserGroup className="mr-1 h-3 w-3" />
               {row.original.class.name}
             </Badge>
           </div>
@@ -134,7 +135,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold"
           >
-            <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+            <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -151,7 +152,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
                 variant="outline"
                 className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
               >
-                <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+                <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
                 Pengajar
               </Badge>
             </div>

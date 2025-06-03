@@ -23,7 +23,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
+import { HiCollection } from "react-icons/hi";
+import { HiUserGroup } from "react-icons/hi";
 type ClassWithRelations = Class & {
   supervisor: Teacher | null;
   grade: Grade | null;
@@ -52,7 +53,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
     classItem: ClassWithRelations;
     isSupervisor?: boolean;
   }) => (
-    <Card className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)] hover:shadow-[0_-8px_25px_-5px_rgba(0,0,0,0.1),0_8px_25px_-5px_rgba(0,0,0,0.1)] bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700">
+    <Card className="border-[1] border-gray-200/20 group transition-all duration-300 shadow-md hover:shadow-xl bg-white dark:bg-white/5 dark:border-gray-800/20 hover:bg-cyan-500/5 dark:hover:bg-cyan-500/10">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -66,7 +67,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
               {isSupervisor ? (
                 <Crown className="h-5 w-5 text-white" />
               ) : (
-                <School className="h-5 w-5 text-white" />
+                <HiCollection className="h-5 w-5 text-white" />
               )}
             </div>
             <div>
@@ -115,7 +116,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
                       asChild
                     >
                       <Link href={`/list/classes/${classItem.id}`}>
-                        <Users className="h-4 w-4" />
+                        <HiUserGroup className="h-4 w-4" />
                       </Link>
                     </Button>
                   </TooltipTrigger>
@@ -132,7 +133,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           {/* Grade Level */}
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-cyan-100 dark:bg-purple-900/30 rounded-md">
-              <GraduationCap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              <HiCollection className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </div>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Tingkat {classItem.grade?.level || "N/A"}
@@ -142,7 +143,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           {/* Capacity */}
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-cyan-100 dark:bg-orange-900/30 rounded-md">
-              <Users className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              <HiUserGroup className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Kapasitas:{" "}

@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { HiCollection, HiIdentification , HiUserGroup} from "react-icons/hi";
 
 type ClassWithRelations = Class & {
   supervisor: Teacher | null;
@@ -50,21 +51,19 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
     classItem: ClassWithRelations;
     isSupervisor?: boolean;
   }) => (
-    <Card className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)] hover:shadow-[0_-8px_25px_-5px_rgba(0,0,0,0.1),0_8px_25px_-5px_rgba(0,0,0,0.1)] bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700">
+    <Card className="border-[1] border-gray-200/20 group transition-all duration-300 shadow-md hover:shadow-xl bg-white dark:bg-white/5 dark:border-gray-800/20 hover:bg-cyan-500/5 dark:hover:bg-cyan-500/10">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
               className={`p-2 rounded-lg ${
-                isSupervisor
-                  ? "bg-gradient-to-r from-amber-500 to-orange-500"
-                  : "bg-gradient-to-r from-purple-500 to-pink-500"
+                isSupervisor ? "bg-cyan-500" : "bg-cyan-500"
               }`}
             >
               {isSupervisor ? (
                 <Crown className="h-5 w-5 text-white" />
               ) : (
-                <School className="h-5 w-5 text-white" />
+                <HiCollection className="h-5 w-5 text-white" />
               )}
             </div>
             <div>
@@ -81,46 +80,6 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
                 </Badge>
               )}
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-teal-100 dark:hover:bg-teal-900/20 hover:text-teal-600"
-                    asChild
-                  >
-                    <Link href={`/list/attendance/${classItem.id}`}>
-                      <Calendar className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Kelola Absensi</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {isSupervisor && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="hover:bg-amber-100 dark:hover:bg-amber-900/20 hover:text-amber-600"
-                      asChild
-                    >
-                      <Link href={`/list/classes/${classItem.id}`}>
-                        <Users className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Kelola Siswa</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
           </div>
         </div>
       </CardHeader>
@@ -140,7 +99,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           {/* Capacity */}
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-cyan-100 dark:bg-orange-900/30 rounded-md">
-              <Users className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              <HiUserGroup className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Kapasitas:{" "}
@@ -185,13 +144,10 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
         {/* Action Button */}
         <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
           <Button
-            className="w-full bg-gradient-to-r bg-cyan-500 hover:from-green-600 hover:to-green-700 text-white"
+            className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
             asChild
           >
-            <Link href={`/list/attendance/${classItem.id}`}>
-              <Calendar className="mr-2 h-4 w-4" />
-              Buka Absensi
-            </Link>
+            <Link href={`/list/attendance/${classItem.id}`}>Buka Absensi</Link>
           </Button>
         </div>
       </CardContent>
@@ -204,7 +160,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
       {role === "teacher" && supervisedClasses.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
+            <div className="p-2 bg-cyan-500 rounded-lg">
               <UserCheck className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -232,9 +188,6 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
       {/* Teaching Classes Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-            <UserCheck className="h-5 w-5 text-white" />
-          </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
               {role === "teacher" && supervisedClasses.length > 0
@@ -265,7 +218,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
             <CardContent className="p-8 text-center">
               <div className="flex flex-col items-center gap-3">
                 <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-full">
-                  <School className="h-6 w-6 text-gray-400" />
+                  <HiCollection className="h-6 w-6 text-gray-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">

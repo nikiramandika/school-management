@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/tooltip";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, UserCheck, BookOpen, Plus } from "lucide-react";
+import { Users, UserCheck, BookOpen, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import { HiCollection, HiAcademicCap } from "react-icons/hi";
+import { HiUserGroup } from "react-icons/hi";
 type ClassWithRelations = Class & {
   supervisor: Teacher | null;
   grade: Grade | null;
@@ -122,7 +123,7 @@ const ClassListPage = async () => {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-cyan-500 rounded-lg">
-                  <GraduationCap className="h-6 w-6 text-white" />
+                  <HiCollection className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -167,7 +168,7 @@ const ClassListPage = async () => {
                     <p className="text-3xl font-bold">{totalClasses}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <BookOpen className="h-6 w-6" />
+                    <HiCollection className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -183,7 +184,7 @@ const ClassListPage = async () => {
                     <p className="text-3xl font-bold">{totalCapacity}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Users className="h-6 w-6" />
+                    <HiUserGroup className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -201,7 +202,7 @@ const ClassListPage = async () => {
                     </p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <UserCheck className="h-6 w-6" />
+                    <HiAcademicCap className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -214,7 +215,7 @@ const ClassListPage = async () => {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-emerald-500 rounded-lg">
-                <UserCheck className="h-5 w-5 text-white" />
+                <HiAcademicCap className="h-5 w-5 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Kelas yang Saya Bimbing
@@ -234,7 +235,7 @@ const ClassListPage = async () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
-                          <GraduationCap className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                          <HiCollection className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
                           <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
@@ -252,7 +253,7 @@ const ClassListPage = async () => {
                         className="opacity-60 group-hover:opacity-100 transition-opacity"
                       >
                         <Link href={`/list/classes/${classItem.id}`}>
-                          <Users className="h-5 w-5" />
+                          <HiUserGroup className="h-5 w-5" />
                         </Link>
                       </Button>
                     </div>
@@ -272,7 +273,7 @@ const ClassListPage = async () => {
                         className="w-full bg-emerald-600 hover:bg-emerald-700"
                       >
                         <Link href={`/list/classes/${classItem.id}`}>
-                          <Users className="mr-2 h-4 w-4" />
+                          <HiUserGroup className="mr-2 h-4 w-4" />
                           Lihat Siswa
                         </Link>
                       </Button>
@@ -288,7 +289,7 @@ const ClassListPage = async () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-500 rounded-lg">
-              <GraduationCap className="h-6 w-6 text-white" />
+              <HiCollection className="h-6 w-6 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               {role === "admin"

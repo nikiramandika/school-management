@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, GraduationCap, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { HiAcademicCap, HiCollection } from "react-icons/hi";
 
 const SubjectListPage = async () => {
   const { sessionClaims } = await auth();
@@ -117,7 +118,7 @@ const SubjectListPage = async () => {
                   <p className="text-3xl font-bold">{totalLessons}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <GraduationCap className="h-6 w-6" />
+                  <HiCollection className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -133,7 +134,7 @@ const SubjectListPage = async () => {
                   <p className="text-3xl font-bold">{totalTeachers}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <Users className="h-6 w-6" />
+                  <HiAcademicCap className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
