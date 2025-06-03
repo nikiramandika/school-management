@@ -156,7 +156,7 @@ async function main() {
     await prisma.attendance.create({
       data: {
         date: new Date(), 
-        present: true, 
+        status: "PRESENT", 
         studentId: `student${i}`, 
         lessonId: (i % 30) + 1, 
       },

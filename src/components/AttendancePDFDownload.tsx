@@ -39,7 +39,7 @@ interface AttendancePDFDownloadProps {
   attendancesByDate: {
     studentId: string;
     date: Date;
-    present: boolean;
+    status: "PRESENT" | "SICK" | "PERMITTED" | "ABSENT";
     lessonId: number;
   }[];
 }
@@ -100,9 +100,13 @@ export function AttendancePDFDownload({
 
           if (attendance === undefined) {
             row.push("-");
-          } else if (attendance.present === true) {
+          } else if (attendance.status === "PRESENT") {
             row.push("Hadir");
-          } else if (attendance.present === false) {
+          } else if (attendance.status === "SICK") {
+            row.push("Sakit");
+          } else if (attendance.status === "PERMITTED") {
+            row.push("Izin");
+          } else if (attendance.status === "ABSENT") {
             row.push("Tidak Hadir");
           }
         });

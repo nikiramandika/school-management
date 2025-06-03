@@ -43,6 +43,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { HiAcademicCap } from "react-icons/hi";
 
 interface ClassPageProps {
   params: {

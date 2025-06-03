@@ -89,13 +89,27 @@ const menuItems = [
       {
         icon: HiClipboardCheck,
         label: "Nilai",
-        href: "/list/results",
+        href: (role: string) => {
+          switch (role) {
+            case "student":
+              return "/list/results/student-grades";
+            default:
+              return "/list/results";
+          }
+        },
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: HiIdentification,
         label: "Absensi",
-        href: "/list/attendance",
+        href: (role: string) => {
+          switch (role) {
+            case "student":
+              return "/list/attendance/student-attendance";
+            default:
+              return "/list/attendance";
+          }
+        },
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
@@ -142,8 +156,8 @@ const Menu = () => {
 
   return (
     <div className="text-sm px-4 lg:px-0">
-      {menuItems.map((section) => (
-        <div className="flex flex-col gap-2" key={section.title}>
+      {menuItems.map((section, index) => (
+        <div className="flex flex-col gap-2" key={`menu-section-${index}`}>
           {/* <span className="text-gray-400 font-light my-4">
             {section.title}
           </span> */}

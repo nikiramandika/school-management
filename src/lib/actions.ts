@@ -1287,7 +1287,7 @@ export const createAttendance = async (
     studentId: string;
     lessonId: number;
     date: Date;
-    present: boolean;
+    status: "PRESENT" | "SICK" | "PERMITTED" | "ABSENT";
   }
 ): Promise<CurrentState> => {
   try {
@@ -1296,7 +1296,7 @@ export const createAttendance = async (
         studentId: data.studentId,
         lessonId: data.lessonId,
         date: data.date,
-        present: data.present,
+        status: data.status,
       },
     });
 
@@ -1322,7 +1322,7 @@ export const updateAttendance = async (
     studentId: string;
     lessonId: number;
     date: Date;
-    present: boolean;
+    status: "PRESENT" | "SICK" | "PERMITTED" | "ABSENT";
   }
 ): Promise<CurrentState> => {
   try {
@@ -1334,7 +1334,7 @@ export const updateAttendance = async (
         studentId: data.studentId,
         lessonId: data.lessonId,
         date: data.date,
-        present: data.present,
+        status: data.status,
       },
     });
 

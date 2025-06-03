@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Megaphone, Users, BookOpen, Calendar, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { HiUserGroup } from "react-icons/hi";
 
 const AnnouncementListPage = async () => {
   const { userId, sessionClaims } = await auth();

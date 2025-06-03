@@ -3,6 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Student {
   id: string;
@@ -74,10 +80,31 @@ export default function DownloadAllResultsPDFButton({ students = [], exams = [],
     setLoading(false);
   };
 
+  const hasNoAssessments = exams.length === 0 && assignments.length === 0;
+
   return (
-    <Button onClick={handleDownloadAllPDF} disabled={loading} className="bg-purple-600 hover:bg-purple-700 text-white">
-      <Download className="h-4 w-4 mr-2" />
-      {loading ? "Membuat PDF..." : "Download Rekap PDF"}
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div>
+            <Button 
+              onClick={handleDownloadAllPDF} 
+              disabled={loading || hasNoAssessments} 
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {loading ? "Membuat PDF..." : "Download Rekap PDF"}
+            </Button>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          {hasNoAssessments 
+            ? "Tidak ada ujian atau tugas yang tersedia untuk diunduh" 
+            : loading 
+              ? "Membuat PDF..." 
+              : "Download Rekap PDF"}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 } 

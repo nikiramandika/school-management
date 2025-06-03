@@ -69,9 +69,15 @@ export default async function ClassAttendancePage({
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
+  // Parse and validate class ID
+  const classId = parseInt(id);
+  if (isNaN(classId)) {
+    return notFound();
+  }
+
   // Get the class
   const classItem = await prisma.class.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: classId },
     select: {
       id: true,
       name: true,
@@ -100,7 +106,7 @@ export default async function ClassAttendancePage({
     !classItem.lessons.some((lesson) => lesson.teacher.id === currentUserId) &&
     classItem.supervisorId !== currentUserId
   ) {
-    notFound();
+    return notFound();
   }
 
   // Redirect supervisor to the supervisor view
@@ -111,7 +117,7 @@ export default async function ClassAttendancePage({
   // Get all students in this class
   const students = await prisma.student.findMany({
     where: {
-      classId: parseInt(id),
+      classId: classId,
     },
     select: {
       id: true,
@@ -129,7 +135,7 @@ export default async function ClassAttendancePage({
   // Get all lessons for this class
   const lessons = await prisma.lesson.findMany({
     where: {
-      classId: parseInt(id),
+      classId: classId,
       ...(role !== "admin"
         ? {
             OR: [
@@ -162,7 +168,7 @@ export default async function ClassAttendancePage({
   const attendances = await prisma.attendance.findMany({
     where: {
       lesson: {
-        classId: parseInt(id),
+        classId: classId,
         ...(role !== "admin"
           ? {
               OR: [
@@ -176,7 +182,7 @@ export default async function ClassAttendancePage({
     select: {
       id: true,
       date: true,
-      present: true,
+      status: true,
       studentId: true,
       lessonId: true,
       lesson: {
@@ -191,13 +197,20 @@ export default async function ClassAttendancePage({
           },
         },
       },
+      student: {
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+        },
+      },
     },
   });
 
   // Calculate stats
   const totalStudents = students.length;
   const totalLessons = lessons.length;
-  const totalAttendances = attendances.filter((att) => att.present).length;
+  const totalAttendances = attendances.filter((att) => att.status === "PRESENT").length;
 
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">

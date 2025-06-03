@@ -190,7 +190,7 @@ export default async function SupervisorAttendancePage({
   const totalLessons = classData.lessons.length;
 
   return (
-    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
+    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={classData.name}
@@ -349,7 +349,7 @@ export default async function SupervisorAttendancePage({
                                             </TableCell>
                                             {weekDates.map((date) => {
                                               let status = null;
-                                              let present = null;
+                                              let attendanceStatus = null;
                                               // Cek kehadiran hanya untuk lesson yang sedang ditampilkan
                                               const att =
                                                 lesson.attendancesByDate[
@@ -359,9 +359,9 @@ export default async function SupervisorAttendancePage({
                                                     a.studentId === student.id
                                                 );
                                               if (att) {
-                                                present = att.present;
+                                                attendanceStatus = att.status;
                                               }
-                                              if (present === true)
+                                              if (attendanceStatus === "PRESENT")
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -370,7 +370,25 @@ export default async function SupervisorAttendancePage({
                                                     </span>
                                                   </div>
                                                 );
-                                              else if (present === false)
+                                              else if (attendanceStatus === "SICK")
+                                                status = (
+                                                  <div className="flex items-center justify-center">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                      <UserCheck className="h-3 w-3 inline mr-1" />
+                                                      Sakit
+                                                    </span>
+                                                  </div>
+                                                );
+                                              else if (attendanceStatus === "PERMITTED")
+                                                status = (
+                                                  <div className="flex items-center justify-center">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                      <Calendar className="h-3 w-3 inline mr-1" />
+                                                      Izin
+                                                    </span>
+                                                  </div>
+                                                );
+                                              else if (attendanceStatus === "ABSENT")
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">

@@ -155,7 +155,7 @@ export const attendanceSchema = z.object({
   studentId: z.string().min(1, "Student is required"),
   lessonId: z.number().min(1, "Lesson is required"),
   date: z.string().min(1, "Date is required"),
-  present: z.boolean(),
+  status: z.enum(["PRESENT", "SICK", "PERMITTED", "ABSENT"]),
 });
 
 export type AttendanceSchema = z.infer<typeof attendanceSchema>;

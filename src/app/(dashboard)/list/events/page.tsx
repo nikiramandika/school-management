@@ -17,6 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Users, Clock, MapPin, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { HiUserGroup } from "react-icons/hi";
 
 type EventList = Event & { class: Class };
 

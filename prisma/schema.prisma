@@ -128,14 +128,21 @@ model Result {
   student      Student     @relation(fields: [studentId], references: [id])
 }
 
+enum AttendanceStatus {
+  PRESENT
+  SICK
+  PERMITTED
+  ABSENT
+}
+
 model Attendance {
-  id        Int      @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   date      DateTime
-  present   Boolean
+  status    AttendanceStatus
   studentId String
   lessonId  Int
-  lesson    Lesson   @relation(fields: [lessonId], references: [id])
-  student   Student  @relation(fields: [studentId], references: [id])
+  lesson    Lesson          @relation(fields: [lessonId], references: [id])
+  student   Student         @relation(fields: [studentId], references: [id])
 }
 
 model Event {

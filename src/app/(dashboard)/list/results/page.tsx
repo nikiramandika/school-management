@@ -26,7 +26,7 @@ const PageHeader = ({
 }) => (
   <div className="space-y-6">
     {/* Conditional Header Section - Only show management header for admin */}
-    {role === "admin" && (
+    {role === "admin" || role === "teacher" && (
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
         <div className="space-y-2">
           <div className="flex items-center gap-3">

@@ -135,13 +135,25 @@ const AttendanceForm = ({
         )}
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="present"
-          checked={watch("present")}
-          onCheckedChange={(checked) => setValue("present", checked as boolean)}
-        />
-        <Label htmlFor="present">Hadir</Label>
+      <div className="space-y-2">
+        <Label>Status Kehadiran</Label>
+        <Select
+          defaultValue={data?.status || "PRESENT"}
+          onValueChange={(value) => setValue("status", value as "PRESENT" | "SICK" | "PERMITTED" | "ABSENT")}
+        >
+          <SelectTrigger className={errors.status ? "border-red-500" : ""}>
+            <SelectValue placeholder="Pilih status kehadiran" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="PRESENT">Hadir</SelectItem>
+            <SelectItem value="SICK">Sakit</SelectItem>
+            <SelectItem value="PERMITTED">Izin</SelectItem>
+            <SelectItem value="ABSENT">Tidak Hadir</SelectItem>
+          </SelectContent>
+        </Select>
+        {errors.status && (
+          <p className="text-sm text-red-500">{errors.status.message}</p>
+        )}
       </div>
 
       <Button
@@ -150,10 +162,10 @@ const AttendanceForm = ({
         disabled={isSubmitting}
       >
         {isSubmitting
-          ? "Saving..."
+          ? "Menyimpan..."
           : type === "create"
-          ? "Record Attendance"
-          : "Update Attendance"}
+          ? "Catat Kehadiran"
+          : "Perbarui Kehadiran"}
       </Button>
     </form>
   );

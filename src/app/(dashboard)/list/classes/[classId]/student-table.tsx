@@ -36,9 +36,6 @@ export function StudentTable({ data, role }: StudentTableProps) {
             <span className="font-semibold text-gray-900 dark:text-white">
               {row.original.name}
             </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {row.original.nis}
-            </span>
           </div>
         </div>
       ),
@@ -99,7 +96,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
           variant="outline"
           className="text-yellow-700 border-yellow-300 dark:text-yellow-300 dark:border-yellow-700"
         >
-          {row.original.nis}
+          {row.original.username}
         </Badge>
       ),
     },

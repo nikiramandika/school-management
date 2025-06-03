@@ -11,6 +11,7 @@ import {
   Calendar,
   Edit,
 } from "lucide-react";
+import { HiUserGroup } from "react-icons/hi";
 import FormModal from "@/components/FormModal";
 import {
   Tooltip,
