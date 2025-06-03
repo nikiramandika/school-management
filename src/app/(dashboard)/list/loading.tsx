@@ -1,6 +1,6 @@
 const Loading = () => {
   return (
-    <div className="p-8 animate-pulse">
+    <div className="p-8 animate-pulse h-fit">
       <div className="rounded-lg overflow-hidden shadow-md">
         <div className="p-8 bg-gray-200 dark:bg-gray-700 flex space-x-32">
           <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-1/6"></div>

@@ -22,7 +22,7 @@ export const LoadingSpinner = ({ className, size = "md" }: LoadingSpinnerProps) 
     //   />
     // </div>
 
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center pb-6">
       <div
         className={cn(
           "rounded-full bg-cyan-500 animate-ping",
