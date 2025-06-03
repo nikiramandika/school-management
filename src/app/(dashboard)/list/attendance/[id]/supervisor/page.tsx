@@ -10,11 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   UserCheck,
-  Users,
-  GraduationCap,
-  School,
   ArrowLeft,
-  Clock,
   CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
@@ -48,6 +44,7 @@ import {
   addWeeks,
 } from "date-fns";
 import { id } from "date-fns/locale";
+import { AttendancePDFDownload } from "@/components/AttendancePDFDownload";
 
 interface ClassPageProps {
   params: {
@@ -111,7 +108,7 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-teal-500 rounded-lg">
+        <div className="p-2 bg-green-500 rounded-lg">
           <UserCheck className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -192,7 +189,7 @@ export default async function SupervisorAttendancePage({
   const totalLessons = classData.lessons.length;
 
   return (
-    <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
+    <div className="bg-card p-4 rounded-md flex-1 m-0 mt-0">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={classData.name}
@@ -238,12 +235,19 @@ export default async function SupervisorAttendancePage({
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-4 mt-4">
+                          <div className="space-y-4 mt-4 ">
+                            <AttendancePDFDownload
+                              lesson={lesson}
+                              students={classData.students}
+                              attendancesByDate={Object.values(
+                                lesson.attendancesByDate
+                              ).flat()}
+                            />
                             <Card className="border border-gray-200 dark:border-gray-700">
                               <CardHeader className="pb-4">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                   <CardTitle className="text-base flex items-center gap-2">
-                                    <Calendar className="h-4 w-4 text-teal-600" />
+                                    <Calendar className="h-4 w-4 text-green-600" />
                                     Kehadiran Minggu Ini
                                   </CardTitle>
                                   <div className="flex items-center gap-2">
@@ -293,7 +297,7 @@ export default async function SupervisorAttendancePage({
                                 <div className="overflow-x-auto">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-gray-50 dark:bg-card">
+                                      <TableRow className="bg-gray-50 dark:bg-gray-900">
                                         <TableHead className="min-w-[150px] font-semibold">
                                           Nama Siswa
                                         </TableHead>
@@ -325,7 +329,7 @@ export default async function SupervisorAttendancePage({
                                             key={student.id}
                                             className={
                                               index % 2 === 0
-                                                ? "bg-gray-50/50 dark:bg-card/50"
+                                                ? "bg-gray-50/50 dark:bg-gray-900/50"
                                                 : ""
                                             }
                                           >
@@ -345,24 +349,21 @@ export default async function SupervisorAttendancePage({
                                             {weekDates.map((date) => {
                                               let status = null;
                                               let present = null;
-                                              // Cek kehadiran di semua lesson untuk hari tsb
-                                              for (const lessonCheck of lessonsWithAttendances) {
-                                                const att =
-                                                  lessonCheck.attendancesByDate[
-                                                    format(date, "yyyy-MM-dd")
-                                                  ]?.find(
-                                                    (a) =>
-                                                      a.studentId === student.id
-                                                  );
-                                                if (att) {
-                                                  present = att.present;
-                                                  break;
-                                                }
+                                              // Cek kehadiran hanya untuk lesson yang sedang ditampilkan
+                                              const att =
+                                                lesson.attendancesByDate[
+                                                  format(date, "yyyy-MM-dd")
+                                                ]?.find(
+                                                  (a) =>
+                                                    a.studentId === student.id
+                                                );
+                                              if (att) {
+                                                present = att.present;
                                               }
                                               if (present === true)
                                                 status = (
                                                   <div className="flex items-center justify-center">
-                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                                       <CheckCircle className="h-3 w-3 inline mr-1" />
                                                       Hadir
                                                     </span>
@@ -380,7 +381,7 @@ export default async function SupervisorAttendancePage({
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                                                      - Belum Ada Data
+                                                      -
                                                     </span>
                                                   </div>
                                                 );
@@ -437,3 +438,4 @@ export default async function SupervisorAttendancePage({
     </div>
   );
 }
+
