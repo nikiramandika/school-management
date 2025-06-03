@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Filter,
   Search,
+  Download,
 } from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
@@ -160,12 +161,54 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
     return "📝";
   };
 
+  const downloadIndividualResult = (result: ResultList) => {
+    const resultData = {
+      title: result.title,
+      studentName: `${result.studentName} ${result.studentSurname}`,
+      teacherName: `${result.teacherName} ${result.teacherSurname}`,
+      score: result.score,
+      className: result.className,
+      date: new Date(result.startTime).toLocaleDateString('id-ID'),
+    };
+
+    const blob = new Blob([JSON.stringify(resultData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hasil_${result.title}_${result.studentName}_${result.studentSurname}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAllResults = () => {
+    const allResults = filteredData.map(result => ({
+      title: result.title,
+      studentName: `${result.studentName} ${result.studentSurname}`,
+      teacherName: `${result.teacherName} ${result.teacherSurname}`,
+      score: result.score,
+      className: result.className,
+      date: new Date(result.startTime).toLocaleDateString('id-ID'),
+    }));
+
+    const blob = new Blob([JSON.stringify(allResults, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `semua_hasil_${new Date().toLocaleDateString('id-ID')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Controls */}
       <Card className="p-6 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 border-purple-200 dark:border-purple-800">
         <div className="space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
                 <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -179,6 +222,13 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                 </p>
               </div>
             </div>
+            <Button
+              onClick={downloadAllResults}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download Semua Hasil
+            </Button>
           </div>
 
           {/* Statistics Cards */}
@@ -449,6 +499,26 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                           </TooltipProvider>
                         </div>
                       )}
+
+                      <div className="flex items-center gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => downloadIndividualResult(result)}
+                                className="h-8 w-8"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Download hasil</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                     </div>
                   </div>
                 </div>

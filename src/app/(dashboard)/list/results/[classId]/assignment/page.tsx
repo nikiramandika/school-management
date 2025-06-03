@@ -16,6 +16,8 @@ import {
   Calendar,
 } from "lucide-react";
 import Link from "next/link";
+import { DownloadButton } from "../components/download-button";
+import DownloadAllResultsPDFButton from "../components/download-all-results-pdf";
 
 interface AssignmentPageProps {
   params: {
@@ -231,6 +233,52 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           examId: true,
           assignmentId: true,
           studentId: true,
+          exam: {
+            select: {
+              title: true,
+              lesson: {
+                select: {
+                  teacher: {
+                    select: {
+                      name: true,
+                      surname: true,
+                    },
+                  },
+                  class: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          assignment: {
+            select: {
+              title: true,
+              lesson: {
+                select: {
+                  teacher: {
+                    select: {
+                      name: true,
+                      surname: true,
+                    },
+                  },
+                  class: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          student: {
+            select: {
+              name: true,
+              surname: true,
+            },
+          },
         },
       }),
     ]);
@@ -254,6 +302,36 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           completedAssignments={completedAssignments}
           role={role || ""}
         />
+
+        <div className="flex justify-end mb-4">
+          <DownloadAllResultsPDFButton
+            students={students.map((student) => ({
+              id: student.id.toString(),
+              name: student.name,
+              surname: student.surname,
+            }))}
+            exams={exams.map((exam) => ({
+              id: exam.id.toString(),
+              title: exam.title,
+              type: "Ujian",
+            }))}
+            assignments={assignments.map((assignment) => ({
+              id: assignment.id.toString(),
+              title: assignment.title,
+              type: "Tugas",
+            }))}
+            existingGrades={existingGrades.map((grade) => ({
+              studentId: grade.studentId,
+              assessmentId: grade.examId != null
+                ? `E-${grade.examId}`
+                : grade.assignmentId != null
+                ? `A-${grade.assignmentId}`
+                : "",
+              score: grade.score,
+            }))}
+            className={selectedClass.name}
+          />
+        </div>
 
         {/* Tabs Navigation */}
         <Tabs
@@ -293,8 +371,11 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
                 existingGrades={existingGrades.map((grade) => ({
                   id: grade.id.toString(),
                   score: grade.score,
-                  assessmentId:
-                    (grade.examId || grade.assignmentId)?.toString() || "",
+                  assessmentId: grade.examId != null
+                    ? `E-${grade.examId}`
+                    : grade.assignmentId != null
+                    ? `A-${grade.assignmentId}`
+                    : "",
                   studentId: grade.studentId,
                 }))}
               />
