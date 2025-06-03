@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { studentSchema, StudentSchema } from "@/lib/formValidationSchemas";
 import { createStudent, updateStudent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
@@ -25,37 +25,82 @@ const StudentForm = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError,
+    reset,
   } = useForm<StudentSchema>({
     resolver: zodResolver(studentSchema),
-    defaultValues: data,
+    defaultValues: {
+      id: data?.id,
+      username: data?.username,
+      name: data?.name,
+      surname: data?.surname,
+      email: data?.email || "",
+      phone: data?.phone || "",
+      address: data?.address,
+      bloodType: data?.bloodType,
+      sex: data?.sex,
+      birthday: data?.birthday,
+      gradeId: data?.gradeId,
+      classId: data?.classId,
+    },
   });
+
+  // Reset form when data changes
+  useEffect(() => {
+    if (data) {
+      reset({
+        id: data.id,
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || "",
+        phone: data.phone || "",
+        address: data.address,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        gradeId: data.gradeId,
+        classId: data.classId,
+      });
+    }
+  }, [data, reset]);
 
   const onSubmit = useCallback(
     async (formData: StudentSchema) => {
       try {
+        console.log("Form data before submission:", formData);
+        
         const action = type === "create" ? createStudent : updateStudent;
         const result = await action(
           { success: false, error: false, message: "" },
           formData
         );
 
+        console.log("Server response:", result);
+
         if (result.success) {
           toast.success(
-            `Student has been ${type === "create" ? "created" : "updated"}!`
+            `Siswa berhasil ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
-          toast.error(
-            result.message || "Failed to save student data. Please try again."
-          );
+          if (result.message.includes("NISN")) {
+            setError("username", { message: result.message });
+          } else if (result.message.includes("Password")) {
+            setError("password", { message: result.message });
+          } else if (result.message.includes("Kelas")) {
+            setError("classId", { message: result.message });
+          } else {
+            toast.error(result.message || "Gagal menyimpan data siswa. Silakan coba lagi.");
+          }
         }
       } catch (error) {
         console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("Terjadi kesalahan. Silakan coba lagi.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, setError]
   );
 
   const { grades, classes } = relatedData;
@@ -72,25 +117,26 @@ const StudentForm = ({
         <InputField
           label="NISN"
           name="username"
-          defaultValue={data?.username}
           register={register}
           error={errors?.username}
         />
-        <InputField
-          label="Email"
-          name="email"
-          defaultValue={data?.email}
-          register={register}
-          error={errors?.email}
-        />
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          defaultValue={data?.password}
-          register={register}
-          error={errors?.password}
-        />
+        {type === "create" && (
+          <>
+            <InputField
+              label="Email"
+              name="email"
+              register={register}
+              error={errors?.email}
+            />
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors?.password}
+            />
+          </>
+        )}
       </div>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Pribadi

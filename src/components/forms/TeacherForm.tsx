@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import InputField from "../InputField";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { teacherSchema, TeacherSchema } from "@/lib/formValidationSchemas";
 import { createTeacher, updateTeacher } from "@/lib/actions";
 import { useRouter } from "next/navigation";
@@ -27,41 +27,94 @@ const TeacherForm = ({
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
+    setError,
+    reset,
   } = useForm<TeacherSchema>({
     resolver: zodResolver(teacherSchema),
-    defaultValues: data,
+    defaultValues: {
+      id: data?.id,
+      username: data?.username,
+      name: data?.name,
+      surname: data?.surname,
+      email: data?.email || "",
+      phone: data?.phone || "",
+      address: data?.address,
+      bloodType: data?.bloodType,
+      sex: data?.sex,
+      birthday: data?.birthday,
+      subjects: data?.subjects?.map((subject: { id: number }) => subject.id.toString()) || [],
+    },
   });
+
+  // Reset form when data changes
+  useEffect(() => {
+    if (data) {
+      reset({
+        id: data.id,
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || "",
+        phone: data.phone || "",
+        address: data.address,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        subjects: data.subjects?.map((subject: { id: number }) => subject.id.toString()) || [],
+      });
+    }
+  }, [data, reset]);
 
   const onSubmit = useCallback(
     async (formData: TeacherSchema) => {
       try {
+        console.log("Form data before submission:", formData);
+        
+        // Ensure subjects are properly formatted
+        const formattedData = {
+          ...formData,
+          subjects: formData.subjects?.map(id => id.toString()) || [],
+        };
+
+        console.log("Formatted data:", formattedData);
+
         const action = type === "create" ? createTeacher : updateTeacher;
         const result = await action(
           { success: false, error: false, message: "" },
-          formData
+          formattedData
         );
+
+        console.log("Server response:", result);
 
         if (result.success) {
           toast.success(
-            `Teacher has been ${type === "create" ? "created" : "updated"}!`
+            `Guru berhasil ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
-          toast.error(
-            result.message || "Failed to save teacher data. Please try again."
-          );
+          if (result.message.includes("NIP")) {
+            setError("username", { message: result.message });
+          } else if (result.message.includes("Password")) {
+            setError("password", { message: result.message });
+          } else {
+            toast.error(result.message || "Gagal menyimpan data guru. Silakan coba lagi.");
+          }
         }
       } catch (error) {
         console.error("Form submission error:", error);
-        console.error("Clerk error details:", errors);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("Terjadi kesalahan. Silakan coba lagi.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, setError]
   );
 
-  const { subjects } = relatedData;
+  const { subjects } = relatedData || {};
+
+  // Debug logs
+  console.log("Teacher data:", data);
+  console.log("Related subjects:", subjects);
+  console.log("Current subject IDs:", data?.subjects?.map((subject: { id: number }) => subject.id.toString()));
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -75,25 +128,26 @@ const TeacherForm = ({
         <InputField
           label="NIP"
           name="username"
-          defaultValue={data?.username}
           register={register}
           error={errors?.username}
         />
-        <InputField
-          label="Email"
-          name="email"
-          defaultValue={data?.email}
-          register={register}
-          error={errors?.email}
-        />
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          defaultValue={data?.password}
-          register={register}
-          error={errors?.password}
-        />
+        {type === "create" && (
+          <>
+            <InputField
+              label="Email"
+              name="email"
+              register={register}
+              error={errors?.email}
+            />
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors?.password}
+            />
+          </>
+        )}
       </div>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Pribadi
@@ -102,51 +156,44 @@ const TeacherForm = ({
         <InputField
           label="Nama Depan"
           name="name"
-          defaultValue={data?.name}
           register={register}
           error={errors.name}
         />
         <InputField
           label="Nama Belakang"
           name="surname"
-          defaultValue={data?.surname}
           register={register}
           error={errors.surname}
         />
         <InputField
           label="Nomor Hp"
           name="phone"
-          defaultValue={data?.phone}
           register={register}
           error={errors.phone}
         />
         <InputField
           label="Alamat"
           name="address"
-          defaultValue={data?.address}
           register={register}
           error={errors.address}
         />
         <InputField
           label="Golongan Darah"
           name="bloodType"
-          defaultValue={data?.bloodType}
           register={register}
           error={errors.bloodType}
         />
         <InputField
           label="Tanggal Lahir"
           name="birthday"
-          defaultValue={data?.birthday?.toISOString().split("T")[0]}
+          type="date"
           register={register}
           error={errors.birthday}
-          type="date"
         />
         {data && (
           <InputField
             label="Id"
             name="id"
-            defaultValue={data?.id}
             register={register}
             error={errors?.id}
             hidden
@@ -159,7 +206,6 @@ const TeacherForm = ({
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
             {...register("sex")}
-            defaultValue={data?.sex}
           >
             <option value="MALE">Laki-Laki</option>
             <option value="FEMALE">Perempuan</option>
@@ -175,34 +221,47 @@ const TeacherForm = ({
           <Controller
             control={control}
             name="subjects"
-            render={({ field }) => (
-              <Select
-                isMulti
-                isSearchable
-                options={subjects.map(
-                  (subject: { id: number; name: string }) => ({
-                    value: subject.id.toString(),
-                    label: subject.name,
-                  })
-                )}
-                value={(field.value || []).map((id: string) => {
-                  const subject = subjects.find(
-                    (s: { id: number }) => s.id.toString() === id
-                  );
-                  return subject
-                    ? { value: subject.id.toString(), label: subject.name }
-                    : { value: id, label: String(id) };
-                })}
-                onChange={(selected) =>
-                  field.onChange(
-                    selected ? selected.map((s: any) => s.value) : []
-                  )
-                }
-                classNamePrefix="react-select"
-                placeholder="Pilih Mata Pelajaran..."
-                styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-              />
-            )}
+            render={({ field }) => {
+              // Debug logs
+              console.log("Field value:", field.value);
+              console.log("Available subjects:", subjects);
+
+              const selectedIds = field.value || [];
+              const selectedOptions = selectedIds.map((id: string) => {
+                const subject = subjects.find(
+                  (s: { id: number }) => s.id.toString() === id
+                );
+                return subject
+                  ? { value: subject.id.toString(), label: subject.name }
+                  : null;
+              }).filter(Boolean);
+
+              // Debug log
+              console.log("Selected options:", selectedOptions);
+
+              return (
+                <Select
+                  isMulti
+                  isSearchable
+                  options={subjects.map(
+                    (subject: { id: number; name: string }) => ({
+                      value: subject.id.toString(),
+                      label: subject.name,
+                    })
+                  )}
+                  value={selectedOptions}
+                  onChange={(selected) => {
+                    console.log("Selected subjects changed:", selected);
+                    field.onChange(
+                      selected ? selected.map((s: any) => s.value) : []
+                    );
+                  }}
+                  classNamePrefix="react-select"
+                  placeholder="Pilih Mata Pelajaran..."
+                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}
+                />
+              );
+            }}
           />
           {errors.subjects?.message && (
             <p className="text-xs text-red-400">

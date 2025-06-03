@@ -216,16 +216,20 @@ export const createTeacher = async (
       };
     }
 
+    // Tambahkan prefix 'g-' pada username untuk Clerk
+    const nip = data.username;
+    const username = `g-${nip}`;
+
     // Check if username already exists
     try {
       const existingUser = await clerk.users.getUserList({
-        username: [data.username],
+        username: [username],
       });
       if (existingUser.data.length > 0) {
         return {
           success: false,
           error: true,
-          message: "Username already exists",
+          message: "NIP sudah terdaftar!",
         };
       }
     } catch (error) {
@@ -234,12 +238,12 @@ export const createTeacher = async (
 
     // Create Clerk user
     const user = await clerk.users.createUser({
-      username: data.username,
+      username,
       password: data.password,
       firstName: data.name,
       lastName: data.surname,
       emailAddress: data.email ? [data.email] : undefined,
-      publicMetadata: { role: "teacher" },
+      publicMetadata: { role: "teacher", nip },
     });
 
     try {
@@ -247,7 +251,7 @@ export const createTeacher = async (
       await prisma.teacher.create({
         data: {
           id: user.id,
-          username: data.username,
+          username: nip, // Simpan NIP asli di database
           name: data.name,
           surname: data.surname,
           email: data.email || null,
@@ -277,12 +281,16 @@ export const createTeacher = async (
       throw dbError;
     }
   } catch (err) {
-    console.error("Error creating teacher:", err);
-    return { 
-      success: false, 
-      error: true, 
-      message: err instanceof Error ? err.message : "Failed to create teacher" 
-    };
+    let message = "Gagal membuat guru. Silakan coba lagi.";
+    if (err && typeof err === 'object' && 'errors' in err) {
+      // Clerk error format
+      const errorsArr = (err as any).errors;
+      message = errorsArr?.[0]?.message || message;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    console.error("Error creating teacher:", JSON.stringify(err, null, 2));
+    return { success: false, error: true, message };
   }
 };
 
@@ -300,8 +308,29 @@ export const updateTeacher = async (
   try {
     console.log("Updating teacher with data:", data);
     const clerk = await clerkClient();
+
+    // Tambahkan prefix 'g-' pada username untuk Clerk
+    const nip = data.username;
+    const username = `g-${nip}`;
+
+    // Check if username already exists (excluding current user)
+    try {
+      const existingUser = await clerk.users.getUserList({
+        username: [username],
+      });
+      if (existingUser.data.length > 0 && existingUser.data[0].id !== data.id) {
+        return {
+          success: false,
+          error: true,
+          message: "NIP sudah terdaftar!",
+        };
+      }
+    } catch (error) {
+      // Continue if no user found
+    }
+
     const user = await clerk.users.updateUser(data.id, {
-      username: data.username,
+      username,
       ...(data.password !== "" && { password: data.password }),
       firstName: data.name,
       lastName: data.surname,
@@ -309,13 +338,16 @@ export const updateTeacher = async (
 
     console.log("Clerk user updated:", user);
 
-    await prisma.teacher.update({
+    // Log the subjects data
+    console.log("Subjects data:", data.subjects);
+
+    const updatedTeacher = await prisma.teacher.update({
       where: {
         id: data.id,
       },
       data: {
         ...(data.password !== "" && { password: data.password }),
-        username: data.username,
+        username: nip, // Simpan NIP asli di database
         name: data.name,
         surname: data.surname,
         email: data.email || null,
@@ -328,10 +360,15 @@ export const updateTeacher = async (
         subjects: {
           set: data.subjects?.map((subjectId: string) => ({
             id: parseInt(subjectId),
-          })),
+          })) || [],
         },
       },
+      include: {
+        subjects: true,
+      },
     });
+
+    console.log("Updated teacher:", updatedTeacher);
 
     revalidatePath("/list/teachers");
     return { success: true, error: false, message: "Teacher updated successfully" };
@@ -377,20 +414,6 @@ export const createStudent = async (
   data: StudentSchema
 ): Promise<CurrentState> => {
   try {
-    // Check class capacity
-    const classItem = await prisma.class.findUnique({
-      where: { id: data.classId },
-      include: { _count: { select: { students: true } } },
-    });
-
-    if (classItem && classItem.capacity === classItem._count.students) {
-      return { 
-        success: false, 
-        error: true, 
-        message: "Class has reached maximum capacity" 
-      };
-    }
-
     const clerk = await clerkClient();
 
     // Validate required fields for Clerk
@@ -402,30 +425,48 @@ export const createStudent = async (
       };
     }
 
+    // Tambahkan prefix 's-' pada username untuk Clerk
+    const nisn = data.username;
+    const username = `s-${nisn}`;
+
     // Check if username already exists
     try {
       const existingUser = await clerk.users.getUserList({
-        username: [data.username],
+        username: [username],
       });
       if (existingUser.data.length > 0) {
         return {
           success: false,
           error: true,
-          message: "Username already exists",
+          message: "NISN sudah terdaftar!",
         };
       }
     } catch (error) {
       // Continue if no user found
     }
 
+    // Check class capacity
+    const classItem = await prisma.class.findUnique({
+      where: { id: data.classId },
+      include: { _count: { select: { students: true } } },
+    });
+
+    if (classItem && classItem.capacity === classItem._count.students) {
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kelas sudah penuh!" 
+      };
+    }
+
     // Create Clerk user
     const user = await clerk.users.createUser({
-      username: data.username,
+      username,
       password: data.password,
       firstName: data.name,
       lastName: data.surname,
       emailAddress: data.email ? [data.email] : undefined,
-      publicMetadata: { role: "student" },
+      publicMetadata: { role: "student", nisn },
     });
 
     try {
@@ -433,7 +474,7 @@ export const createStudent = async (
       await prisma.student.create({
         data: {
           id: user.id,
-          username: data.username,
+          username: nisn, // Simpan NISN asli di database
           name: data.name,
           surname: data.surname,
           email: data.email || null,
@@ -460,12 +501,15 @@ export const createStudent = async (
       throw dbError;
     }
   } catch (err) {
-    console.error("Error creating student:", err);
-    return { 
-      success: false, 
-      error: true, 
-      message: err instanceof Error ? err.message : "Failed to create student" 
-    };
+    let message = "Gagal membuat siswa. Silakan coba lagi.";
+    if (err && typeof err === 'object' && 'errors' in err) {
+      const errorsArr = (err as any).errors;
+      message = errorsArr?.[0]?.message || message;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    console.error("Error creating student:", JSON.stringify(err, null, 2));
+    return { success: false, error: true, message };
   }
 };
 
@@ -481,21 +525,45 @@ export const updateStudent = async (
     };
   }
   try {
+    console.log("Updating student with data:", data);
     const clerk = await clerkClient();
+
+    // Tambahkan prefix 's-' pada username untuk Clerk
+    const nisn = data.username;
+    const username = `s-${nisn}`;
+
+    // Check if username already exists (excluding current user)
+    try {
+      const existingUser = await clerk.users.getUserList({
+        username: [username],
+      });
+      if (existingUser.data.length > 0 && existingUser.data[0].id !== data.id) {
+        return {
+          success: false,
+          error: true,
+          message: "NISN sudah terdaftar!",
+        };
+      }
+    } catch (error) {
+      // Continue if no user found
+    }
+
+    // Update Clerk user
     const user = await clerk.users.updateUser(data.id, {
-      username: data.username,
-      ...(data.password !== "" && { password: data.password }),
+      username,
       firstName: data.name,
       lastName: data.surname,
     });
 
-    await prisma.student.update({
+    console.log("Clerk user updated:", user);
+
+    // Update database
+    const updatedStudent = await prisma.student.update({
       where: {
         id: data.id,
       },
       data: {
-        ...(data.password !== "" && { password: data.password }),
-        username: data.username,
+        username: nisn, // Simpan NISN asli di database
         name: data.name,
         surname: data.surname,
         email: data.email || null,
@@ -509,15 +577,21 @@ export const updateStudent = async (
         classId: data.classId,
       },
     });
+
+    console.log("Updated student:", updatedStudent);
+
     revalidatePath("/list/students");
     return { success: true, error: false, message: "Student updated successfully" };
   } catch (err) {
     console.error("Error updating student:", err);
-    return { 
-      success: false, 
-      error: true, 
-      message: err instanceof Error ? err.message : "Failed to update student" 
-    };
+    let message = "Gagal memperbarui data siswa. Silakan coba lagi.";
+    if (err && typeof err === 'object' && 'errors' in err) {
+      const errorsArr = (err as any).errors;
+      message = errorsArr?.[0]?.message || message;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    return { success: false, error: true, message };
   }
 };
 

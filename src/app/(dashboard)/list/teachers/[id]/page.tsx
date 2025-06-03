@@ -27,6 +27,7 @@ const SingleTeacherPage = async ({
   const teacher:
     | (Teacher & {
         _count: { subjects: number; lessons: number; classes: number };
+        subjects: { id: number; name: string }[];
       })
     | null = await prisma.teacher.findUnique({
     where: { id },
@@ -36,6 +37,12 @@ const SingleTeacherPage = async ({
           subjects: true,
           lessons: true,
           classes: true,
+        },
+      },
+      subjects: {
+        select: {
+          id: true,
+          name: true,
         },
       },
     },

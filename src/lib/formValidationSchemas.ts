@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const subjectSchema = z.object({
   id: z.coerce.number().optional(),
-  name: z.string().min(1, { message: "Subject name is required!" }),
+  name: z.string().min(1, { message: "Nama mata pelajaran wajib diisi!" }),
   teachers: z.array(z.string()), //teacher ids
 });
 
@@ -10,9 +10,9 @@ export type SubjectSchema = z.infer<typeof subjectSchema>;
 
 export const classSchema = z.object({
   id: z.coerce.number().optional(),
-  name: z.string().min(1, { message: "Subject name is required!" }),
-  capacity: z.coerce.number().min(1, { message: "Capacity name is required!" }),
-  gradeId: z.coerce.number().min(1, { message: "Grade name is required!" }),
+  name: z.string().min(1, { message: "Nama kelas wajib diisi!" }),
+  capacity: z.coerce.number().min(1, { message: "Kapasitas kelas wajib diisi!" }),
+  gradeId: z.coerce.number().min(1, { message: "Tingkat kelas wajib diisi!" }),
   supervisorId: z.coerce.string().optional(),
 });
 
@@ -22,26 +22,27 @@ export const teacherSchema = z.object({
   id: z.string().optional(),
   username: z
     .string()
-    .min(3, { message: "Username must be at least 3 characters long!" })
-    .max(20, { message: "Username must be at most 20 characters long!" }),
+    .min(1, { message: "NIP wajib diisi!" })
+    .regex(/^\d+$/, { message: "NIP harus berupa angka!" })
+    .length(18, { message: "NIP harus 18 digit!" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long!" })
+    .min(8, { message: "Password minimal 8 karakter!" })
     .optional()
     .or(z.literal("")),
-  name: z.string().min(1, { message: "First name is required!" }),
-  surname: z.string().min(1, { message: "Last name is required!" }),
+  name: z.string().min(1, { message: "Nama depan wajib diisi!" }),
+  surname: z.string().min(1, { message: "Nama belakang wajib diisi!" }),
   email: z
     .string()
-    .email({ message: "Invalid email address!" })
+    .email({ message: "Format email tidak valid!" })
     .optional()
     .or(z.literal("")),
   phone: z.string().optional(),
-  address: z.string(),
+  address: z.string().min(1, { message: "Alamat wajib diisi!" }),
   img: z.string().optional(),
-  bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.coerce.date({ message: "Birthday is required!" }),
-  sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required!" }),
+  bloodType: z.string().min(1, { message: "Golongan darah wajib diisi!" }),
+  birthday: z.coerce.date({ message: "Tanggal lahir wajib diisi!" }),
+  sex: z.enum(["MALE", "FEMALE"], { message: "Jenis kelamin wajib diisi!" }),
   subjects: z.array(z.string()).optional(), // subject ids
 });
 
@@ -51,28 +52,29 @@ export const studentSchema = z.object({
   id: z.string().optional(),
   username: z
     .string()
-    .min(3, { message: "Username must be at least 3 characters long!" })
-    .max(20, { message: "Username must be at most 20 characters long!" }),
+    .min(1, { message: "NISN wajib diisi!" })
+    .regex(/^\d+$/, { message: "NISN harus berupa angka!" })
+    .length(10, { message: "NISN harus 10 digit!" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long!" })
+    .min(8, { message: "Password minimal 8 karakter!" })
     .optional()
     .or(z.literal("")),
-  name: z.string().min(1, { message: "First name is required!" }),
-  surname: z.string().min(1, { message: "Last name is required!" }),
+  name: z.string().min(1, { message: "Nama depan wajib diisi!" }),
+  surname: z.string().min(1, { message: "Nama belakang wajib diisi!" }),
   email: z
     .string()
-    .email({ message: "Invalid email address!" })
+    .email({ message: "Format email tidak valid!" })
     .optional()
     .or(z.literal("")),
   phone: z.string().optional(),
-  address: z.string(),
+  address: z.string().min(1, { message: "Alamat wajib diisi!" }),
   img: z.string().optional(),
-  bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.coerce.date({ message: "Birthday is required!" }),
-  sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required!" }),
-  gradeId: z.coerce.number().min(1, { message: "Grade is required!" }),
-  classId: z.coerce.number().min(1, { message: "Class is required!" }),
+  bloodType: z.string().min(1, { message: "Golongan darah wajib diisi!" }),
+  birthday: z.coerce.date({ message: "Tanggal lahir wajib diisi!" }),
+  sex: z.enum(["MALE", "FEMALE"], { message: "Jenis kelamin wajib diisi!" }),
+  gradeId: z.coerce.number().min(1, { message: "Tingkat wajib diisi!" }),
+  classId: z.coerce.number().min(1, { message: "Kelas wajib diisi!" }),
 });
 
 export type StudentSchema = z.infer<typeof studentSchema>;
