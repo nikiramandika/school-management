@@ -27,6 +27,7 @@ import {
   Edit3,
   Check,
   X,
+  Download,
 } from "lucide-react";
 import { createResult, updateResult } from "@/lib/actions";
 import { toast } from "react-toastify";
@@ -95,13 +96,16 @@ const StudentTable = ({
     if (selectedAssessment) {
       const initialScores: Record<string, string> = {};
       existingGrades
-        .filter((grade) => grade.assessmentId === selectedAssessment)
+        .filter((grade) =>
+          grade.assessmentId ===
+          (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`)
+        )
         .forEach((grade) => {
           initialScores[grade.studentId] = grade.score.toString();
         });
       setScores(initialScores);
     }
-  }, [selectedAssessment, existingGrades]);
+  }, [selectedAssessment, existingGrades, isExamPage]);
 
   const handleScoreChange = (studentId: string, value: string) => {
     setScores((prev) => ({
@@ -126,7 +130,8 @@ const StudentTable = ({
 
       const existingGrade = existingGrades.find(
         (grade) =>
-          grade.assessmentId === selectedAssessment &&
+          grade.assessmentId ===
+            (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`) &&
           grade.studentId === studentId
       );
       console.log("Existing grade:", existingGrade);
@@ -202,7 +207,8 @@ const StudentTable = ({
     // Reset score to original value
     const existingGrade = existingGrades.find(
       (grade) =>
-        grade.assessmentId === selectedAssessment &&
+        grade.assessmentId ===
+          (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`) &&
         grade.studentId === studentId
     );
     if (existingGrade) {
@@ -219,6 +225,52 @@ const StudentTable = ({
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!selectedAssessmentDetails) return;
+    const { jsPDF } = await import("jspdf");
+    const autoTable = (await import("jspdf-autotable")).default;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(
+      `Laporan Nilai ${assessmentType} - ${selectedAssessmentDetails.title}`,
+      14,
+      15
+    );
+    doc.setFontSize(12);
+    doc.text(`Kelas: ${selectedAssessmentDetails.className}`, 14, 25);
+    doc.text(
+      `Tanggal: ${selectedAssessmentDetails.date ? format(new Date(selectedAssessmentDetails.date), "dd MMM yyyy") : "-"}`,
+      14,
+      32
+    );
+    // Table data
+    const tableData = students.map((student) => {
+      const grade = existingGrades.find(
+        (g) =>
+          g.assessmentId ===
+            (isExamPage
+              ? `E-${selectedAssessmentDetails.id}`
+              : `A-${selectedAssessmentDetails.id}`) &&
+          g.studentId === student.id
+      );
+      return [
+        `${student.name} ${student.surname}`,
+        grade ? grade.score : "-",
+      ];
+    });
+    autoTable(doc, {
+      startY: 40,
+      head: [["Nama Siswa", "Nilai"]],
+      body: tableData,
+      theme: "grid",
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+    });
+    doc.save(
+      `nilai_${assessmentType.toLowerCase()}_${selectedAssessmentDetails.title}.pdf`
+    );
+  };
+
   // Filter assessments based on role and current user
   const filteredAssessments =
     role === "admin"
@@ -233,7 +285,9 @@ const StudentTable = ({
 
   // Get grade statistics
   const currentGrades = existingGrades.filter(
-    (grade) => grade.assessmentId === selectedAssessment
+    (grade) =>
+      grade.assessmentId ===
+      (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`)
   );
   const averageScore =
     currentGrades.length > 0
@@ -272,30 +326,38 @@ const StudentTable = ({
               ) : (
                 <FileText className="h-4 w-4 text-purple-600" />
               )}
-              <Select
-                value={selectedAssessment}
-                onValueChange={setSelectedAssessment}
-                disabled={filteredAssessments.length === 0}
-              >
-                <SelectTrigger className="w-[320px] border-purple-200 focus:border-purple-400">
-                  <SelectValue
-                    placeholder={
-                      filteredAssessments.length === 0
-                        ? `Tidak ada ${assessmentType} yang tersedia`
-                        : `Pilih ${assessmentType}`
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredAssessments.map((assessment) => (
-                    <SelectItem key={assessment.id} value={assessment.id}>
-                      <div className="flex items-center gap-2">
-                        {assessment.title}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={selectedAssessment}
+                  onValueChange={setSelectedAssessment}
+                  disabled={filteredAssessments.length === 0}
+                >
+                  <SelectTrigger className="w-[320px] border-purple-200 focus:border-purple-400">
+                    <SelectValue
+                      placeholder={
+                        filteredAssessments.length === 0
+                          ? `Tidak ada ${assessmentType} yang tersedia`
+                          : `Pilih ${assessmentType}`
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredAssessments.map((assessment) => (
+                      <SelectItem key={assessment.id} value={assessment.id}>
+                        <div className="flex items-center gap-2">
+                          {assessment.title}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedAssessmentDetails && (
+                  <Button onClick={handleDownloadPDF} className="ml-2 bg-purple-600 hover:bg-purple-700 text-white">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download PDF
+                  </Button>
+                )}
+              </div>
             </div>
 
             {selectedAssessmentDetails?.date && (
@@ -432,7 +494,8 @@ const StudentTable = ({
               {students.map((student, index) => {
                 const existingGrade = existingGrades.find(
                   (grade) =>
-                    grade.assessmentId === selectedAssessment &&
+                    grade.assessmentId ===
+                      (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`) &&
                     grade.studentId === student.id
                 );
                 const isEditing = editingGrades[student.id];
