@@ -20,7 +20,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { HiUserGroup } from "react-icons/hi";
 
 type AnnouncementList = {
   id: number;

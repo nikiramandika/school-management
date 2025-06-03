@@ -95,9 +95,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="bg-signin h-screen flex flex-col items-center justify-between w-screen p-16 gap-16">
-      <div className="p-8 rounded-md shadow-2xl flex flex-row gap-2 iniya">
-        <h1 className="text-xl font-bold flex items-center gap-2">
+    <div className="bg-img-light h-screen flex flex-col items-center justify-center w-screen p-16 gap-8">
+      <div className="bg-white/70 p-8 rounded-2xl shadow-md flex flex-row gap-2 ">
+        <h1 className="text-gray-700 text-xl font-bold flex items-center gap-2">
           <Image
             src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png"
             alt="logo"
@@ -110,38 +110,38 @@ const LoginPage = () => {
       </div>
       <form
         onSubmit={handleLogin}
-        className="p-12 rounded-md shadow-2xl  w-xl flex-col gap-8 iniya flex"
+        className="bg-white/70 p-12 rounded-2xl shadow-md xl:w-md md:w-md sm:w-sm  flex-col gap-4  flex"
       >
         <h1 className="text-xl font-bold">Welcome Back</h1>
-        <h1 className="text-gray-400 mb-4">Sign in to your account</h1>
+        <h1 className="text-gray-500 mb-4">Sign in to your account</h1>
         {error && <div className="text-sm text-red-400">{error}</div>}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2  pb-2">
           <label className="text-sm text-gray-500">NISN/NIP</label>
           <input
             type="text"
             required
             className="p-2 rounded-md ring-1 ring-gray-300"
             value={identifier}
-            onChange={e => setIdentifier(e.target.value)}
+            onChange={(e) => setIdentifier(e.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pb-6">
           <label className="text-sm text-gray-500">Password</label>
           <input
             type="password"
             required
             className="p-2 rounded-md ring-1 ring-gray-300"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <button
           type="submit"
-          className="bg-cyan-500  text-white my-1 rounded-md text-sm p-[10px] hover:bg-blue-600 transition-colors w-full"
+          className="bg-cyan-500  text-white mb-5 rounded-md text-sm p-[10px] hover:bg-cyan-600 transition-colors w-full"
           disabled={isButtonLoading}
         >
           {isButtonLoading ? (
-            <div className="flex items-center justify-center gap-2">
+            <div className="text-sm flex items-center justify-center gap-2">
               <LoadingSpinner size="sm" />
               <span>Signing in...</span>
             </div>
