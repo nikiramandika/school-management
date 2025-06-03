@@ -69,7 +69,7 @@ const StudentForm = ({
     async (formData: StudentSchema) => {
       try {
         console.log("Form data before submission:", formData);
-        
+
         const action = type === "create" ? createStudent : updateStudent;
         const result = await action(
           { success: false, error: false, message: "" },
@@ -92,7 +92,9 @@ const StudentForm = ({
           } else if (result.message.includes("Kelas")) {
             setError("classId", { message: result.message });
           } else {
-            toast.error(result.message || "Gagal menyimpan data siswa. Silakan coba lagi.");
+            toast.error(
+              result.message || "Gagal menyimpan data siswa. Silakan coba lagi."
+            );
           }
         }
       } catch (error) {
@@ -198,7 +200,7 @@ const StudentForm = ({
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Jenis Kelamin</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("sex")}
             defaultValue={data?.sex}
           >
@@ -214,7 +216,7 @@ const StudentForm = ({
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Tingkat</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-gray-950 dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
@@ -226,7 +228,7 @@ const StudentForm = ({
             ))}
           </select>
           {errors.gradeId?.message && (
-            <p className="text-xs text-red-400">
+            <p className="text-xs text-rose-400">
               {errors.gradeId.message.toString()}
             </p>
           )}
@@ -234,7 +236,7 @@ const StudentForm = ({
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Kelas</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId")}
             defaultValue={data?.classId}
           >
@@ -253,7 +255,7 @@ const StudentForm = ({
         </div>
       </div>
       <button
-        className="bg-cyan-500 text-white p-2 rounded-md"
+        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

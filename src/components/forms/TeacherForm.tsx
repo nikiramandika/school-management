@@ -42,7 +42,10 @@ const TeacherForm = ({
       bloodType: data?.bloodType,
       sex: data?.sex,
       birthday: data?.birthday,
-      subjects: data?.subjects?.map((subject: { id: number }) => subject.id.toString()) || [],
+      subjects:
+        data?.subjects?.map((subject: { id: number }) =>
+          subject.id.toString()
+        ) || [],
     },
   });
 
@@ -60,7 +63,10 @@ const TeacherForm = ({
         bloodType: data.bloodType,
         sex: data.sex,
         birthday: data.birthday,
-        subjects: data.subjects?.map((subject: { id: number }) => subject.id.toString()) || [],
+        subjects:
+          data.subjects?.map((subject: { id: number }) =>
+            subject.id.toString()
+          ) || [],
       });
     }
   }, [data, reset]);
@@ -69,11 +75,11 @@ const TeacherForm = ({
     async (formData: TeacherSchema) => {
       try {
         console.log("Form data before submission:", formData);
-        
+
         // Ensure subjects are properly formatted
         const formattedData = {
           ...formData,
-          subjects: formData.subjects?.map(id => id.toString()) || [],
+          subjects: formData.subjects?.map((id) => id.toString()) || [],
         };
 
         console.log("Formatted data:", formattedData);
@@ -98,7 +104,9 @@ const TeacherForm = ({
           } else if (result.message.includes("Password")) {
             setError("password", { message: result.message });
           } else {
-            toast.error(result.message || "Gagal menyimpan data guru. Silakan coba lagi.");
+            toast.error(
+              result.message || "Gagal menyimpan data guru. Silakan coba lagi."
+            );
           }
         }
       } catch (error) {
@@ -114,7 +122,10 @@ const TeacherForm = ({
   // Debug logs
   console.log("Teacher data:", data);
   console.log("Related subjects:", subjects);
-  console.log("Current subject IDs:", data?.subjects?.map((subject: { id: number }) => subject.id.toString()));
+  console.log(
+    "Current subject IDs:",
+    data?.subjects?.map((subject: { id: number }) => subject.id.toString())
+  );
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -204,7 +215,7 @@ const TeacherForm = ({
         <div className="flex flex-col gap-2 w-1/3">
           <label className="text-xs text-gray-500">Jenis Kelamin</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
             {...register("sex")}
           >
             <option value="MALE">Laki-Laki</option>
@@ -227,14 +238,16 @@ const TeacherForm = ({
               console.log("Available subjects:", subjects);
 
               const selectedIds = field.value || [];
-              const selectedOptions = selectedIds.map((id: string) => {
-                const subject = subjects.find(
-                  (s: { id: number }) => s.id.toString() === id
-                );
-                return subject
-                  ? { value: subject.id.toString(), label: subject.name }
-                  : null;
-              }).filter(Boolean);
+              const selectedOptions = selectedIds
+                .map((id: string) => {
+                  const subject = subjects.find(
+                    (s: { id: number }) => s.id.toString() === id
+                  );
+                  return subject
+                    ? { value: subject.id.toString(), label: subject.name }
+                    : null;
+                })
+                .filter(Boolean);
 
               // Debug log
               console.log("Selected options:", selectedOptions);
@@ -271,7 +284,7 @@ const TeacherForm = ({
         </div>
       </div>
       <button
-        className="bg-cyan-500 text-white p-2 rounded-md"
+        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

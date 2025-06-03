@@ -109,7 +109,7 @@ const LessonForm = ({
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Mata Pelajaran</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("subjectId", { valueAsNumber: true })}
             defaultValue={data?.subjectId}
           >
@@ -129,7 +129,7 @@ const LessonForm = ({
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Kelas</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
           >
@@ -149,7 +149,7 @@ const LessonForm = ({
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Hari</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("day")}
             defaultValue={data?.day}
           >
@@ -169,7 +169,7 @@ const LessonForm = ({
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Guru</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("teacherId")}
             defaultValue={data?.teacherId}
           >
@@ -213,7 +213,7 @@ const LessonForm = ({
         </div>
       </div>
       <button
-        className="bg-cyan-500 text-white p-2 rounded-md disabled:opacity-50"
+        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md disabled:opacity-50"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Saving..." : type === "create" ? "Buat" : "Perbarui"}

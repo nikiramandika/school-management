@@ -49,9 +49,9 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
         </div>
 
         {/* Table Section */}
-        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
-            <div className="bg-white dark:bg-slate-600 rounded-lg border border-gray-200 dark:border-slate-600 p-4">
+        <Card className="text-card-foreground border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+          <CardContent className="bg-gray-100 dark:bg-transparent rounded-xl p-0">
+            <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-900 p-4">
               <StudentTable data={classData.students} />
             </div>
           </CardContent>

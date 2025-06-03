@@ -20,7 +20,6 @@ import {
   User,
   Calendar,
   BookOpen,
-  BarChart2,
   FileText,
   Users,
   Trophy,
@@ -38,6 +37,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { HiClipboardCheck, HiCollection, HiUserGroup } from "react-icons/hi";
 
 interface Student {
   id: string;
@@ -300,19 +300,19 @@ const StudentTable = ({
   return (
     <div className="space-y-6">
       {/* Header Controls */}
-      <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 border-purple-200 dark:border-purple-800">
+      <Card className="p-6 bg-cyan-500/30 dark:bg-cyan-400/80">
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
+              <div className="p-2 bg-white rounded-lg">
                 {isExamPage ? (
-                  <BarChart2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  <HiClipboardCheck className="h-5 w-5 text-cyan-500" />
                 ) : (
-                  <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  <FileText className="h-5 w-5 text-cyan-500" />
                 )}
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-lg font-semibold text-gray-950  dark:text-white">
                   Manajemen Nilai {assessmentType}
                 </h2>
               </div>
@@ -321,18 +321,13 @@ const StudentTable = ({
 
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <div className="flex items-center gap-2">
-              {isExamPage ? (
-                <BarChart2 className="h-4 w-4 text-purple-600" />
-              ) : (
-                <FileText className="h-4 w-4 text-purple-600" />
-              )}
               <div className="flex items-center gap-2">
                 <Select
                   value={selectedAssessment}
                   onValueChange={setSelectedAssessment}
                   disabled={filteredAssessments.length === 0}
                 >
-                  <SelectTrigger className="w-[320px] border-purple-200 focus:border-purple-400">
+                  <SelectTrigger className="w-[320px] border-cyan-200 focus:border-cyan-400">
                     <SelectValue
                       placeholder={
                         filteredAssessments.length === 0
@@ -352,7 +347,10 @@ const StudentTable = ({
                   </SelectContent>
                 </Select>
                 {selectedAssessmentDetails && (
-                  <Button onClick={handleDownloadPDF} className="ml-2 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button
+                    onClick={handleDownloadPDF}
+                    className="dark:bg-white dark:text-cyan-500 ml-2 bg-cyan-600 hover:bg-cyan-700 text-white"
+                  >
                     <Download className="h-4 w-4 mr-2" />
                     Download PDF
                   </Button>
@@ -362,11 +360,8 @@ const StudentTable = ({
 
             {selectedAssessmentDetails?.date && (
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-cyan-600" />
-                <Badge
-                  variant="outline"
-                  className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
-                >
+                <Badge className="bg-white/70 dark:bg-gray-500/40 dark:text-white text-cyan-500 text-xs font-medium gap-2 py-1">
+                  <Calendar className="h-4 w-4 text-cyan-500 dark:text-white" />
                   {format(
                     new Date(selectedAssessmentDetails.date),
                     "dd MMM yyyy"
@@ -377,16 +372,16 @@ const StudentTable = ({
           </div>
 
           {selectedAssessmentDetails && (
-            <div className="p-4 bg-white/50 dark:bg-white/5 rounded-lg border border-purple-200 dark:border-purple-800">
+            <div className="p-4 bg-white/50 dark:bg-gray-800/20 rounded-lg border border-cyan-200 dark:border-gray-500/20">
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                 <div className="flex items-center gap-4 flex-wrap">
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
+                      className="border-cyan-500 text-cyan-700 dark:border-cyan-500 dark:text-white"
                     >
                       {isExamPage ? (
-                        <BarChart2 className="mr-1 h-3 w-3" />
+                        <HiClipboardCheck className="mr-1 h-3 w-3" />
                       ) : (
                         <FileText className="mr-1 h-3 w-3" />
                       )}
@@ -396,16 +391,16 @@ const StudentTable = ({
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300"
+                      className="border-blue-500 text-blue-500 dark:bg-blue-800/50 dark:text-white text-xs"
                     >
-                      <HiUserGroup className="mr-1 h-3 w-3" />
+                      <HiCollection className="mr-1 h-3 w-3" />
                       {selectedAssessmentDetails.className}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
+                      className="border-blue-500 text-blue-500 dark:bg-blue-800/50 dark:text-white text-xs"
                     >
                       <Trophy className="mr-1 h-3 w-3" />
                       Rata-rata: {averageScore}
@@ -430,7 +425,7 @@ const StudentTable = ({
             <div className="flex flex-col items-center gap-4 text-muted-foreground">
               <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
                 {isExamPage ? (
-                  <BarChart2 className="h-8 w-8 text-gray-400" />
+                  <HiClipboardCheck className="h-8 w-8 text-gray-400" />
                 ) : (
                   <FileText className="h-8 w-8 text-gray-400" />
                 )}
@@ -470,7 +465,7 @@ const StudentTable = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    <HiUserGroup className="h-4 w-4 text-purple-600" />
+                    <HiUserGroup className="h-4 w-4 text-cyan-600" />
                     Daftar Nilai Siswa
                   </h3>
                   <Badge
@@ -495,7 +490,9 @@ const StudentTable = ({
                 const existingGrade = existingGrades.find(
                   (grade) =>
                     grade.assessmentId ===
-                      (isExamPage ? `E-${selectedAssessment}` : `A-${selectedAssessment}`) &&
+                      (isExamPage
+                        ? `E-${selectedAssessment}`
+                        : `A-${selectedAssessment}`) &&
                     grade.studentId === student.id
                 );
                 const isEditing = editingGrades[student.id];
@@ -513,8 +510,8 @@ const StudentTable = ({
                       {/* Student Info */}
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
-                            <User className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                          <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+                            <User className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-gray-900 dark:text-white">
@@ -523,7 +520,7 @@ const StudentTable = ({
                             <div className="flex items-center gap-2 mt-1">
                               <Badge
                                 variant="outline"
-                                className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs"
+                                className="border-blue-500 text-blue-500 dark:bg-blue-500/40 dark:text-white text-xs"
                               >
                                 <HiUserGroup className="mr-1 h-3 w-3" />
                                 {student.className}
@@ -593,13 +590,12 @@ const StudentTable = ({
                                     existingGrade.score >= 80
                                       ? "border-teal-200 text-teal-700 bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:bg-teal-900/20"
                                       : existingGrade.score >= 70
-                                      ? "border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:bg-blue-900/20"
+                                      ? "border-blue-200 text-blue-700 bg-blue-50 dark:border-blue-700 dark:text-blue-200 dark:bg-blue-900/20"
                                       : existingGrade.score >= 60
                                       ? "border-yellow-200 text-yellow-700 bg-yellow-50 dark:border-yellow-700 dark:text-yellow-300 dark:bg-yellow-900/20"
                                       : "border-red-200 text-red-700 bg-red-50 dark:border-red-700 dark:text-red-300 dark:bg-red-900/20"
                                   }`}
                                 >
-                                  <Trophy className="mr-1 h-3 w-3" />
                                   {existingGrade.score}
                                 </Badge>
                               ) : (

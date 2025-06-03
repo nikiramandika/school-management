@@ -352,11 +352,12 @@ const ExamPage = async ({ params }: ExamPageProps) => {
             }))}
             existingGrades={existingGrades.map((grade) => ({
               studentId: grade.studentId,
-              assessmentId: grade.examId != null
-                ? `E-${grade.examId}`
-                : grade.assignmentId != null
-                ? `A-${grade.assignmentId}`
-                : "",
+              assessmentId:
+                grade.examId != null
+                  ? `E-${grade.examId}`
+                  : grade.assignmentId != null
+                  ? `A-${grade.assignmentId}`
+                  : "",
               score: grade.score,
             }))}
             className={selectedClass.name}
@@ -372,9 +373,10 @@ const ExamPage = async ({ params }: ExamPageProps) => {
         />
 
         {/* Main Content Section */}
-        <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
-          <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-6">
+
+        <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+          <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
+            <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-900 p-4">
               <StudentTable
                 students={students.map((student) => ({
                   id: student.id.toString(),
@@ -401,11 +403,12 @@ const ExamPage = async ({ params }: ExamPageProps) => {
                 existingGrades={existingGrades.map((grade) => ({
                   id: grade.id.toString(),
                   score: grade.score,
-                  assessmentId: grade.examId != null
-                    ? `E-${grade.examId}`
-                    : grade.assignmentId != null
-                    ? `A-${grade.assignmentId}`
-                    : "",
+                  assessmentId:
+                    grade.examId != null
+                      ? `E-${grade.examId}`
+                      : grade.assignmentId != null
+                      ? `A-${grade.assignmentId}`
+                      : "",
                   studentId: grade.studentId,
                 }))}
               />

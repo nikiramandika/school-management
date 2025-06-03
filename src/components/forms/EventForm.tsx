@@ -117,7 +117,7 @@ const EventForm = ({
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Deskripsi</label>
           <textarea
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("description")}
             defaultValue={data?.description}
             rows={4}
@@ -157,7 +157,7 @@ const EventForm = ({
       </div>
 
       <button
-        className="bg-cyan-500 text-white p-2 rounded-md"
+        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

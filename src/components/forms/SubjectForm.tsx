@@ -152,7 +152,7 @@ const SubjectForm = ({
         </div>
       </div>
       <button
-        className="bg-cyan-500 text-white p-2 rounded-md"
+        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
         disabled={isSubmitting}
       >
         {type === "create" ? "Buat" : "Perbarui"}

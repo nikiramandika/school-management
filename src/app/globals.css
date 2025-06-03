@@ -15,6 +15,7 @@
 
   --color-softdark: rgba(33,33,41,0.88);
   --color-softlight: rgba(255, 255, 255, 0.79); /* Keep it clean */
+
 }
 
 
@@ -221,6 +222,9 @@
 }
 
 :root {
+    --primary: #00b8db!important;
+  --accent: #e7f9fd !important;
+
   font-family: "Inter", sans-serif !important;
   font-optical-sizing: auto;
   --radius: 0.625rem;
@@ -291,11 +295,13 @@ html.dark body {
   background-image: var(--bg-signin); /* when dark mode is active */
 }
 .dark {
+    --primary: #00b8db !important;
+  --accent: #1e2939 !important;
   --background: oklch(0.14 0 none / 0.22);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.31 0.0094 268.36 / 0.68);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: #27272e;
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
