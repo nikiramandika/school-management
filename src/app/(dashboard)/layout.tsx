@@ -30,7 +30,7 @@ export default function DashboardLayout({
   return (
     <div className="h-screen flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col lg:w-[16%] xl:w-[14%]  rounded-r-4xl soft-light bg-softlight dark:bg-softdark shadow-md">
+      <aside className="hidden md:flex flex-col lg:w-[16%] xl:w-[14%]  rounded-r-4xl soft-light bg-softlight dark:bg-softdark shadow-md ">
         {/* Logo dan Header dengan bayangan dinamis */}
         <div
           className={`bg-transparent rounded-4xl px-4 pt-4 pb-4 bg-inherit z-10 ${
@@ -62,7 +62,7 @@ export default function DashboardLayout({
 
       {/* Mobile Sidebar */}
       <aside
-        className={`md:hidden fixed inset-y-0 left-0 z-50 w-[80%] max-w-[300px] bg-gray-50 dark:bg-card transform transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-[80%] max-w-[300px] bg-gray-50 dark:bg-[#1d1d24]/95 transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

@@ -2,7 +2,6 @@
 @import "tw-animate-css";
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -13,11 +12,9 @@
   --color-lamaYellow: #fae27c;
   --color-lamaYellowLight: #fefce8;
 
-  --color-softdark: rgba(33,33,41,0.88);
+  --color-softdark: rgba(33, 33, 41, 0.88);
   --color-softlight: rgba(255, 255, 255, 0.79); /* Keep it clean */
-
 }
-
 
 /* C3EBFA */
 
@@ -26,7 +23,6 @@
     @apply border border-gray-800 backdrop-blur bg-[rgba(33,33,41,0.88)];
   }
 }
-
 
 .react-calendar {
   background-color: rgb(249 250 251) !important; /* bg-gray-50 */
@@ -222,7 +218,7 @@
 }
 
 :root {
-    --primary: #00b8db!important;
+  --primary: #00b8db !important;
   --accent: #e7f9fd !important;
 
   font-family: "Inter", sans-serif !important;
@@ -315,7 +311,7 @@ html.dark body {
 }
 
 .dark {
-    --primary: #00b8db !important;
+  --primary: #00b8db !important;
   --accent: #1e2939 !important;
   --background: oklch(0.14 0 none / 0.22);
   --foreground: oklch(0.985 0 0);
@@ -351,7 +347,7 @@ html.dark body {
 }
 
 .bg-signin {
-  background-image: var(--bg-signin)!important;
+  background-image: var(--bg-signin) !important;
   background-repeat: no-repeat;
   background-size: cover; /* keeps original size */
   background-position: center; /* center it on the screen */
@@ -363,17 +359,12 @@ html.dark body {
   background-position: center; /* center it on the screen */
 }
 
-.soft-light {
+.soft-light backdrop-blur-md backdrop-blur-md {
   border: 2px solid rgba(225, 225, 225, 0.085);
-  backdrop-filter: blur(20px);
 }
 .soft-light::before {
   mix-blend-mode: soft-light;
 }
-
-
-
-
 
 .iniya {
   position: relative;
