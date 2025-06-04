@@ -48,6 +48,17 @@ const AnnouncementForm = ({
   );
   const [isAllClasses, setIsAllClasses] = useState<boolean>(!data?.classId);
 
+  // Get classes from relatedData
+  const classes = relatedData?.classes || [];
+  const userRole = relatedData?.userRole;
+  const teacherClasses = relatedData?.teacherClasses || [];
+  const homeroomClass = relatedData?.homeroomClass;
+
+  // Filter available classes based on user role
+  const availableClasses = userRole === "teacher" 
+    ? [...teacherClasses, ...(homeroomClass ? [homeroomClass] : [])]
+    : classes;
+
   const {
     register,
     handleSubmit,
@@ -123,9 +134,6 @@ const AnnouncementForm = ({
     },
     [type, setOpen, router]
   );
-
-  // Get classes from relatedData
-  const classes = relatedData?.classes || [];
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -206,28 +214,30 @@ const AnnouncementForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <div className="flex items-center gap-2 mb-2">
-            <input
-              type="checkbox"
-              id="allClasses"
-              checked={isAllClasses}
-              onChange={handleAllClassesChange}
-              className="rounded border-gray-300"
-            />
-            <label htmlFor="allClasses" className="text-sm">
-              Semua Kelas
-            </label>
-          </div>
+          {userRole !== "teacher" && (
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="checkbox"
+                id="allClasses"
+                checked={isAllClasses}
+                onChange={handleAllClassesChange}
+                className="rounded border-gray-300"
+              />
+              <label htmlFor="allClasses" className="text-sm">
+                Semua Kelas
+              </label>
+            </div>
+          )}
           <select
             className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
             {...register("classId", { valueAsNumber: true })}
             defaultValue={data?.classId}
-            disabled={isAllClasses}
+            disabled={isAllClasses && userRole !== "teacher"}
           >
             <option value="">Pilih Kelas</option>
-            {classes?.map((cls: { id: number; name: string }) => (
+            {availableClasses?.map((cls: { id: number; name: string; grade: { level: number } }) => (
               <option value={cls.id} key={cls.id}>
-                {cls.name}
+                {cls.grade.level === 1 ? "X" : cls.grade.level === 2 ? "XI" : cls.grade.level === 3 ? "XII" : cls.grade.level} {cls.name}
               </option>
             ))}
           </select>

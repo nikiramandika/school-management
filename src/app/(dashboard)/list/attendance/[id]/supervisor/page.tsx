@@ -114,7 +114,7 @@ const PageHeader = ({
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Supervisi Absensi {className}
+            Absensi {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
           </h1>
         </div>
       </div>

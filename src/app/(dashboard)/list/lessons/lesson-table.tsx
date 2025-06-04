@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
-import { Lesson, Subject, Class, Teacher } from "@prisma/client";
+import { Lesson, Subject, Class, Teacher, Grade } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   ArrowUpDown,
@@ -26,7 +26,9 @@ import { HiAcademicCap, HiCollection, HiUserGroup } from "react-icons/hi";
 
 type LessonList = Lesson & {
   subject: Subject;
-  class: Class;
+  class: Class & {
+    grade: Grade;
+  };
   teacher: Teacher;
 };
 
@@ -120,7 +122,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
             >
               <HiUserGroup className="mr-1 h-3 w-3" />
-              {row.original.class.name}
+              {row.original.class.grade.level === 1 ? "X" : row.original.class.grade.level === 2 ? "XI" : "XII"} {row.original.class.name}
             </Badge>
           </div>
         </div>

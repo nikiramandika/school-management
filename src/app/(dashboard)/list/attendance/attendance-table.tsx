@@ -64,6 +64,9 @@ interface Lesson {
   class: {
     name: string;
     supervisorId: string | null;
+    grade?: {
+      level: number;
+    };
   };
   teacher: {
     id: string;
@@ -107,6 +110,7 @@ interface AttendanceHistory {
   lessonName: string;
   teacherName: string;
   className: string;
+  
   totalStudents: number;
   presentStudents: number;
   absentStudents: number;
@@ -683,7 +687,7 @@ export function AttendanceTable({
                     className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
                   >
                     <HiUserGroup className="mr-1 h-3 w-3" />
-                    {selectedLessonDetails.class.name}
+                    {selectedLessonDetails.class.grade?.level === 1 ? "X" : selectedLessonDetails.class.grade?.level === 2 ? "XI" : "XII"} {selectedLessonDetails.class.name}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">

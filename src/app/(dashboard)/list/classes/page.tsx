@@ -239,7 +239,7 @@ const ClassListPage = async () => {
                         </div>
                         <div>
                           <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                            {classItem.name}
+                            {classItem.grade?.level === 1 ? "X" : classItem.grade?.level === 2 ? "XI" : "XII"} {classItem.name}
                           </CardTitle>
                           <Badge variant="outline" className="mt-1">
                             Tingkat {classItem.grade?.level}

@@ -150,9 +150,20 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         break;
       case "announcement":
         const announcementClasses = await prisma.class.findMany({
-          select: { id: true, name: true },
+          select: { 
+            id: true, 
+            name: true,
+            grade: {
+              select: {
+                level: true
+              }
+            }
+          },
         });
-        relatedData = { classes: announcementClasses };
+        relatedData = { 
+          classes: announcementClasses,
+          userRole: role 
+        };
         break;
       case "result":
         // If relatedData is provided from parent component, use it

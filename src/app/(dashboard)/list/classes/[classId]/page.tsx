@@ -24,7 +24,11 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
     where: { id: classId },
     include: {
       students: true,
-      grade: true,
+      grade: {
+        select: {
+          level: true,
+        },
+      },
     },
   });
 
@@ -40,7 +44,7 @@ const ClassStudentsPage = async ({ params }: ClassStudentsPageProps) => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Daftar Siswa - {classData.name}
+              Daftar Siswa - {classData.grade?.level === 1 ? "X" : classData.grade?.level === 2 ? "XI" : "XII"} {classData.name}
             </h1>
           </div>
           <Badge variant="secondary" className="ml-2 bg-cyan-500/30">

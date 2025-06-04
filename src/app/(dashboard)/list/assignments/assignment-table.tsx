@@ -36,6 +36,9 @@ type AssignmentList = Assignment & {
     };
     class: {
       name: string;
+      grade: {
+        level: number;
+      };
     };
     teacher: {
       name: string;
@@ -134,7 +137,7 @@ export function AssignmentTable({
               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
             >
               <HiCollection className="mr-1 h-3 w-3" />
-              {row.original.lesson.class.name}
+              {row.original.lesson.class.grade?.level === 1 ? "X" : row.original.lesson.class.grade?.level === 2 ? "XI" : "XII"} {row.original.lesson.class.name}
             </Badge>
           </div>
         </div>

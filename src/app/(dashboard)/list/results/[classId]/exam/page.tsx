@@ -28,6 +28,7 @@ interface ExamPageProps {
 // Enhanced Header component with stats
 const PageHeader = ({
   className,
+  gradeLevel,
   totalStudents,
   totalExams,
   totalAssignments,
@@ -35,6 +36,7 @@ const PageHeader = ({
   role,
 }: {
   className: string;
+  gradeLevel: number;
   totalStudents: number;
   totalExams: number;
   totalAssignments: number;
@@ -61,7 +63,7 @@ const PageHeader = ({
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Hasil Ujian {className}
+            Hasil Ujian {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
           </h1>
         </div>
       </div>
@@ -86,6 +88,11 @@ const ExamPage = async ({ params }: ExamPageProps) => {
       id: true,
       name: true,
       supervisorId: true,
+      grade: {
+        select: {
+          level: true
+        }
+      },
       lessons: {
         select: {
           id: true,
@@ -326,6 +333,7 @@ const ExamPage = async ({ params }: ExamPageProps) => {
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={selectedClass.name}
+          gradeLevel={selectedClass.grade?.level}
           totalStudents={totalStudents}
           totalExams={totalExams}
           totalAssignments={totalAssignments}
@@ -390,6 +398,12 @@ const ExamPage = async ({ params }: ExamPageProps) => {
                   className: exam.lesson.class.name,
                   teacherId: exam.lesson.teacher.id,
                   date: exam.startTime.toISOString(),
+                  class: {
+                    name: exam.lesson.class.name,
+                    grade: {
+                      level: selectedClass.grade?.level || 1
+                    }
+                  }
                 }))}
                 assignments={assignments.map((assignment) => ({
                   id: assignment.id.toString(),
@@ -397,6 +411,12 @@ const ExamPage = async ({ params }: ExamPageProps) => {
                   className: assignment.lesson.class.name,
                   teacherId: assignment.lesson.teacher.id,
                   date: assignment.startDate.toISOString(),
+                  class: {
+                    name: assignment.lesson.class.name,
+                    grade: {
+                      level: selectedClass.grade?.level || 1
+                    }
+                  }
                 }))}
                 role={role}
                 currentUserId={currentUserId || undefined}

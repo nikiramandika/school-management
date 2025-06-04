@@ -23,8 +23,62 @@ const AnnouncementListPage = async () => {
 
   // Fetch all classes for the form
   const classes = await prisma.class.findMany({
-    select: { id: true, name: true },
+    select: { 
+      id: true, 
+      name: true,
+      grade: {
+        select: {
+          level: true
+        }
+      }
+    },
   });
+
+  // Fetch teacher's classes if user is a teacher
+  let teacherClasses: { id: number; name: string; grade: { level: number } }[] = [];
+  let homeroomClass: { id: number; name: string; grade: { level: number } } | null = null;
+  
+  if (role === "teacher") {
+    // Get classes where teacher teaches
+    teacherClasses = await prisma.class.findMany({
+      where: {
+        lessons: {
+          some: {
+            teacherId: currentUserId!,
+          },
+        },
+      },
+      select: { 
+        id: true, 
+        name: true, 
+        grade: { 
+          select: { 
+            level: true 
+          } 
+        } 
+      },
+    });
+
+    // Get class where teacher is supervisor (homeroom teacher)
+    const supervisorClass = await prisma.class.findFirst({
+      where: {
+        supervisorId: currentUserId!,
+      },
+      select: { 
+        id: true, 
+        name: true, 
+        grade: { 
+          select: { 
+            level: true 
+          } 
+        } 
+      },
+    });
+
+    if (supervisorClass) {
+      homeroomClass = supervisorClass;
+    }
+  }
 
   // ROLE CONDITIONS
   const query: Prisma.AnnouncementWhereInput = {};
@@ -43,6 +97,11 @@ const AnnouncementListPage = async () => {
                 teacherId: currentUserId!,
               },
             },
+          },
+        },
+        {
+          class: {
+            supervisorId: currentUserId!,
           },
         },
       ];
@@ -71,6 +130,11 @@ const AnnouncementListPage = async () => {
       class: {
         select: {
           name: true,
+          grade: {
+            select: {
+              level: true
+            }
+          }
         },
       },
     },
@@ -86,6 +150,7 @@ const AnnouncementListPage = async () => {
     date: item.date,
     className: item.class?.name,
     classId: item.classId,
+    gradeLevel: item.class?.grade?.level,
   }));
 
   // Calculate stats
@@ -103,7 +168,7 @@ const AnnouncementListPage = async () => {
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
-        {/* Conditional Header Section - Only show management header for admin */}
+        {/* Conditional Header Section - Only show management header for admin and kepala_sekolah */}
         {(role === "admin" || role === "kepala_sekolah") && (
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
             <div className="space-y-2">
@@ -118,7 +183,6 @@ const AnnouncementListPage = async () => {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center gap-4 self-end">
               <TooltipProvider>
                 <Tooltip>
@@ -211,16 +275,42 @@ const AnnouncementListPage = async () => {
 
         {/* Main Announcements Table Section */}
         <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-cyan-500  rounded-lg">
-              <Megaphone className="h-5 w-5 text-white" />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-cyan-500  rounded-lg">
+                <Megaphone className="h-5 w-5 text-white" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                Daftar Pengumuman
+              </div>
+              <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
+                {totalAnnouncements} Pengumuman
+              </Badge>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Daftar Pengumuman
-            </h1>
-            <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
-              {totalAnnouncements} Pengumuman
-            </Badge>
+            {/* Create button for teachers */}
+            {role === "teacher" && (
+              <div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormContainer
+                          table="announcement"
+                          type="create"
+                          relatedData={{
+                            classes,
+                            userRole: role,
+                            teacherClasses,
+                            homeroomClass,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Tambah Pengumuman</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            )}
           </div>
 
           <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">

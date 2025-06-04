@@ -27,6 +27,20 @@ type AnnouncementList = {
   description: string;
   date: Date;
   className?: string;
+  gradeLevel?: number;
+};
+
+const formatGradeLevel = (level?: number) => {
+  switch (level) {
+    case 1:
+      return "X";
+    case 2:
+      return "XI";
+    case 3:
+      return "XII";
+    default:
+      return "";
+  }
 };
 
 type AnnouncementTableProps = {
@@ -132,7 +146,7 @@ export const AnnouncementTable = ({
               }
             >
               <HiUserGroup className="mr-1 h-3 w-3" />
-              {className ? className : "Semua Kelas"}
+              {className ? formatGradeLevel(row.original.gradeLevel) + " " + className : "Semua Kelas"} 
             </Badge>
           </div>
         );

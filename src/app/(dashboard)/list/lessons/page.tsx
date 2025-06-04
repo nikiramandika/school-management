@@ -24,7 +24,11 @@ const LessonListPage = async () => {
   const data = await prisma.lesson.findMany({
     include: {
       subject: true,
-      class: true,
+      class: {
+        include: {
+          grade: true
+        }
+      },
       teacher: true,
     },
   });
@@ -35,7 +39,15 @@ const LessonListPage = async () => {
       select: { id: true, name: true },
     }),
     prisma.class.findMany({
-      select: { id: true, name: true },
+      select: { 
+        id: true, 
+        name: true,
+        grade: {
+          select: {
+            level: true
+          }
+        }
+      },
     }),
     prisma.teacher.findMany({
       select: { id: true, name: true, surname: true },

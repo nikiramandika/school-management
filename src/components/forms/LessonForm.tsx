@@ -134,9 +134,9 @@ const LessonForm = ({
             defaultValue={data?.classId}
           >
             <option value="">Pilih Kelas</option>
-            {classes?.map((class_: { id: number; name: string }) => (
+            {classes?.map((class_: { id: number; name: string; grade: { level: number } }) => (
               <option value={class_.id} key={class_.id}>
-                {class_.name}
+                {class_.grade.level === 1 ? "X" : class_.grade.level === 2 ? "XI" : "XII"} {class_.name}
               </option>
             ))}
           </select>

@@ -25,12 +25,14 @@ const PageHeader = ({
   totalLessons,
   totalAttendances,
   role,
+  gradeLevel,
 }: {
   className: string;
   totalStudents: number;
   totalLessons: number;
   totalAttendances: number;
   role: string;
+  gradeLevel: number;
 }) => (
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
@@ -52,7 +54,7 @@ const PageHeader = ({
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Absensi {className}
+            Absensi {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
           </h1>
         </div>
       </div>
@@ -81,6 +83,11 @@ export default async function ClassAttendancePage({
     select: {
       id: true,
       name: true,
+      grade: {
+        select: {
+          level: true,
+        },
+      },
       supervisorId: true,
       lessons: {
         select: {
@@ -152,6 +159,11 @@ export default async function ClassAttendancePage({
         select: {
           name: true,
           supervisorId: true,
+          grade: {
+            select: {
+              level: true
+            }
+          }
         },
       },
       teacher: {
@@ -221,6 +233,7 @@ export default async function ClassAttendancePage({
           totalLessons={totalLessons}
           totalAttendances={totalAttendances}
           role={role || ""}
+          gradeLevel={classItem.grade.level}
         />
 
         {/* Main Content Section */}

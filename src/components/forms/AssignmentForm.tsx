@@ -139,11 +139,11 @@ const AssignmentForm = ({
                 id: number;
                 name: string;
                 subject: { id: number; name: string };
-                class: { id: number; name: string };
+                class: { id: number; name: string; grade: { level: number } };
                 teacher: { id: string; name: string; surname: string };
               }) => (
                 <option value={lesson.id} key={lesson.id}>
-                  {lesson.subject.name} - {lesson.class.name} ({lesson.name}) -{" "}
+                  {lesson.subject.name} - {lesson.class.grade?.level === 1 ? "X" : lesson.class.grade?.level === 2 ? "XI" : "XII"} {lesson.class.name} ({lesson.name}) -{" "}
                   {lesson.teacher.name} {lesson.teacher.surname}
                 </option>
               )

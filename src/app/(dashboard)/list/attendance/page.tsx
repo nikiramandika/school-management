@@ -127,7 +127,12 @@ const AttendanceListPage = async () => {
   const classes = await prisma.class.findMany({
     include: {
       supervisor: true,
-      grade: true,
+      grade: {
+        select: {
+          id: true,
+          level: true,
+        },
+      },
       lessons: {
         include: {
           teacher: true,

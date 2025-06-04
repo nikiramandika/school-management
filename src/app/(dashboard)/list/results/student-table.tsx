@@ -53,6 +53,12 @@ interface Assessment {
   teacherId: string;
   date?: string;
   description?: string;
+  class: {
+    name: string;
+    grade?: {
+      level: number;
+    };
+  };
 }
 
 interface Grade {
@@ -394,7 +400,7 @@ const StudentTable = ({
                       className="border-blue-500 text-blue-500 dark:bg-blue-800/50 dark:text-white text-xs"
                     >
                       <HiCollection className="mr-1 h-3 w-3" />
-                      {selectedAssessmentDetails.className}
+                      {selectedAssessmentDetails.class.grade?.level === 1 ? "X" : selectedAssessmentDetails.class.grade?.level === 2 ? "XI" : "XII"} {selectedAssessmentDetails.class.name}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2">
