@@ -112,7 +112,7 @@ const LoginPage = () => {
         onSubmit={handleLogin}
         className="bg-white/70 p-12 rounded-2xl shadow-md xl:w-md md:w-md sm:w-sm  flex-col gap-4  flex"
       >
-        <h1 className="text-xl font-bold">Welcome Back</h1>
+        <h1 className="text-xl font-bold text-gray-900">Welcome Back</h1>
         <h1 className="text-gray-500 mb-4">Sign in to your account</h1>
         {error && <div className="text-sm text-red-400">{error}</div>}
         <div className="flex flex-col gap-2  pb-2">
@@ -120,7 +120,7 @@ const LoginPage = () => {
           <input
             type="text"
             required
-            className="p-2 rounded-md ring-1 ring-gray-300"
+            className="text-gray-800 p-2 rounded-md ring-1 ring-gray-300 "
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
           />
@@ -130,7 +130,7 @@ const LoginPage = () => {
           <input
             type="password"
             required
-            className="p-2 rounded-md ring-1 ring-gray-300"
+            className="text-gray-800 p-2 rounded-md ring-1 ring-gray-300"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -141,10 +141,8 @@ const LoginPage = () => {
           disabled={isButtonLoading}
         >
           {isButtonLoading ? (
-            <div className="text-sm flex items-center justify-center gap-2">
-              <LoadingSpinner size="sm" />
-              <span>Signing in...</span>
-            </div>
+            /* <LoadingSpinner size="sm" /> */
+            <span>Signing in...</span>
           ) : (
             "Sign In"
           )}

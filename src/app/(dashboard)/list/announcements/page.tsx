@@ -222,9 +222,9 @@ const AnnouncementListPage = async () => {
             </Badge>
           </div>
 
-          <Card className="border-0 shadow-md bg-transparent rounded-xl">
-            <CardContent className="p-5 bg-gray-100 dark:bg-card rounded-xl">
-              <div className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-slate-600 p-4">
+          <Card className="border-0 shadow-md bg-white dark:bg-transparent rounded-xl">
+            <CardContent className=" bg-gray-100 dark:bg-transparent rounded-xl p-0">
+              <div className="bg-white dark:bg-card rounded-lg  border border-gray-200 dark:border-slate-900 p-4">
                 <AnnouncementTable
                   data={data}
                   role={role}
