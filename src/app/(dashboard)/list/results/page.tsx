@@ -26,7 +26,7 @@ const PageHeader = ({
 }) => (
   <div className="space-y-6">
     {/* Conditional Header Section - Only show management header for admin */}
-    {role === "admin" || role === "teacher" && (
+    {(role === "admin" || role === "teacher" || role === "kepala_sekolah") && (
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ const PageHeader = ({
     )}
 
     {/* Stats Cards - Only show for admin */}
-    {role === "admin" && (
+    {(role === "admin" || role === "kepala_sekolah") && (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
           <CardContent className="p-6">
@@ -151,7 +151,7 @@ const ResultListPage = async () => {
       students: true,
     },
     where:
-      role === "admin"
+      role === "admin" || role === "kepala_sekolah"
         ? undefined
         : {
             OR: [

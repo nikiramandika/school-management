@@ -31,6 +31,7 @@ const AnnouncementListPage = async () => {
 
   switch (role) {
     case "admin":
+    case "kepala_sekolah":
       break;
     case "teacher":
       query.OR = [
@@ -103,7 +104,7 @@ const AnnouncementListPage = async () => {
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         {/* Conditional Header Section - Only show management header for admin */}
-        {role === "admin" && (
+        {(role === "admin" || role === "kepala_sekolah") && (
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -140,7 +141,7 @@ const AnnouncementListPage = async () => {
         )}
 
         {/* Stats Cards - Only show for admin */}
-        {role === "admin" && (
+        {(role === "admin" || role === "kepala_sekolah") && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">

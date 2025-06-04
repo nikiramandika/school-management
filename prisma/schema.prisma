@@ -61,7 +61,7 @@ model Grade {
 
 model Class {
   id            Int            @id @default(autoincrement())
-  name          String         @unique
+  name          String         
   capacity      Int
   supervisorId  String?
   gradeId       Int

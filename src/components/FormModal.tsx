@@ -40,6 +40,20 @@ const deleteActionMap = {
   announcement: deleteAnnouncement,
 };
 
+const tableNameMap: { [key: string]: string } = {
+  subject: "Mata Pelajaran",
+  class: "Kelas",
+  teacher: "Guru",
+  student: "Siswa",
+  exam: "Ujian",
+  lesson: "Pelajaran",
+  assignment: "Tugas",
+  result: "Hasil",
+  attendance: "Kehadiran",
+  event: "Acara",
+  announcement: "Pengumuman"
+};
+
 // USE LAZY LOADING
 
 // import TeacherForm from "./forms/TeacherForm";
@@ -178,38 +192,61 @@ const FormModal = ({
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
   const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
 
   const handleDelete = useCallback(async () => {
     if (!id) return;
+    if (!confirmDelete) {
+      toast.error("Silakan konfirmasi bahwa Anda memahami konsekuensi dari penghapusan ini");
+      return;
+    }
     
     try {
       const action = deleteActionMap[table];
       const formData = new FormData();
       formData.append("id", id.toString());
+      formData.append("confirmDelete", "true");
       
       const result = await action({ success: false, error: false, message: "" }, formData);
 
       if (result.success) {
-        toast.success(`${table} has been deleted!`);
+        toast.success(`${tableNameMap[table] || table} berhasil dihapus!`);
         setOpen(false);
         router.refresh();
       } else {
-        toast.error(result.message || `Failed to delete ${table}. Please try again.`);
+        toast.error(result.message || `Gagal menghapus ${tableNameMap[table] || table}. Silakan coba lagi.`);
       }
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error("Terjadi kesalahan yang tidak terduga. Silakan coba lagi.");
     }
-  }, [table, id, router]);
+  }, [table, id, router, confirmDelete]);
 
   const Form = () => {
     return type === "delete" && id ? (
       <form onSubmit={(e) => { e.preventDefault(); handleDelete(); }} className="flex flex-col gap-4">
         <span className="text-center font-medium">
-        Semua data akan hilang. Apakah Anda yakin ingin menghapus ini {table}?
+          Semua data akan hilang. Apakah Anda yakin ingin menghapus {tableNameMap[table] || table} ini?
         </span>
-        <Button variant="destructive" type="submit" className="w-max self-center text-white">
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="confirmDelete"
+            checked={confirmDelete}
+            onChange={(e) => setConfirmDelete(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300"
+          />
+          <label htmlFor="confirmDelete" className="text-sm text-gray-600">
+            Saya mengerti bahwa menghapus {tableNameMap[table] || table} ini akan menghapus semua data terkait dan tidak dapat dibatalkan
+          </label>
+        </div>
+        <Button 
+          variant="destructive" 
+          type="submit" 
+          className="w-max self-center text-white"
+          disabled={!confirmDelete}
+        >
           Hapus
         </Button>
       </form>
@@ -225,10 +262,10 @@ const FormModal = ({
           return forms[table](setOpen, type, data, relatedData);
         })()
       ) : (
-        "Form not found!"
+        "Form tidak ditemukan!"
       )
     ) : (
-      "Form not found!"
+      "Form tidak ditemukan!"
     );
   };
 
@@ -261,7 +298,7 @@ const FormModal = ({
         {getIcon()}
       </Button>
       {open && (
-        <div className="fixed inset-0 bg-white/75 dark:bg-black/70 backdrop-blur-xs z-50 flex items-start justify-center pt-16  ">
+        <div className="fixed inset-0 bg-white/75 dark:bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center   ">
           <div className="soft-light bg-softlight dark:bg-softdark  p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <Button

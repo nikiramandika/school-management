@@ -43,11 +43,12 @@ const LoginPage = () => {
     setError("");
     setIsButtonLoading(true);
 
-    // Cek apakah input adalah admin
+    // Cek apakah input adalah admin atau kepala sekolah
     const isAdmin = identifier.toLowerCase() === "admin";
-    
-    // Jika bukan admin, cek format NIP/NISN
-    if (!isAdmin) {
+    const isKepalaSekolah = identifier.toLowerCase() === "kepalasekolah";
+
+    // Jika bukan admin atau kepala sekolah, cek format NIP/NISN
+    if (!isAdmin && !isKepalaSekolah) {
       const isNIP = /^\d{18}$/.test(identifier); // NIP biasanya 18 digit
       const isNISN = /^\d{10}$/.test(identifier); // NISN biasanya 10 digit
 
@@ -61,6 +62,8 @@ const LoginPage = () => {
     let username;
     if (isAdmin) {
       username = "admin";
+    } else if (isKepalaSekolah) {
+      username = "kepalasekolah";
     } else if (/^\d{18}$/.test(identifier)) {
       username = `g-${identifier}`;
     } else {
@@ -83,7 +86,7 @@ const LoginPage = () => {
   // Polling user session and redirect
   const waitForUserAndRedirect = async () => {
     for (let i = 0; i < 20; i++) {
-      await new Promise(res => setTimeout(res, 250));
+      await new Promise((res) => setTimeout(res, 250));
       // get latest user from useUser
       if (isSignedIn && user?.publicMetadata?.role) {
         router.push(`/${user.publicMetadata.role}`);

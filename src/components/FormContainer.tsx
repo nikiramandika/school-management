@@ -19,8 +19,12 @@ export type FormContainerProps = {
   data?: any;
   id?: number | string;
   relatedData?: {
-    teachers?: { id: string; name: string; surname: string; }[];
-    grades?: { id: number; level: number; }[];
+    subjects?: { id: number; name: string }[];
+    classes?: { id: number; name: string }[];
+    teachers?: { id: string; name: string; surname: string }[];
+    lessons?: { id: number; name: string; subject: { id: number; name: string }; class: { id: number; name: string }; teacher: { id: string; name: string; surname: string } }[];
+    student?: { id: string; name: string; surname: string };
+    assessment?: { id: number; title: string };
     [key: string]: any;
   };
 };

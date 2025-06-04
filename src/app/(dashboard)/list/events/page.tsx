@@ -38,6 +38,7 @@ const EventListPage = async () => {
 
   switch (role) {
     case "admin":
+    case "kepala_sekolah":
     case "teacher":
     case "student":
       // All roles can see all events
@@ -84,8 +85,8 @@ const EventListPage = async () => {
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
-        {/* Conditional Header Section - Only show management header for admin */}
-        {role === "admin" && (
+        {/* Conditional Header Section - Only show management header for admin and kepala_sekolah */}
+        {(role === "admin" || role === "kepala_sekolah") && (
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -115,8 +116,8 @@ const EventListPage = async () => {
           </div>
         )}
 
-        {/* Stats Cards - Only show for admin */}
-        {role === "admin" && (
+        {/* Stats Cards - Show for admin and kepala_sekolah */}
+        {(role === "admin" || role === "kepala_sekolah") && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card className="bg-gradient-to-r bg-teal-500/90 text-white border-0 shadow-lg">
               <CardContent className="p-6">

@@ -32,6 +32,8 @@ const menuItems = [
           switch (role) {
             case "admin":
               return "/admin";
+            case "kepala_sekolah":
+              return "/kepala_sekolah";
             case "teacher":
               return "/teacher";
             case "student":
@@ -42,49 +44,49 @@ const menuItems = [
               return "/";
           }
         },
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiAcademicCap,
         label: "Guru",
         href: "/list/teachers",
-        visible: ["admin"],
+        visible: ["admin", "kepala_sekolah"],
       },
       {
         icon: HiUserGroup,
         label: "Siswa",
         href: "/list/students",
-        visible: ["admin"],
+        visible: ["admin", "kepala_sekolah"],
       },
       {
         icon: HiBookOpen,
         label: "Mata Pelajaran",
         href: "/list/subjects",
-        visible: ["admin"],
+        visible: ["admin", "kepala_sekolah"],
       },
       {
         icon: HiCollection,
         label: "Kelas",
         href: "/list/classes",
-        visible: ["admin", "teacher"],
+        visible: ["admin", "kepala_sekolah", "teacher"],
       },
       {
         icon: HiDocumentText,
         label: "Pelajaran",
         href: "/list/lessons",
-        visible: ["admin", "teacher"],
+        visible: ["admin", "kepala_sekolah", "teacher"],
       },
       {
         icon: HiClipboardList,
         label: "Ujian",
         href: "/list/exams",
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiDocumentReport,
         label: "Tugas",
         href: "/list/assignments",
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiClipboardCheck,
@@ -97,7 +99,7 @@ const menuItems = [
               return "/list/results";
           }
         },
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiIdentification,
@@ -110,19 +112,19 @@ const menuItems = [
               return "/list/attendance";
           }
         },
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiCalendar,
         label: "Acara",
         href: "/list/events",
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
       {
         icon: HiSpeakerphone,
         label: "Pengumuman",
         href: "/list/announcements",
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
       },
     ],
   },
