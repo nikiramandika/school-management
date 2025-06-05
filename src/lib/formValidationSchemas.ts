@@ -73,7 +73,7 @@ export const studentSchema = z.object({
   bloodType: z.string().min(1, { message: "Golongan darah wajib diisi!" }),
   birthday: z.coerce.date({ message: "Tanggal lahir wajib diisi!" }),
   sex: z.enum(["MALE", "FEMALE"], { message: "Jenis kelamin wajib diisi!" }),
-  gradeId: z.coerce.number().min(1, { message: "Tingkat wajib diisi!" }),
+  gradeId: z.coerce.number().optional(),
   classId: z.coerce.number().min(1, { message: "Kelas wajib diisi!" }),
 });
 

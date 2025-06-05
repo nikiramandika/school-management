@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
-import { Class, Subject, Student } from "@prisma/client";
+import { Class, Subject, Student, Grade } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { HiAcademicCap, HiCollection } from "react-icons/hi";
 
-type StudentList = Student & { class: Class };
+type StudentList = Student & { class: Class & { grade: Grade } };
 
 interface StudentTableProps {
   data: StudentList[];
@@ -125,7 +125,9 @@ export function StudentTable({ data, role }: StudentTableProps) {
               className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
             >
               <HiCollection className="mr-1 h-3 w-3" />
-              {row.original.class.name}
+               {row.original.class.grade.level === 1 ? 'X' : 
+                 row.original.class.grade.level === 2 ? 'XI' : 
+                 row.original.class.grade.level === 3 ? 'XII' : ''} {row.original.class.name}
             </Badge>
           </div>
         </div>

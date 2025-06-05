@@ -649,13 +649,24 @@ export const createStudent = async (
       // Continue if no user found
     }
 
-    // Check class capacity
+    // Check class capacity and get gradeId
     const classItem = await prisma.class.findUnique({
       where: { id: data.classId },
-      include: { _count: { select: { students: true } } },
+      include: { 
+        _count: { select: { students: true } },
+        grade: true
+      },
     });
 
-    if (classItem && classItem.capacity === classItem._count.students) {
+    if (!classItem) {
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kelas tidak ditemukan!" 
+      };
+    }
+
+    if (classItem.capacity === classItem._count.students) {
       return { 
         success: false, 
         error: true, 
@@ -688,7 +699,7 @@ export const createStudent = async (
           bloodType: data.bloodType,
           sex: data.sex,
           birthday: data.birthday,
-          gradeId: data.gradeId,
+          gradeId: classItem.grade.id,
           classId: data.classId,
         },
       });
@@ -752,6 +763,20 @@ export const updateStudent = async (
       // Continue if no user found
     }
 
+    // Get gradeId from class
+    const classItem = await prisma.class.findUnique({
+      where: { id: data.classId },
+      include: { grade: true }
+    });
+
+    if (!classItem) {
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kelas tidak ditemukan!" 
+      };
+    }
+
     // Update Clerk user
     const user = await clerk.users.updateUser(data.id, {
       username,
@@ -777,7 +802,7 @@ export const updateStudent = async (
         bloodType: data.bloodType,
         sex: data.sex,
         birthday: data.birthday,
-        gradeId: data.gradeId,
+        gradeId: classItem.grade.id,
         classId: data.classId,
       },
     });

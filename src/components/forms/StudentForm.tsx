@@ -40,7 +40,6 @@ const StudentForm = ({
       bloodType: data?.bloodType,
       sex: data?.sex,
       birthday: data?.birthday,
-      gradeId: data?.gradeId,
       classId: data?.classId,
     },
   });
@@ -59,7 +58,6 @@ const StudentForm = ({
         bloodType: data.bloodType,
         sex: data.sex,
         birthday: data.birthday,
-        gradeId: data.gradeId,
         classId: data.classId,
       });
     }
@@ -105,7 +103,7 @@ const StudentForm = ({
     [type, setOpen, router, setError]
   );
 
-  const { grades, classes } = relatedData;
+  const { classes } = relatedData;
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
@@ -214,26 +212,6 @@ const StudentForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Tingkat</label>
-          <select
-            className="dark:bg-gray-950 dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("gradeId")}
-            defaultValue={data?.gradeId}
-          >
-            <option value="">Pilih Tingkat</option>
-            {grades.map((grade: { id: number; level: number }) => (
-              <option value={grade.id} key={grade.id}>
-                {grade.level}
-              </option>
-            ))}
-          </select>
-          {errors.gradeId?.message && (
-            <p className="text-xs text-rose-400">
-              {errors.gradeId.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-gray-500">Kelas</label>
           <select
             className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -241,9 +219,11 @@ const StudentForm = ({
             defaultValue={data?.classId}
           >
             <option value="">Pilih Kelas</option>
-            {classes.map((classItem: { id: number; name: string }) => (
+            {classes.map((classItem: { id: number; name: string; grade: { level: number } }) => (
               <option value={classItem.id} key={classItem.id}>
-                {classItem.name}
+                {classItem.grade.level === 1 ? 'X' : 
+                 classItem.grade.level === 2 ? 'XI' : 
+                 classItem.grade.level === 3 ? 'XII' : ''} {classItem.name}
               </option>
             ))}
           </select>

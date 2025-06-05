@@ -23,7 +23,11 @@ const StudentListPage = async () => {
 
   const data = await prisma.student.findMany({
     include: {
-      class: true,
+      class: {
+        include: {
+          grade: true,
+        },
+      },
     },
   });
 
