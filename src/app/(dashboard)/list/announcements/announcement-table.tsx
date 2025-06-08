@@ -11,7 +11,7 @@ import {
   Calendar,
   Edit,
 } from "lucide-react";
-import { HiUserGroup } from "react-icons/hi";
+import { HiSpeakerphone, HiUserGroup } from "react-icons/hi";
 import FormModal from "@/components/FormModal";
 import {
   Tooltip,
@@ -66,7 +66,7 @@ export const AnnouncementTable = ({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
           >
-            <Megaphone className="mr-2 h-4 w-4 text-blue-600" />
+            <HiSpeakerphone className="mr-2 h-4 w-4 text-blue-600" />
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -75,7 +75,7 @@ export const AnnouncementTable = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <Megaphone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <HiSpeakerphone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -146,7 +146,9 @@ export const AnnouncementTable = ({
               }
             >
               <HiUserGroup className="mr-1 h-3 w-3" />
-              {className ? formatGradeLevel(row.original.gradeLevel) + " " + className : "Semua Kelas"} 
+              {className
+                ? formatGradeLevel(row.original.gradeLevel) + " " + className
+                : "Semua Kelas"}
             </Badge>
           </div>
         );

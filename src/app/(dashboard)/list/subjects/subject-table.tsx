@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { HiAcademicCap, HiCollection, HiDocumentText } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiCollection, HiDocumentText } from "react-icons/hi";
 
 type SubjectList = Subject & {
   teachers: Teacher[];
@@ -65,7 +65,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
+            <HiBookOpen className="mr-2 h-4 w-4 text-cyan-600" />
             Nama Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -74,7 +74,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
-            <BookOpen className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+            <HiBookOpen className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -220,7 +220,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                       variant="outline"
                       className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 w-fit cursor-pointer hover:bg-teal-50 dark:hover:bg-teal-900/20"
                     >
-                      <BookOpen className="mr-1 h-3 w-3" />+{remainingLessons}{" "}
+                      <HiBookOpen className="mr-1 h-3 w-3" />+{remainingLessons}{" "}
                       Lebih banyak pelajaran
                     </Badge>
                   </DialogTrigger>

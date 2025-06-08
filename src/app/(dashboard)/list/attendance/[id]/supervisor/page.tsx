@@ -114,7 +114,8 @@ const PageHeader = ({
         </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Absensi {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
+            Absensi {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"}{" "}
+            {className}
           </h1>
         </div>
       </div>
@@ -217,7 +218,7 @@ export default async function SupervisorAttendancePage({
                         <AccordionTrigger className="hover:no-underline">
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                              <BookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                              <HiBookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div className="text-left">
                               <span className="font-semibold text-gray-900 dark:text-white">
@@ -361,7 +362,9 @@ export default async function SupervisorAttendancePage({
                                               if (att) {
                                                 attendanceStatus = att.status;
                                               }
-                                              if (attendanceStatus === "PRESENT")
+                                              if (
+                                                attendanceStatus === "PRESENT"
+                                              )
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -370,7 +373,9 @@ export default async function SupervisorAttendancePage({
                                                     </span>
                                                   </div>
                                                 );
-                                              else if (attendanceStatus === "SICK")
+                                              else if (
+                                                attendanceStatus === "SICK"
+                                              )
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
@@ -379,7 +384,9 @@ export default async function SupervisorAttendancePage({
                                                     </span>
                                                   </div>
                                                 );
-                                              else if (attendanceStatus === "PERMITTED")
+                                              else if (
+                                                attendanceStatus === "PERMITTED"
+                                              )
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -388,7 +395,9 @@ export default async function SupervisorAttendancePage({
                                                     </span>
                                                   </div>
                                                 );
-                                              else if (attendanceStatus === "ABSENT")
+                                              else if (
+                                                attendanceStatus === "ABSENT"
+                                              )
                                                 status = (
                                                   <div className="flex items-center justify-center">
                                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
@@ -434,7 +443,7 @@ export default async function SupervisorAttendancePage({
                     <CardContent className="p-12 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                          <BookOpen className="h-8 w-8 text-gray-400" />
+                          <HiBookOpen className="h-8 w-8 text-gray-400" />
                         </div>
                         <div className="space-y-2">
                           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

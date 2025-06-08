@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Megaphone, Users, BookOpen, Calendar, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { HiUserGroup } from "react-icons/hi";
+import { HiBookOpen, HiSpeakerphone, HiUserGroup } from "react-icons/hi";
 
 const AnnouncementListPage = async () => {
   const { userId, sessionClaims } = await auth();
@@ -23,21 +23,26 @@ const AnnouncementListPage = async () => {
 
   // Fetch all classes for the form
   const classes = await prisma.class.findMany({
-    select: { 
-      id: true, 
+    select: {
+      id: true,
       name: true,
       grade: {
         select: {
-          level: true
-        }
-      }
+          level: true,
+        },
+      },
     },
   });
 
   // Fetch teacher's classes if user is a teacher
-  let teacherClasses: { id: number; name: string; grade: { level: number } }[] = [];
-  let homeroomClass: { id: number; name: string; grade: { level: number } } | null = null;
-  
+  let teacherClasses: { id: number; name: string; grade: { level: number } }[] =
+    [];
+  let homeroomClass: {
+    id: number;
+    name: string;
+    grade: { level: number };
+  } | null = null;
+
   if (role === "teacher") {
     // Get classes where teacher teaches
     teacherClasses = await prisma.class.findMany({
@@ -48,14 +53,14 @@ const AnnouncementListPage = async () => {
           },
         },
       },
-      select: { 
-        id: true, 
-        name: true, 
-        grade: { 
-          select: { 
-            level: true 
-          } 
-        } 
+      select: {
+        id: true,
+        name: true,
+        grade: {
+          select: {
+            level: true,
+          },
+        },
       },
     });
 
@@ -64,14 +69,14 @@ const AnnouncementListPage = async () => {
       where: {
         supervisorId: currentUserId!,
       },
-      select: { 
-        id: true, 
-        name: true, 
-        grade: { 
-          select: { 
-            level: true 
-          } 
-        } 
+      select: {
+        id: true,
+        name: true,
+        grade: {
+          select: {
+            level: true,
+          },
+        },
       },
     });
 
@@ -132,9 +137,9 @@ const AnnouncementListPage = async () => {
           name: true,
           grade: {
             select: {
-              level: true
-            }
-          }
+              level: true,
+            },
+          },
         },
       },
     },
@@ -174,7 +179,7 @@ const AnnouncementListPage = async () => {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-cyan-500  rounded-lg">
-                  <Megaphone className="h-6 w-6 text-white" />
+                  <HiSpeakerphone className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -217,7 +222,7 @@ const AnnouncementListPage = async () => {
                     <p className="text-3xl font-bold">{totalAnnouncements}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <Megaphone className="h-6 w-6" />
+                    <HiSpeakerphone className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -249,7 +254,7 @@ const AnnouncementListPage = async () => {
                     <p className="text-3xl font-bold">{totalClass}</p>
                   </div>
                   <div className="p-3 bg-white/20 rounded-full">
-                    <BookOpen className="h-6 w-6" />
+                    <HiBookOpen className="h-6 w-6" />
                   </div>
                 </div>
               </CardContent>
@@ -278,7 +283,7 @@ const AnnouncementListPage = async () => {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-cyan-500  rounded-lg">
-                <Megaphone className="h-5 w-5 text-white" />
+                <HiSpeakerphone className="h-5 w-5 text-white" />
               </div>
               <div className="text-3xl font-bold text-gray-900 dark:text-white">
                 Daftar Pengumuman

@@ -169,12 +169,14 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
       teacherName: `${result.teacherName} ${result.teacherSurname}`,
       score: result.score,
       className: result.className,
-      date: new Date(result.startTime).toLocaleDateString('id-ID'),
+      date: new Date(result.startTime).toLocaleDateString("id-ID"),
     };
 
-    const blob = new Blob([JSON.stringify(resultData, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(resultData, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `hasil_${result.title}_${result.studentName}_${result.studentSurname}.json`;
     document.body.appendChild(a);
@@ -184,20 +186,22 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
   };
 
   const downloadAllResults = () => {
-    const allResults = filteredData.map(result => ({
+    const allResults = filteredData.map((result) => ({
       title: result.title,
       studentName: `${result.studentName} ${result.studentSurname}`,
       teacherName: `${result.teacherName} ${result.teacherSurname}`,
       score: result.score,
       className: result.className,
-      date: new Date(result.startTime).toLocaleDateString('id-ID'),
+      date: new Date(result.startTime).toLocaleDateString("id-ID"),
     }));
 
-    const blob = new Blob([JSON.stringify(allResults, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(allResults, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `semua_hasil_${new Date().toLocaleDateString('id-ID')}.json`;
+    a.download = `semua_hasil_${new Date().toLocaleDateString("id-ID")}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -412,7 +416,7 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-cyan-100 dark:bg-purple-900/30 rounded-lg">
-                          <BookOpen className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                          <HiBookOpen className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="font-semibold text-gray-900 dark:text-white truncate">

@@ -111,7 +111,7 @@ interface AttendanceHistory {
   lessonName: string;
   teacherName: string;
   className: string;
-  
+
   totalStudents: number;
   presentStudents: number;
   absentStudents: number;
@@ -484,7 +484,9 @@ export function AttendanceTable({
                                     setSelectedDate(historyItem.date);
                                     setIsEditing(true);
                                     setTimeout(() => {
-                                      mainTableRef.current?.scrollIntoView({ behavior: "smooth" });
+                                      mainTableRef.current?.scrollIntoView({
+                                        behavior: "smooth",
+                                      });
                                     }, 100);
                                   }}
                                   className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
@@ -580,12 +582,15 @@ export function AttendanceTable({
       )}
 
       {/* Header Controls */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800" ref={mainTableRef}>
+      <Card
+        className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800"
+        ref={mainTableRef}
+      >
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <HiBookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -597,7 +602,7 @@ export function AttendanceTable({
 
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-blue-600" />
+              <HiBookOpen className="h-4 w-4 text-blue-600" />
               <Select
                 value={selectedLesson}
                 onValueChange={setSelectedLesson}
@@ -683,7 +688,7 @@ export function AttendanceTable({
                     variant="outline"
                     className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300"
                   >
-                    <BookOpen className="mr-1 h-3 w-3" />
+                    <HiBookOpen className="mr-1 h-3 w-3" />
                     {selectedLessonDetails.name}
                   </Badge>
                 </div>
@@ -693,7 +698,12 @@ export function AttendanceTable({
                     className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
                   >
                     <HiUserGroup className="mr-1 h-3 w-3" />
-                    {selectedLessonDetails.class.grade?.level === 1 ? "X" : selectedLessonDetails.class.grade?.level === 2 ? "XI" : "XII"} {selectedLessonDetails.class.name}
+                    {selectedLessonDetails.class.grade?.level === 1
+                      ? "X"
+                      : selectedLessonDetails.class.grade?.level === 2
+                      ? "XI"
+                      : "XII"}{" "}
+                    {selectedLessonDetails.class.name}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -947,7 +957,7 @@ export function AttendanceTable({
           <div className="text-center py-12">
             <div className="flex flex-col items-center gap-4 text-muted-foreground">
               <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                <BookOpen className="h-8 w-8 text-gray-400" />
+                <HiBookOpen className="h-8 w-8 text-gray-400" />
               </div>
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-900 dark:text-white">

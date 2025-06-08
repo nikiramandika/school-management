@@ -112,7 +112,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
+            <HiBookOpen className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -126,7 +126,7 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
               variant="outline"
               className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs"
             >
-              <BookOpen className="mr-1 h-3 w-3" />
+              <HiBookOpen className="mr-1 h-3 w-3" />
               {subject.name}
             </Badge>
           ))}

@@ -72,7 +72,12 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
             </div>
             <div>
               <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                {classItem.grade?.level === 1 ? "X" : classItem.grade?.level === 2 ? "XI" : "XII"} {classItem.name}
+                {classItem.grade?.level === 1
+                  ? "X"
+                  : classItem.grade?.level === 2
+                  ? "XI"
+                  : "XII"}{" "}
+                {classItem.name}
               </CardTitle>
               {isSupervisor && (
                 <Badge
@@ -278,7 +283,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
             <CardContent className="p-8 text-center">
               <div className="flex flex-col items-center gap-3">
                 <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-full">
-                  <BookOpen className="h-6 w-6 text-gray-400" />
+                  <HiBookOpen className="h-6 w-6 text-gray-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">

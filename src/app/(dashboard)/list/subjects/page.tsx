@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, GraduationCap, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { HiAcademicCap, HiCollection } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiCollection } from "react-icons/hi";
 
 const SubjectListPage = async () => {
   const { sessionClaims } = await auth();
@@ -58,7 +58,7 @@ const SubjectListPage = async () => {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-cyan-500 rounded-lg">
-                <BookOpen className="h-6 w-6 text-white" />
+                <HiBookOpen className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -102,7 +102,7 @@ const SubjectListPage = async () => {
                   <p className="text-3xl font-bold">{totalSubjects}</p>
                 </div>
                 <div className="p-3 bg-white/20 rounded-full">
-                  <BookOpen className="h-6 w-6" />
+                  <HiBookOpen className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -145,7 +145,7 @@ const SubjectListPage = async () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-500 rounded-lg">
-              <BookOpen className="h-5 w-5 text-white" />
+              <HiBookOpen className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Semua Mata Pelajaran

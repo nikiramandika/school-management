@@ -24,7 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { HiAcademicCap, HiCollection, HiUserGroup } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiCollection, HiDocumentReport, HiUserGroup } from "react-icons/hi";
 
 type AssignmentList = Assignment & {
   title: string;
@@ -68,7 +68,7 @@ export function AssignmentTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
           >
-            <FileText className="mr-2 h-4 w-4 text-blue-600" />
+            <HiDocumentReport className="mr-2 h-4 w-4 text-blue-600" />
             Judul
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -77,7 +77,7 @@ export function AssignmentTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <HiDocumentReport className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -96,7 +96,7 @@ export function AssignmentTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden md:flex hover:bg-teal-50 dark:hover:bg-teal-900/20 font-semibold"
           >
-            <BookOpen className="mr-2 h-4 w-4 text-teal-600" />
+            <HiBookOpen className="mr-2 h-4 w-4 text-teal-600" />
             Mata Pelajaran
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -108,7 +108,7 @@ export function AssignmentTable({
             variant="outline"
             className="border-green-200 text-teal-700 dark:border-green-700 dark:text-teal-300"
           >
-            <BookOpen className="mr-1 h-3 w-3" />
+            <HiBookOpen className="mr-1 h-3 w-3" />
             {row.original.lesson.subject.name}
           </Badge>
         </div>
