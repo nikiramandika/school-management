@@ -143,18 +143,18 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                         Guru untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
-                    <ScrollArea className="h-[300px] pr-4">
-                      <div className="space-y-2">
+                    <ScrollArea className="">
+                      <div className="pt-4 space-y-2">
                         {teachers.map((teacher) => (
                           <div
                             key={teacher.id}
-                            className="flex items-center justify-between rounded-lg border p-3 hover:bg-secondary/50 transition-colors"
+                            className="flex items-center justify-between rounded-lg border p-3 hover:bg-secondary/50 transition-colors w-full"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="p-2 bg-cyan-100 dark:bg-orange-900/30 rounded-lg">
+                              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                                 <HiAcademicCap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                               </div>
-                              <div className="font-medium">
+                              <div className="font-medium text-sm">
                                 {teacher.name} {teacher.surname}
                               </div>
                             </div>
@@ -231,7 +231,7 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
                         Pelajaran untuk {row.original.name}
                       </DialogTitle>
                     </DialogHeader>
-                    <ScrollArea className="h-[300px] pr-4">
+                    <ScrollArea className="">
                       <div className="space-y-2">
                         {lessons.map((lesson) => (
                           <div

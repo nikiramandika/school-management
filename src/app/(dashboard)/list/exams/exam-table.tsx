@@ -162,16 +162,13 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
         <div className="hidden lg:flex items-center gap-3">
           <div className="hidden md:flex justify-center w-full">
             <div className="flex flex-col items-center">
-              <span className="font-medium text-gray-900 dark:text-white text-sm text-center">
-                {row.original.lesson.teacher.name}{" "}
-                {row.original.lesson.teacher.surname}
-              </span>
               <Badge
                 variant="outline"
                 className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
               >
                 <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
-                Pengajar
+                {row.original.lesson.teacher.name}{" "}
+                {row.original.lesson.teacher.surname}
               </Badge>
             </div>
           </div>

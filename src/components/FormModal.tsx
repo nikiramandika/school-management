@@ -19,6 +19,7 @@ import {
   SetStateAction,
   useCallback,
   useState,
+  useEffect,
 } from "react";
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
@@ -52,14 +53,10 @@ const tableNameMap: { [key: string]: string } = {
   result: "Hasil",
   attendance: "Kehadiran",
   event: "Acara",
-  announcement: "Pengumuman"
+  announcement: "Pengumuman",
 };
 
 // USE LAZY LOADING
-
-// import TeacherForm from "./forms/TeacherForm";
-// import StudentForm from "./forms/StudentForm";
-
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
 });
@@ -90,9 +87,6 @@ const ResultForm = dynamic(() => import("./forms/ResultForm"), {
 const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
   loading: () => <h1>Loading...</h1>,
 });
-
-
-// TODO: OTHER FORMS
 
 const forms: {
   [key: string]: (
@@ -193,23 +187,35 @@ const FormModal = ({
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
   const [open, setOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
   const { user } = useUser();
   const userId = user?.id;
   const userRole = user?.publicMetadata?.role;
-  const username = typeof user?.username === "string"
-    ? user.username
-    : typeof user?.emailAddresses?.[0]?.emailAddress === "string"
+  const username =
+    typeof user?.username === "string"
+      ? user.username
+      : typeof user?.emailAddresses?.[0]?.emailAddress === "string"
       ? user.emailAddresses[0].emailAddress
       : typeof user?.id === "string"
-        ? user.id
-        : "";
+      ? user.id
+      : "";
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setOpen(false);
+      setIsClosing(false);
+    }, 300); // Match animation duration
+  };
 
   const handleDelete = useCallback(async () => {
     if (!id) return;
     if (!confirmDelete) {
-      toast.error("Silakan konfirmasi bahwa Anda memahami konsekuensi dari penghapusan ini");
+      toast.error(
+        "Silakan konfirmasi bahwa Anda memahami konsekuensi dari penghapusan ini"
+      );
       return;
     }
     try {
@@ -217,15 +223,26 @@ const FormModal = ({
       const formData = new FormData();
       formData.append("id", id.toString());
       formData.append("confirmDelete", "true");
-      formData.append("userId", ((userRole === "admin" ? username : userId) ?? "").toString());
+      formData.append(
+        "userId",
+        ((userRole === "admin" ? username : userId) ?? "").toString()
+      );
       formData.append("userRole", (userRole ?? "").toString());
-      const result = await action({ success: false, error: false, message: "" }, formData);
+      const result = await action(
+        { success: false, error: false, message: "" },
+        formData
+      );
       if (result.success) {
         toast.success(`${tableNameMap[table] || table} berhasil dihapus!`);
-        setOpen(false);
+        handleClose();
         router.refresh();
       } else {
-        toast.error(result.message || `Gagal menghapus ${tableNameMap[table] || table}. Silakan coba lagi.`);
+        toast.error(
+          result.message ||
+            `Gagal menghapus ${
+              tableNameMap[table] || table
+            }. Silakan coba lagi.`
+        );
       }
     } catch (error) {
       console.error("Delete error:", error);
@@ -235,9 +252,16 @@ const FormModal = ({
 
   const Form = () => {
     return type === "delete" && id ? (
-      <form onSubmit={(e) => { e.preventDefault(); handleDelete(); }} className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleDelete();
+        }}
+        className="flex flex-col gap-4"
+      >
         <span className="text-center font-medium">
-          Semua data akan hilang. Apakah Anda yakin ingin menghapus {tableNameMap[table] || table} ini?
+          Semua data akan hilang. Apakah Anda yakin ingin menghapus{" "}
+          {tableNameMap[table] || table} ini?
         </span>
         <div className="flex items-center gap-2">
           <input
@@ -248,12 +272,13 @@ const FormModal = ({
             className="h-4 w-4 rounded border-gray-300"
           />
           <label htmlFor="confirmDelete" className="text-sm text-gray-600">
-            Saya mengerti bahwa menghapus {tableNameMap[table] || table} ini akan menghapus semua data terkait dan tidak dapat dibatalkan
+            Saya mengerti bahwa menghapus {tableNameMap[table] || table} ini
+            akan menghapus semua data terkait dan tidak dapat dibatalkan
           </label>
         </div>
-        <Button 
-          variant="destructive" 
-          type="submit" 
+        <Button
+          variant="destructive"
+          type="submit"
           className="w-max self-center text-white"
           disabled={!confirmDelete}
         >
@@ -267,7 +292,7 @@ const FormModal = ({
             type,
             data,
             relatedData,
-            table
+            table,
           });
           return forms[table](setOpen, type, data, relatedData);
         })()
@@ -308,14 +333,26 @@ const FormModal = ({
         {getIcon()}
       </Button>
       {open && (
-        <div className="fixed inset-0 bg-white/75 dark:bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center   ">
-          <div className="soft-light bg-softlight dark:bg-softdark  p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+        <div
+          className={`fixed inset-0 bg-black/30 dark:bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center transition-all duration-300 ${
+            isClosing ? "opacity-0" : "opacity-100 animate-in fade-in-0"
+          }`}
+          onClick={handleClose}
+        >
+          <div
+            className={`soft-light bg-white dark:bg-[#282a30] p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] transition-all duration-300 ease-out ${
+              isClosing
+                ? "opacity-0 translate-x-8 -translate-y-8 scale-95"
+                : "opacity-100 translate-x-0 translate-y-0 scale-100 animate-in slide-in-from-top-2 slide-in-from-right-8 fade-in-0"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <Form />
             <Button
               variant="ghost"
               size="icon"
               className="absolute top-2 right-4"
-              onClick={() => setOpen(false)}
+              onClick={handleClose}
             >
               <X className="h-4 w-4" />
             </Button>

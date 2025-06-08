@@ -25,7 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { HiAcademicCap, HiCollection } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiCollection } from "react-icons/hi";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 

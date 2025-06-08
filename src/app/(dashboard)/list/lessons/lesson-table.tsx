@@ -22,7 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { HiAcademicCap, HiBookOpen, HiCollection, HiUserGroup } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiCollection, HiDocumentText, HiUserGroup } from "react-icons/hi";
 
 type LessonList = Lesson & {
   subject: Subject;
@@ -51,9 +51,9 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
+            className="hover:bg-cyan-50 dark:hover:bg-cyan-900/20 font-semibold"
           >
-            <HiBookOpen className="mr-2 h-4 w-4 text-blue-600" />
+            <HiDocumentText className="mr-2 h-4 w-4 text-cyan-600" />
             Nama
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -61,8 +61,8 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
       },
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <HiBookOpen className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+            <HiDocumentText className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -174,9 +174,9 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden lg:flex hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold"
+            className="hidden lg:flex hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
           >
-            <Calendar className="mr-2 h-4 w-4 text-cyan-600" />
+            <Calendar className="mr-2 h-4 w-4 text-blue-600" />
             Hari
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -187,7 +187,7 @@ export function LessonTable({ data, role, relatedData }: LessonTableProps) {
           <div className="hidden lg:flex">
             <Badge
               variant="outline"
-              className="border-indigo-200 text-indigo-700 dark:border-indigo-700 dark:text-indigo-300"
+              className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300"
             >
               <Calendar className="mr-1 h-3 w-3" />
               {row.original.day}
