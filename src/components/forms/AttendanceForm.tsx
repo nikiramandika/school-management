@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useUser } from "@clerk/nextjs";
 
 const AttendanceForm = ({
   type,
@@ -34,6 +35,9 @@ const AttendanceForm = ({
   };
 }) => {
   const router = useRouter();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role as string;
 
   const {
     register,
@@ -60,26 +64,25 @@ const AttendanceForm = ({
           return;
         }
 
+        const submitData = {
+          ...formData,
+          date: new Date(formData.date),
+          userId,
+          userRole,
+        };
+
         let result;
         if (type === "create") {
           result = await createAttendance(
             { success: false, error: false, message: "" },
-            {
-              studentId: formData.studentId,
-              lessonId: formData.lessonId,
-              date: new Date(formData.date),
-              present: formData.present,
-            }
+            submitData
           );
         } else {
           result = await updateAttendance(
             { success: false, error: false, message: "" },
             {
+              ...submitData,
               id: formData.id!,
-              studentId: formData.studentId,
-              lessonId: formData.lessonId,
-              date: new Date(formData.date),
-              present: formData.present,
             }
           );
         }
@@ -100,7 +103,7 @@ const AttendanceForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, userId, userRole]
   );
 
   return (
@@ -171,4 +174,4 @@ const AttendanceForm = ({
   );
 };
 
-export default AttendanceForm; 
+export default AttendanceForm;

@@ -19,6 +19,7 @@ import {
   HiUser,
   HiCog,
   HiLogout,
+  HiClock,
 } from "react-icons/hi";
 import { usePathname } from "next/navigation";
 
@@ -125,6 +126,12 @@ const menuItems = [
         label: "Pengumuman",
         href: "/list/announcements",
         visible: ["admin", "kepala_sekolah", "teacher", "student", "parent"],
+      },
+      {
+        icon: HiClock,
+        label: "Log Aktivitas",
+        href: "/list/activity-logs",
+        visible: ["admin", "kepala_sekolah"],
       },
     ],
   },

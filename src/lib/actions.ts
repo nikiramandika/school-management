@@ -12,6 +12,7 @@ import {
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
+import { logActivity, getActivityDescription } from "./activity-logger";
 
 type CurrentState = {
   success: boolean;
@@ -997,10 +998,12 @@ export const createEvent = async (
     endTime: string;
     classId?: number;
     id?: number;
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
-    await prisma.event.create({
+    const event = await prisma.event.create({
       data: {
         title: data.title,
         description: data.description,
@@ -1009,6 +1012,28 @@ export const createEvent = async (
         classId: data.classId ? Number(data.classId) : null,
       },
     });
+
+    // Logging logic khusus event
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "CREATE",
+        entityType: "Event",
+        entityId: event.id.toString(),
+        description: getActivityDescription("CREATE", "Event", data.title),
+        metadata: { title: data.title, classId: data.classId },
+      });
+    }
 
     revalidatePath("/list/events");
     return { success: true, error: false, message: "Acara berhasil dibuat" };
@@ -1031,6 +1056,8 @@ export const updateEvent = async (
     startTime: string;
     endTime: string;
     classId?: number;
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
@@ -1042,7 +1069,7 @@ export const updateEvent = async (
       };
     }
 
-    await prisma.event.update({
+    const event = await prisma.event.update({
       where: { id: data.id },
       data: {
         title: data.title,
@@ -1052,6 +1079,28 @@ export const updateEvent = async (
         classId: data.classId ? Number(data.classId) : null,
       },
     });
+
+    // Logging logic khusus event
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "UPDATE",
+        entityType: "Event",
+        entityId: event.id.toString(),
+        description: getActivityDescription("UPDATE", "Event", data.title),
+        metadata: { title: data.title, classId: data.classId },
+      });
+    }
 
     revalidatePath("/list/events");
     return { success: true, error: false, message: "Acara berhasil diperbarui" };
@@ -1071,13 +1120,37 @@ export const deleteEvent = async (
 ): Promise<CurrentState> => {
   const id = data.get("id") as string;
   const confirmDelete = data.get("confirmDelete") === "true";
+  const userId = data.get("userId") as string;
+  const userRole = data.get("userRole") as string;
   
   try {
-    await prisma.event.delete({
+    const deleted = await prisma.event.delete({
       where: {
         id: parseInt(id),
       },
     });
+
+    // Logging logic khusus event
+    if (userId && userRole) {
+      let logUserId = userId;
+      if (userRole === "admin") {
+        logUserId = "admin";
+      } else if (userRole === "teacher" && userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole,
+        action: "DELETE",
+        entityType: "Event",
+        entityId: id,
+        description: getActivityDescription("DELETE", "Event", deleted.title),
+        metadata: { title: deleted.title, classId: deleted.classId },
+      });
+    }
 
     revalidatePath("/list/events");
     return { success: true, error: false, message: "Acara berhasil dihapus" };
@@ -1356,6 +1429,8 @@ export async function createResult(
     examId?: number;
     assignmentId?: number;
     score: number;
+    userId?: string;
+    userRole?: string;
   }
 ) {
   "use server";
@@ -1408,7 +1483,45 @@ export async function createResult(
         examId: formData.examId,
         assignmentId: formData.assignmentId,
       },
+      include: {
+        student: true,
+        exam: true,
+        assignment: true,
+      },
     });
+
+    // Logging logic khusus result
+    if (formData.userId && formData.userRole) {
+      let logUserId = formData.userId;
+      if (formData.userRole === "admin") {
+        logUserId = "admin";
+      } else if (formData.userRole === "teacher" && formData.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: formData.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const entityType = formData.examId ? "Exam Result" : "Assignment Result";
+      const entityTitle = formData.examId ? result.exam?.title : result.assignment?.title;
+      const studentName = `${result.student.name} ${result.student.surname}`;
+
+      await logActivity({
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "CREATE",
+        entityType,
+        entityId: result.id.toString(),
+        description: getActivityDescription("CREATE", entityType, `${studentName} - ${entityTitle} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          assessmentId: formData.examId || formData.assignmentId,
+          assessmentTitle: entityTitle,
+        },
+      });
+    }
 
     console.log('Created result:', result);
 
@@ -1439,12 +1552,16 @@ export async function updateResult(
     examId?: number;
     assignmentId?: number;
     score: number;
+    userId?: string;
+    userRole?: string;
   }
 ) {
   "use server";
   
   try {
     console.log('Updating result with data:', formData);
+    // Debug: log userId dan userRole
+    console.log('userId:', formData.userId, 'userRole:', formData.userRole);
 
     // Validate required fields
     if (!formData.id || !formData.studentId || (!formData.examId && !formData.assignmentId) || formData.score === undefined) {
@@ -1474,7 +1591,64 @@ export async function updateResult(
       data: {
         score: score,
       },
+      include: {
+        student: true,
+        exam: true,
+        assignment: true,
+      },
     });
+
+    // Logging logic khusus result
+    if (formData.userId && formData.userRole) {
+      let logUserId = formData.userId;
+      if (formData.userRole === "admin") {
+        logUserId = "admin";
+      } else if (formData.userRole === "teacher" && formData.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: formData.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const entityType = formData.examId ? "Exam Result" : "Assignment Result";
+      const entityTitle = formData.examId ? result.exam?.title : result.assignment?.title;
+      const studentName = `${result.student.name} ${result.student.surname}`;
+
+      // Debug: sebelum logActivity
+      console.log('About to log activity for result update', {
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "UPDATE",
+        entityType,
+        entityId: result.id.toString(),
+        description: getActivityDescription("UPDATE", entityType, `${studentName} - ${entityTitle} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          assessmentId: formData.examId || formData.assignmentId,
+          assessmentTitle: entityTitle,
+        },
+      });
+
+      await logActivity({
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "UPDATE",
+        entityType,
+        entityId: result.id.toString(),
+        description: getActivityDescription("UPDATE", entityType, `${studentName} - ${entityTitle} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          assessmentId: formData.examId || formData.assignmentId,
+          assessmentTitle: entityTitle,
+        },
+      });
+      // Debug: setelah logActivity
+      console.log('Activity logged for result update');
+    }
 
     console.log('Updated result:', result);
 
@@ -1503,13 +1677,53 @@ export async function deleteResult(
 ): Promise<CurrentState> {
   const id = data.get("id") as string;
   const confirmDelete = data.get("confirmDelete") === "true";
+  const userId = data.get("userId") as string;
+  const userRole = data.get("userRole") as string;
   
   try {
-    await prisma.result.delete({
+    const deleted = await prisma.result.delete({
       where: {
         id: parseInt(id),
       },
+      include: {
+        student: true,
+        exam: true,
+        assignment: true,
+      },
     });
+
+    // Logging logic khusus result
+    if (userId && userRole) {
+      let logUserId = userId;
+      if (userRole === "admin") {
+        logUserId = "admin";
+      } else if (userRole === "teacher" && userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const entityType = deleted.examId ? "Exam Result" : "Assignment Result";
+      const entityTitle = deleted.examId ? deleted.exam?.title : deleted.assignment?.title;
+      const studentName = `${deleted.student.name} ${deleted.student.surname}`;
+
+      await logActivity({
+        userId: logUserId,
+        userRole,
+        action: "DELETE",
+        entityType,
+        entityId: id,
+        description: getActivityDescription("DELETE", entityType, `${studentName} - ${entityTitle} (${deleted.score})`),
+        metadata: { 
+          studentId: deleted.studentId,
+          studentName,
+          score: deleted.score,
+          assessmentId: deleted.examId || deleted.assignmentId,
+          assessmentTitle: entityTitle,
+        },
+      });
+    }
 
     revalidatePath("/list/results");
     return { success: true, error: false, message: "Result deleted successfully" };
@@ -1521,7 +1735,7 @@ export async function deleteResult(
       message: err instanceof Error ? err.message : "Gagal menghapus result" 
     };
   }
-};
+}
 
 export const createAnnouncement = async (
   currentState: CurrentState,
@@ -1531,10 +1745,12 @@ export const createAnnouncement = async (
     date: string;
     classId?: number;
     id?: number;
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
-    await prisma.announcement.create({
+    const announcement = await prisma.announcement.create({
       data: {
         title: data.title,
         description: data.description,
@@ -1542,6 +1758,28 @@ export const createAnnouncement = async (
         classId: data.classId ? Number(data.classId) : null,
       },
     });
+
+    // Logging logic khusus announcement
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "CREATE",
+        entityType: "Announcement",
+        entityId: announcement.id.toString(),
+        description: getActivityDescription("CREATE", "Announcement", data.title),
+        metadata: { title: data.title, classId: data.classId },
+      });
+    }
 
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil dibuat" };
@@ -1563,10 +1801,12 @@ export const updateAnnouncement = async (
     description: string;
     date: string;
     classId?: number;
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
-    await prisma.announcement.update({
+    const announcement = await prisma.announcement.update({
       where: {
         id: data.id,
       },
@@ -1577,6 +1817,28 @@ export const updateAnnouncement = async (
         classId: data.classId ? Number(data.classId) : null,
       },
     });
+
+    // Logging logic khusus announcement
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "UPDATE",
+        entityType: "Announcement",
+        entityId: announcement.id.toString(),
+        description: getActivityDescription("UPDATE", "Announcement", data.title),
+        metadata: { title: data.title, classId: data.classId },
+      });
+    }
 
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil diperbarui" };
@@ -1596,13 +1858,36 @@ export const deleteAnnouncement = async (
 ): Promise<CurrentState> => {
   const id = data.get("id") as string;
   const confirmDelete = data.get("confirmDelete") === "true";
-  
+  const userId = data.get("userId") as string;
+  const userRole = data.get("userRole") as string;
   try {
-    await prisma.announcement.delete({
+    const deleted = await prisma.announcement.delete({
       where: {
         id: parseInt(id),
       },
     });
+
+    // Logging logic khusus announcement
+    if (userId && userRole) {
+      let logUserId = userId;
+      if (userRole === "admin") {
+        logUserId = "admin";
+      } else if (userRole === "teacher" && userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole,
+        action: "DELETE",
+        entityType: "Announcement",
+        entityId: id,
+        description: getActivityDescription("DELETE", "Announcement", deleted.title),
+        metadata: { title: deleted.title, classId: deleted.classId },
+      });
+    }
 
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil dihapus" };
@@ -1623,6 +1908,8 @@ export const createAttendance = async (
     lessonId: number;
     date: Date;
     status: "PRESENT" | "SICK" | "PERMITTED" | "ABSENT";
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
@@ -1634,6 +1921,28 @@ export const createAttendance = async (
         status: data.status,
       },
     });
+
+    // Logging logic khusus attendance
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "CREATE",
+        entityType: "Attendance",
+        entityId: attendance.id.toString(),
+        description: getActivityDescription("CREATE", "Attendance", `Siswa: ${data.studentId}, Status: ${data.status}`),
+        metadata: { ...attendance },
+      });
+    }
 
     return {
       success: true,
@@ -1658,9 +1967,31 @@ export const updateAttendance = async (
     lessonId: number;
     date: Date;
     status: "PRESENT" | "SICK" | "PERMITTED" | "ABSENT";
+    userId?: string;
+    userRole?: string;
   }
 ): Promise<CurrentState> => {
   try {
+    // Ambil data attendance lama
+    const oldAttendance = await prisma.attendance.findUnique({
+      where: { id: data.id },
+      include: { student: true }
+    });
+
+    // Jika tidak ada perubahan, return tanpa log
+    if (
+      oldAttendance &&
+      oldAttendance.status === data.status &&
+      oldAttendance.date.getTime() === data.date.getTime() &&
+      oldAttendance.lessonId === data.lessonId
+    ) {
+      return {
+        success: true,
+        error: false,
+        message: "Tidak ada perubahan data kehadiran",
+      };
+    }
+
     const attendance = await prisma.attendance.update({
       where: {
         id: data.id,
@@ -1671,7 +2002,56 @@ export const updateAttendance = async (
         date: data.date,
         status: data.status,
       },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            class: {
+              include: { grade: true }
+            },
+          },
+        },
+      },
     });
+
+    // Map status ke bahasa Indonesia
+    const statusMap = {
+      PRESENT: "Hadir",
+      SICK: "Sakit",
+      PERMITTED: "Izin",
+      ABSENT: "Tidak Hadir"
+    };
+
+    const lessonName = attendance.lesson?.name || "-";
+    const className = attendance.lesson?.class
+      ? `${attendance.lesson.class.grade?.level === 1 ? "X" : attendance.lesson.class.grade?.level === 2 ? "XI" : "XII"} ${attendance.lesson.class.name}`
+      : "-";
+
+    // Logging logic khusus attendance
+    if (data.userId && data.userRole) {
+      let logUserId = data.userId;
+      if (data.userRole === "admin") {
+        logUserId = "admin";
+      } else if (data.userRole === "teacher" && data.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: data.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+      await logActivity({
+        userId: logUserId,
+        userRole: data.userRole,
+        action: "UPDATE",
+        entityType: "Attendance",
+        entityId: attendance.id.toString(),
+        description: getActivityDescription(
+          "UPDATE",
+          "Attendance",
+          `Siswa: ${attendance.student.name} ${attendance.student.surname}, Status: ${statusMap[data.status]}, Pelajaran: ${lessonName}, Kelas: ${className}`
+        ),
+        metadata: { ...attendance },
+      });
+    }
 
     return {
       success: true,

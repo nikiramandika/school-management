@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
+import { useUser } from "@clerk/nextjs";
 
 const ExamForm = ({
   type,
@@ -29,6 +30,9 @@ const ExamForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role as string;
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
     if (data?.startTime && data?.endTime) {
       return {
@@ -75,6 +79,8 @@ const ExamForm = ({
           ...formData,
           startTime: dateRange.from,
           endTime: dateRange.to,
+          userId,
+          userRole,
         };
         const action = type === "create" ? createExam : updateExam;
         const result = await action(
@@ -98,7 +104,7 @@ const ExamForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router, dateRange]
+    [type, setOpen, router, dateRange, userId, userRole]
   );
 
   // Get lessons from relatedData

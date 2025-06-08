@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { HiClipboardCheck, HiCollection, HiUserGroup } from "react-icons/hi";
+import { useUser } from "@clerk/nextjs";
 
 interface Student {
   id: string;
@@ -96,6 +97,10 @@ const StudentTable = ({
   const [editingGrades, setEditingGrades] = useState<Record<string, boolean>>(
     {}
   );
+
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role as string;
 
   // Initialize scores from existing grades when assessment is selected
   useEffect(() => {
@@ -156,6 +161,8 @@ const StudentTable = ({
         ...(isExamPage
           ? { examId: parseInt(selectedAssessment) }
           : { assignmentId: parseInt(selectedAssessment) }),
+        userId,
+        userRole,
       };
 
       console.log("Sending form data:", formData);

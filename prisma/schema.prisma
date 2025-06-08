@@ -176,3 +176,21 @@ enum Day {
   THURSDAY
   FRIDAY
 }
+
+enum ActivityType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+model ActivityLog {
+  id          Int         @id @default(autoincrement())
+  userId      String
+  userRole    String
+  action      ActivityType
+  entityType  String      // e.g., "Student", "Teacher", "Attendance", etc.
+  entityId    String      // ID of the affected entity
+  description String      // Human-readable description of the change
+  createdAt   DateTime    @default(now())
+  metadata    Json?       // Additional data about the change
+}

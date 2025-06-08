@@ -25,6 +25,7 @@ import { FormContainerProps } from "./FormContainer";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { ReactElement } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -194,6 +195,16 @@ const FormModal = ({
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role;
+  const username = typeof user?.username === "string"
+    ? user.username
+    : typeof user?.emailAddresses?.[0]?.emailAddress === "string"
+      ? user.emailAddresses[0].emailAddress
+      : typeof user?.id === "string"
+        ? user.id
+        : "";
 
   const handleDelete = useCallback(async () => {
     if (!id) return;
@@ -201,15 +212,14 @@ const FormModal = ({
       toast.error("Silakan konfirmasi bahwa Anda memahami konsekuensi dari penghapusan ini");
       return;
     }
-    
     try {
       const action = deleteActionMap[table];
       const formData = new FormData();
       formData.append("id", id.toString());
       formData.append("confirmDelete", "true");
-      
+      formData.append("userId", ((userRole === "admin" ? username : userId) ?? "").toString());
+      formData.append("userRole", (userRole ?? "").toString());
       const result = await action({ success: false, error: false, message: "" }, formData);
-
       if (result.success) {
         toast.success(`${tableNameMap[table] || table} berhasil dihapus!`);
         setOpen(false);
@@ -221,7 +231,7 @@ const FormModal = ({
       console.error("Delete error:", error);
       toast.error("Terjadi kesalahan yang tidak terduga. Silakan coba lagi.");
     }
-  }, [table, id, router, confirmDelete]);
+  }, [table, id, router, confirmDelete, userId, userRole, username]);
 
   const Form = () => {
     return type === "delete" && id ? (

@@ -47,6 +47,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { HiUserGroup } from "react-icons/hi";
+import { useUser } from "@clerk/nextjs";
 
 interface Student {
   id: string;
@@ -128,6 +129,9 @@ export function AttendanceTable({
 }: AttendanceTableProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role as string;
 
   const [selectedLesson, setSelectedLesson] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -210,6 +214,8 @@ export function AttendanceTable({
             date: new Date(selectedDate),
             id: existingAttendance ? existingAttendance.id : 0,
             lessonId: parseInt(selectedLesson),
+            userId,
+            userRole,
           };
 
           return existingAttendance

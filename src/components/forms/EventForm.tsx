@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
+import { useUser } from "@clerk/nextjs";
 
 const EventForm = ({
   type,
@@ -29,6 +30,9 @@ const EventForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role as string;
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
     if (data?.startTime && data?.endTime) {
       return {
@@ -75,6 +79,8 @@ const EventForm = ({
           ...formData,
           startTime: dateRange.from.toISOString(),
           endTime: dateRange.to.toISOString(),
+          userId,
+          userRole,
         };
         const action = type === "create" ? createEvent : updateEvent;
         const result = await action(
@@ -98,7 +104,7 @@ const EventForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router, dateRange]
+    [type, setOpen, router, dateRange, userId, userRole]
   );
 
   return (

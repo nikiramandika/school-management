@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@clerk/nextjs";
 
 const AnnouncementForm = ({
   type,
@@ -40,6 +41,9 @@ const AnnouncementForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const { user } = useUser();
+  const userId = user?.id;
+  const userRole = user?.publicMetadata?.role;
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     data?.date ? new Date(data.date) : undefined
   );
@@ -50,7 +54,6 @@ const AnnouncementForm = ({
 
   // Get classes from relatedData
   const classes = relatedData?.classes || [];
-  const userRole = relatedData?.userRole;
   const teacherClasses = relatedData?.teacherClasses || [];
   const homeroomClass = relatedData?.homeroomClass;
 
@@ -104,6 +107,8 @@ const AnnouncementForm = ({
               ? formData.date.toISOString()
               : formData.date,
           classId: formData.classId,
+          userId,
+          userRole,
         };
         if (typeof formData.id === "number") {
           submitData.id = formData.id;
@@ -132,7 +137,7 @@ const AnnouncementForm = ({
         toast.error("An unexpected error occurred. Please try again.");
       }
     },
-    [type, setOpen, router]
+    [type, setOpen, router, userId, userRole]
   );
 
   return (
