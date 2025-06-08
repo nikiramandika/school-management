@@ -105,7 +105,7 @@ const LoginPage = () => {
       >
         <h1 className=" text-gray-700 text-xl font-bold flex items-center gap-2">
           <Image
-            src="https://smanlimedan.sch.id/wp-content/uploads/2024/07/LOGO_2-removebg-prev._imresizer-removebg-preview.png"
+            src="/LogoSMAN5Medan.png"
             alt="logo"
             width={32}
             height={32}

@@ -338,6 +338,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
               score: grade.score,
             }))}
             className={selectedClass.name}
+            gradeLevel={selectedClass.grade?.level}
           />
         </div>
 
