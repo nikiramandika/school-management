@@ -12,7 +12,12 @@ import {
   School,
   Trophy,
 } from "lucide-react";
-import { HiAcademicCap, HiClipboardCheck, HiCollection, HiUserGroup} from "react-icons/hi";
+import {
+  HiAcademicCap,
+  HiClipboardCheck,
+  HiCollection,
+  HiUserGroup,
+} from "react-icons/hi";
 
 // Enhanced Header component with visual improvements
 const PageHeader = ({
@@ -46,7 +51,7 @@ const PageHeader = ({
     {/* Stats Cards - Only show for admin */}
     {(role === "admin" || role === "kepala_sekolah") && (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -60,7 +65,7 @@ const PageHeader = ({
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -74,7 +79,7 @@ const PageHeader = ({
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+        <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>

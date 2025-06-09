@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HiDocumentReport, HiBookOpen, HiCollection, HiAcademicCap } from "react-icons/hi";
+import {
+  HiDocumentReport,
+  HiBookOpen,
+  HiCollection,
+  HiAcademicCap,
+} from "react-icons/hi";
 
 const AssignmentListPage = async () => {
   const { userId, sessionClaims } = await auth();
@@ -149,7 +154,7 @@ const AssignmentListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -165,7 +170,7 @@ const AssignmentListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -181,7 +186,7 @@ const AssignmentListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -197,7 +202,7 @@ const AssignmentListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

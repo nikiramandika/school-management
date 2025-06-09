@@ -158,7 +158,7 @@ const ClassListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -174,7 +174,7 @@ const ClassListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -190,7 +190,7 @@ const ClassListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -239,7 +239,12 @@ const ClassListPage = async () => {
                         </div>
                         <div>
                           <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                            {classItem.grade?.level === 1 ? "X" : classItem.grade?.level === 2 ? "XI" : "XII"} {classItem.name}
+                            {classItem.grade?.level === 1
+                              ? "X"
+                              : classItem.grade?.level === 2
+                              ? "XI"
+                              : "XII"}{" "}
+                            {classItem.name}
                           </CardTitle>
                           <Badge variant="outline" className="mt-1">
                             Tingkat {classItem.grade?.level}

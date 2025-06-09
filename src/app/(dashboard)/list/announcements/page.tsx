@@ -260,7 +260,7 @@ const AnnouncementListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

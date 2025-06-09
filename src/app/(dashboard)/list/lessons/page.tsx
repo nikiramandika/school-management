@@ -14,8 +14,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, GraduationCap, Clock, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { HiDocumentText, HiCollection, HiBookOpen, HiAcademicCap } from "react-icons/hi";
-
+import {
+  HiDocumentText,
+  HiCollection,
+  HiBookOpen,
+  HiAcademicCap,
+} from "react-icons/hi";
 
 const LessonListPage = async () => {
   const { sessionClaims } = await auth();
@@ -26,8 +30,8 @@ const LessonListPage = async () => {
       subject: true,
       class: {
         include: {
-          grade: true
-        }
+          grade: true,
+        },
       },
       teacher: true,
     },
@@ -39,14 +43,14 @@ const LessonListPage = async () => {
       select: { id: true, name: true },
     }),
     prisma.class.findMany({
-      select: { 
-        id: true, 
+      select: {
+        id: true,
         name: true,
         grade: {
           select: {
-            level: true
-          }
-        }
+            level: true,
+          },
+        },
       },
     }),
     prisma.teacher.findMany({
@@ -105,7 +109,7 @@ const LessonListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {role === "admin" && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className=" bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -121,7 +125,7 @@ const LessonListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className=" bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -137,7 +141,7 @@ const LessonListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className=" bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -153,7 +157,7 @@ const LessonListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className=" bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

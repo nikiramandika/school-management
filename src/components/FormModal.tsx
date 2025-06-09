@@ -24,9 +24,10 @@ import {
 import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, X, FileWarning } from "lucide-react";
 import { ReactElement } from "react";
 import { useUser } from "@clerk/nextjs";
+import { HiTrash } from "react-icons/hi";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -259,9 +260,12 @@ const FormModal = ({
         }}
         className="flex flex-col gap-4"
       >
-        <span className="text-center font-medium">
-          Semua data akan hilang. Apakah Anda yakin ingin menghapus{" "}
-          {tableNameMap[table] || table} ini?
+        <span className="text-lg text-left font-medium flex justify-start items-center gap-2 text-destructive dark:text-destructive">
+          <HiTrash></HiTrash> Hapus {tableNameMap[table] || table} ini?
+        </span>
+        <span>
+          Semua data yang terkait {tableNameMap[table] || table} akan dihapus
+          secara permanen. Apakah Anda yakin ingin melanjutkan?
         </span>
         <div className="flex items-center gap-2">
           <input
@@ -269,17 +273,17 @@ const FormModal = ({
             id="confirmDelete"
             checked={confirmDelete}
             onChange={(e) => setConfirmDelete(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300"
+            className="h-6 w-6 rounded-xl border-gray-300 accent-teal-600 focus:ring-teal-600 focus:ring-0 cursor-pointer" // teal-500
           />
           <label htmlFor="confirmDelete" className="text-sm text-gray-600">
-            Saya mengerti bahwa menghapus {tableNameMap[table] || table} ini
-            akan menghapus semua data terkait dan tidak dapat dibatalkan
+            "Saya menyadari bahwa penghapusan {tableNameMap[table] || table} ini
+            bersifat permanen dan tidak dapat dipulihkan."
           </label>
         </div>
         <Button
           variant="destructive"
           type="submit"
-          className="w-max self-center text-white"
+          className="w-max self-end text-white"
           disabled={!confirmDelete}
         >
           Hapus
@@ -340,7 +344,7 @@ const FormModal = ({
           onClick={handleClose}
         >
           <div
-            className={`soft-light bg-white dark:bg-[#282a30] p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] transition-all duration-300 ease-out ${
+            className={`soft-light bg-white dark:bg-[#282a30] p-8 rounded-xl shadow-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] transition-all duration-300 ease-out text-left ${
               isClosing
                 ? "opacity-0 translate-x-8 -translate-y-8 scale-95"
                 : "opacity-100 translate-x-0 translate-y-0 scale-100 animate-in slide-in-from-top-2 slide-in-from-right-8 fade-in-0"

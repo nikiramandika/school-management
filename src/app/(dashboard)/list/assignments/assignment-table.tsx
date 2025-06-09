@@ -152,7 +152,7 @@ export function AssignmentTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="hidden lg:flex hover:bg-orange-50 dark:hover:bg-orange-900/20 font-semibold"
           >
-            <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
+            <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
             Guru
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
@@ -164,15 +164,12 @@ export function AssignmentTable({
           <div className="hidden lg:flex items-center gap-3">
             <div className="hidden md:flex justify-center w-full">
               <div className="flex flex-col items-center">
-                <span className="font-medium text-gray-900 dark:text-white text-sm text-center">
-                  {teacher.name} {teacher.surname}
-                </span>
                 <Badge
                   variant="outline"
                   className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                 >
-                  <UserCheck className="mr-2 h-4 w-4 text-orange-600" />
-                  Pengajar
+                  <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
+                  {teacher.name} {teacher.surname}
                 </Badge>
               </div>
             </div>

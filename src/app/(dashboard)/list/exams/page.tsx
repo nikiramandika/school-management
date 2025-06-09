@@ -12,12 +12,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Clock
-} from "lucide-react";
+import { Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { HiClipboardList, HiCollection, HiDocumentText } from "react-icons/hi";
-
 
 const ExamListPage = async () => {
   const { userId, sessionClaims } = await auth();
@@ -147,7 +144,7 @@ const ExamListPage = async () => {
         {/* Stats Cards - Only show for admin */}
         {(role === "admin" || role === "kepala_sekolah") && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -163,7 +160,7 @@ const ExamListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -179,7 +176,7 @@ const ExamListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -195,7 +192,7 @@ const ExamListPage = async () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r bg-cyan-500 text-white border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

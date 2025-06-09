@@ -92,7 +92,7 @@ const SubjectListPage = async () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+          <Card className="bg-cyan-500 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -108,7 +108,7 @@ const SubjectListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-cyan-500 text-white border-0 shadow-lg">
+          <Card className="bg-cyan-500 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -124,7 +124,7 @@ const SubjectListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className=" bg-cyan-500 text-white border-0 shadow-lg">
+          <Card className=" bg-cyan-500 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
