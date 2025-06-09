@@ -172,8 +172,32 @@ export const createClass = async (
   data: ClassSchema
 ): Promise<CurrentState> => {
   try {
+    // Check for duplicate class
+    const existingClass = await prisma.class.findFirst({
+      where: {
+        name: data.name,
+        gradeId: data.gradeId,
+        academicYear: data.academicYear,
+      },
+    });
+
+    if (existingClass) {
+      return {
+        success: false,
+        error: true,
+        message: "Kelas dengan nama, tingkat, dan tahun ajaran yang sama sudah ada",
+      };
+    }
+
     await prisma.class.create({
-      data,
+      data: {
+        name: data.name,
+        capacity: data.capacity,
+        gradeId: data.gradeId,
+        supervisorId: data.supervisorId,
+        academicYear: data.academicYear,
+        isActive: data.isActive !== false,
+      },
     });
 
     revalidatePath("/list/class");
@@ -193,11 +217,38 @@ export const updateClass = async (
   data: ClassSchema
 ): Promise<CurrentState> => {
   try {
+    // Check for duplicate class (excluding current class)
+    const existingClass = await prisma.class.findFirst({
+      where: {
+        name: data.name,
+        gradeId: data.gradeId,
+        academicYear: data.academicYear,
+        id: {
+          not: data.id // Exclude current class from duplicate check
+        }
+      },
+    });
+
+    if (existingClass) {
+      return {
+        success: false,
+        error: true,
+        message: "Kelas dengan nama, tingkat, dan tahun ajaran yang sama sudah ada",
+      };
+    }
+
     await prisma.class.update({
       where: {
         id: data.id,
       },
-      data,
+      data: {
+        name: data.name,
+        capacity: data.capacity,
+        academicYear: data.academicYear,
+        isActive: data.isActive !== false,
+        grade: { connect: { id: data.gradeId } },
+        supervisor: data.supervisorId ? { connect: { id: data.supervisorId } } : undefined,
+      },
     });
 
     revalidatePath("/list/class");

@@ -46,7 +46,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { HiUserGroup } from "react-icons/hi";
+import { HiBookOpen, HiUserGroup } from "react-icons/hi";
 import { useUser } from "@clerk/nextjs";
 
 interface Student {

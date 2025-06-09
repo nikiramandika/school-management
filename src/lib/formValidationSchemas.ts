@@ -14,6 +14,8 @@ export const classSchema = z.object({
   capacity: z.coerce.number().min(1, { message: "Kapasitas kelas wajib diisi!" }),
   gradeId: z.coerce.number().min(1, { message: "Tingkat kelas wajib diisi!" }),
   supervisorId: z.coerce.string().optional(),
+  academicYear: z.string().min(4, { message: "Tahun ajaran wajib diisi!" }),
+  isActive: z.boolean().default(true),
 });
 
 export type ClassSchema = z.infer<typeof classSchema>;

@@ -178,6 +178,30 @@ export function ClassTable({
       ),
     },
     {
+      accessorKey: "academicYear",
+      header: "Tahun Ajaran",
+      cell: ({ row }) => (
+        <Badge
+          variant="outline"
+          className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300"
+        >
+          {row.original.academicYear}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.isActive ? "default" : "outline"}
+          className={`${row.original.isActive ? "bg-green-500" : "bg-red-500"}`}
+        >
+          {row.original.isActive ? "Aktif" : "Tidak Aktif"}
+        </Badge>
+      ),
+    },
+    {
       id: "actions",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
@@ -194,6 +218,7 @@ export function ClassTable({
           capacity: classItem.capacity,
           supervisorId: classItem.supervisor?.id,
           gradeId: classItem.grade?.id,
+          isActive: classItem.isActive,
           // Include the full objects for reference
           supervisor: {
             id: classItem.supervisor?.id,
@@ -204,6 +229,7 @@ export function ClassTable({
             id: classItem.grade?.id,
             level: classItem.grade?.level,
           },
+          academicYear: classItem.academicYear,
         };
 
         // Get all teachers who are already supervisors
