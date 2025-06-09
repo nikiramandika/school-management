@@ -1370,7 +1370,7 @@ export const createAssignment = async (
         lessonId: data.lessonId,
       },
     });
-    console.log("Assignment created successfully:", result);
+    console.log("Tugas berhasil dibuat:", result);
 
     revalidatePath("/list/assignments");
     return { 
@@ -1405,7 +1405,7 @@ export const updateAssignment = async (
         lessonId: data.lessonId,
       },
     });
-    console.log("Assignment updated successfully:", result);
+    console.log("Tugas berhasil diperbarui:", result);
 
     revalidatePath("/list/assignments");
     return { 
@@ -1414,7 +1414,7 @@ export const updateAssignment = async (
       message: "Tugas berhasil diperbarui" 
     };
   } catch (err) {
-    console.error("Error updating assignment:", err);
+    console.error("Kesalahan dalam memperbarui tugas", err);
     return { 
       success: false, 
       error: true,
@@ -1464,7 +1464,7 @@ export const deleteAssignment = async (
     revalidatePath("/list/assignments");
     return { success: true, error: false, message: "Tugas dan semua data terkait berhasil dihapus" };
   } catch (err) {
-    console.error("Error deleting assignment:", err);
+    console.error("Kesalahan dalam menghapus tugas:", err);
     return { 
       success: false, 
       error: true, 
@@ -1487,26 +1487,26 @@ export async function createResult(
   "use server";
   
   try {
-    console.log('Creating result with data:', formData);
+    console.log('Membuat hasil dengan data:', formData);
 
     // Validate required fields
     if (!formData.studentId || (!formData.examId && !formData.assignmentId) || formData.score === undefined) {
-      console.log('Missing required fields:', formData);
+      console.log('Kolom yang harus diisi tidak lengkap:', formData);
       return { 
         success: false, 
         error: true, 
-        message: "Missing required fields" 
+        message: "Kolom yang harus diisi tidak lengkap" 
       };
     }
 
     // Validate score range and convert to integer
     const score = Math.round(formData.score);
     if (score < 0 || score > 100) {
-      console.log('Invalid score:', score);
+      console.log('Skor tidak valid:', score);
       return { 
         success: false, 
         error: true, 
-        message: "Score must be between 0 and 100" 
+        message: "Skor harus antara 0 dan 100" 
       };
     }
 
@@ -1519,11 +1519,11 @@ export async function createResult(
     });
 
     if (existingResult) {
-      console.log('Result already exists:', existingResult);
+      console.log('Nilainya sudah ada', existingResult);
       return {
         success: false,
         error: true,
-        message: "Grade already exists for this student and assessment"
+        message: "Nilai sudah ada untuk siswa dan penilaian ini"
       };
     }
 
@@ -1583,10 +1583,10 @@ export async function createResult(
     return { 
       success: true, 
       error: false, 
-      message: "Grade saved successfully" 
+      message: "Nilai berhasil disimpan" 
     };
   } catch (err) {
-    console.error("Error saving grade:", err);
+    console.error("Kesalahan dalam menyimpan nilai:", err);
     return { 
       success: false, 
       error: true, 
@@ -1610,28 +1610,28 @@ export async function updateResult(
   "use server";
   
   try {
-    console.log('Updating result with data:', formData);
+    console.log('Memperbarui nilai dengan data:', formData);
     // Debug: log userId dan userRole
     console.log('userId:', formData.userId, 'userRole:', formData.userRole);
 
     // Validate required fields
     if (!formData.id || !formData.studentId || (!formData.examId && !formData.assignmentId) || formData.score === undefined) {
-      console.log('Missing required fields:', formData);
+      console.log('Kolom yang harus diisi tidak lengkap:', formData);
       return { 
         success: false, 
         error: true, 
-        message: "Missing required fields" 
+        message: "Kolom yang harus diisi tidak lengkap" 
       };
     }
 
     // Validate score range and convert to integer
     const score = Math.round(formData.score);
     if (score < 0 || score > 100) {
-      console.log('Invalid score:', score);
+      console.log('Skor tidak valid:', score);
       return { 
         success: false, 
         error: true, 
-        message: "Score must be between 0 and 100" 
+        message: "Skor harus antara 0 dan 100" 
       };
     }
 
@@ -1666,7 +1666,7 @@ export async function updateResult(
       const studentName = `${result.student.name} ${result.student.surname}`;
 
       // Debug: sebelum logActivity
-      console.log('About to log activity for result update', {
+      console.log('Akan mencatat aktivitas untuk pembaruan nilai', {
         userId: logUserId,
         userRole: formData.userRole,
         action: "UPDATE",
@@ -1698,10 +1698,10 @@ export async function updateResult(
         },
       });
       // Debug: setelah logActivity
-      console.log('Activity logged for result update');
+      console.log('Aktivitas dicatat untuk pembaruan nilai');
     }
 
-    console.log('Updated result:', result);
+    console.log('Nilai yang telah diperbarui:', result);
 
     // Revalidate the current page
     const path = formData.examId ? `/list/results/${formData.examId}/exam` : `/list/results/${formData.assignmentId}/assignment`;
@@ -1710,10 +1710,10 @@ export async function updateResult(
     return { 
       success: true, 
       error: false, 
-      message: "Grade updated successfully" 
+      message: "Nilai berhasil diperbarui" 
     };
   } catch (err) {
-    console.error("Error updating grade:", err);
+    console.error("Kesalahan dalam memperbarui nilai:", err);
     return { 
       success: false, 
       error: true, 
@@ -1777,9 +1777,9 @@ export async function deleteResult(
     }
 
     revalidatePath("/list/results");
-    return { success: true, error: false, message: "Result deleted successfully" };
+    return { success: true, error: false, message: "Nilai berhasil dihapus" };
   } catch (err) {
-    console.error("Error deleting result:", err);
+    console.error("Kesalahan dalam menghapus nilai:", err);
     return { 
       success: false, 
       error: true, 
@@ -1835,7 +1835,7 @@ export const createAnnouncement = async (
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil dibuat" };
   } catch (err) {
-    console.error("Error creating announcement:", err);
+    console.error("Kesalahan dalam membuat pengumuman:", err);
     return { 
       success: false, 
       error: true, 
@@ -1894,7 +1894,7 @@ export const updateAnnouncement = async (
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil diperbarui" };
   } catch (err) {
-    console.error("Error updating announcement:", err);
+    console.error("Kesalahan dalam memperbarui pengumuman:", err);
     return { 
       success: false, 
       error: true, 
@@ -1943,7 +1943,7 @@ export const deleteAnnouncement = async (
     revalidatePath("/list/announcements");
     return { success: true, error: false, message: "Pengumuman berhasil dihapus" };
   } catch (err) {
-    console.error("Error deleting announcement:", err);
+    console.error("Kesalahan dalam menghapus pengumuman:", err);
     return { 
       success: false, 
       error: true, 
@@ -2028,7 +2028,7 @@ export const createAttendance = async (
       message: "Record kehadiran berhasil dibuat",
     };
   } catch (error) {
-    console.error("Error creating attendance:", error);
+    console.error("Kesalahan dalam membuat absensi:", error);
     return {
       success: false,
       error: true,
@@ -2137,7 +2137,7 @@ export const updateAttendance = async (
       message: "Record kehadiran berhasil diperbarui",
     };
   } catch (error) {
-    console.error("Error updating attendance:", error);
+    console.error("Kesalahan dalam memperbarui kehadiran:", error);
     return {
       success: false,
       error: true,

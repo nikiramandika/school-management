@@ -120,8 +120,8 @@ const AnnouncementForm = ({
 
         if (result.success) {
           toast.success(
-            `Announcement has been ${
-              type === "create" ? "created" : "updated"
+            `Pengumuman telah  ${
+              type === "create" ? "dibuat" : "diperbarui"
             }!`
           );
           setOpen(false);
@@ -129,12 +129,12 @@ const AnnouncementForm = ({
         } else {
           toast.error(
             result.message ||
-              "Failed to save announcement data. Please try again."
+              "Gagal menyimpan data pengumuman. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router, userId, userRole]

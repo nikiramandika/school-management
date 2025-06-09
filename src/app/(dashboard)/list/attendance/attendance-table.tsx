@@ -231,11 +231,11 @@ export function AttendanceTable({
       );
 
       await Promise.all(savePromises);
-      toast.success("Attendance saved successfully");
+      toast.success("Absensi berhasil disimpan");
       router.refresh();
     } catch (error) {
-      console.error("Error saving attendance:", error);
-      toast.error("Failed to save attendance");
+      console.error("Kesalahan dalam menyimpan absensi:", error);
+      toast.error("Gagal menyimpan absensi");
     }
   };
 

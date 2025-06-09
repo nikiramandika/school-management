@@ -99,18 +99,18 @@ const ClassForm = ({
       );
       if (result.success) {
         toast.success(
-          `Class has been ${type === "create" ? "created" : "updated"}!`
+          `Kelas telah ${type === "create" ? "dibuat" : "diperbarui"}!`
         );
         setOpen(false);
         router.refresh();
       } else {
         toast.error(
-          result.message || "Failed to save class data. Please try again."
+          result.message || "Gagal menyimpan data kelas. Silakan coba lagi."
         );
       }
     } catch (error) {
-      console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Kesalahan pengiriman formulir:", error);
+      toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
     }
   };
 

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Class" ADD COLUMN     "academicYear" TEXT NOT NULL DEFAULT '2023/2024',
+ADD COLUMN     "isActive" BOOLEAN NOT NULL DEFAULT true;

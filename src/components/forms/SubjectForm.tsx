@@ -46,18 +46,18 @@ const SubjectForm = ({
 
         if (result.success) {
           toast.success(
-            `Subject has been ${type === "create" ? "created" : "updated"}!`
+            `Mata Pelajaran telah ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save subject data. Please try again."
+            result.message || "Gagal menyimpan data mata pelajaran. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router]
@@ -138,7 +138,7 @@ const SubjectForm = ({
                     )
                   }
                   classNamePrefix="react-select"
-                  placeholder="Select teachers..."
+                  placeholder="Pilih Guru..."
                   styles={{ container: (base) => ({ ...base, width: "100%" }) }}
                 />
               );

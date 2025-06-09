@@ -53,7 +53,7 @@ const ResultForm = ({
     async (formData: ResultSchema) => {
       try {
         if (type === "update" && !formData.id) {
-          toast.error("Missing result ID. Please try again.");
+          toast.error("ID nilai hilang. Silakan coba lagi.");
           return;
         }
 
@@ -83,18 +83,18 @@ const ResultForm = ({
 
         if (result.success) {
           toast.success(
-            `Grade has been ${type === "create" ? "saved" : "updated"}!`
+            `Nilai telah ${type === "create" ? "disimpan" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save grade. Please try again."
+            result.message || "Gagal menyimpan nilai. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router]

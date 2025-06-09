@@ -74,7 +74,7 @@ const TeacherForm = ({
   const onSubmit = useCallback(
     async (formData: TeacherSchema) => {
       try {
-        console.log("Form data before submission:", formData);
+        console.log("Formulir data sebelum dikirim:", formData);
 
         // Ensure subjects are properly formatted
         const formattedData = {
@@ -82,7 +82,7 @@ const TeacherForm = ({
           subjects: formData.subjects?.map((id) => id.toString()) || [],
         };
 
-        console.log("Formatted data:", formattedData);
+        console.log("Data yang telah diformat:", formattedData);
 
         const action = type === "create" ? createTeacher : updateTeacher;
         const result = await action(
@@ -90,7 +90,7 @@ const TeacherForm = ({
           formattedData
         );
 
-        console.log("Server response:", result);
+        console.log("Resons Server", result);
 
         if (result.success) {
           toast.success(
@@ -110,7 +110,7 @@ const TeacherForm = ({
           }
         }
       } catch (error) {
-        console.error("Form submission error:", error);
+        console.error("Kesalahan pengiriman formulir:", error);
         toast.error("Terjadi kesalahan. Silakan coba lagi.");
       }
     },
@@ -120,10 +120,10 @@ const TeacherForm = ({
   const { subjects } = relatedData || {};
 
   // Debug logs
-  console.log("Teacher data:", data);
-  console.log("Related subjects:", subjects);
+  console.log("Data Guru:", data);
+  console.log("Mata Pelajaran terkait:", subjects);
   console.log(
-    "Current subject IDs:",
+    "ID Mata Pelajaran sekarang:",
     data?.subjects?.map((subject: { id: number }) => subject.id.toString())
   );
 

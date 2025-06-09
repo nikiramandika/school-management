@@ -71,7 +71,7 @@ const EventForm = ({
     async (formData: EventSchema) => {
       try {
         if (!dateRange?.from || !dateRange?.to) {
-          toast.error("Please select both start and end dates");
+          toast.error("Silakan pilih tanggal mulai dan berakhirnya");
           return;
         }
 
@@ -90,18 +90,18 @@ const EventForm = ({
 
         if (result.success) {
           toast.success(
-            `Event has been ${type === "create" ? "created" : "updated"}!`
+            `Acara telah  ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save event data. Please try again."
+            result.message || "Gagal menyimpan data acara. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router, dateRange, userId, userRole]

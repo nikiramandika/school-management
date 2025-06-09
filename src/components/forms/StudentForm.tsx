@@ -66,7 +66,7 @@ const StudentForm = ({
   const onSubmit = useCallback(
     async (formData: StudentSchema) => {
       try {
-        console.log("Form data before submission:", formData);
+        console.log("Formulir data sebelum dikirim:", formData);
 
         const action = type === "create" ? createStudent : updateStudent;
         const result = await action(
@@ -74,7 +74,7 @@ const StudentForm = ({
           formData
         );
 
-        console.log("Server response:", result);
+        console.log("Respons server:", result);
 
         if (result.success) {
           toast.success(
@@ -96,7 +96,7 @@ const StudentForm = ({
           }
         }
       } catch (error) {
-        console.error("Form submission error:", error);
+        console.error("Kesalahan pengiriman formulir:", error);
         toast.error("Terjadi kesalahan. Silakan coba lagi.");
       }
     },

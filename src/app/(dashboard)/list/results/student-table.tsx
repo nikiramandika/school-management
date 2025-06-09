@@ -196,11 +196,11 @@ const StudentTable = ({
         // Refresh the page to show updated data
         router.refresh();
       } else {
-        toast.error(result.message || "Failed to save grade");
+        toast.error(result.message || "Gagal menyimpan nilai");
       }
     } catch (error) {
-      console.error("Error saving grade:", error);
-      toast.error("Failed to save grade. Please try again.");
+      console.error("Kesalahan dalam menyimpan nilai", error);
+      toast.error("Gagal menyimpan nilai. Silakan coba lagi.");
     }
   };
 

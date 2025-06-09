@@ -60,7 +60,7 @@ const AttendanceForm = ({
     async (formData: AttendanceSchema) => {
       try {
         if (type === "update" && !formData.id) {
-          toast.error("Missing attendance ID. Please try again.");
+          toast.error("ID kehadiran hilang. Silakan coba lagi.");
           return;
         }
 
@@ -89,18 +89,18 @@ const AttendanceForm = ({
 
         if (result.success) {
           toast.success(
-            `Attendance has been ${type === "create" ? "recorded" : "updated"}!`
+            `Absensi telah ${type === "create" ? "tercatat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save attendance. Please try again."
+            result.message || "Gagal menyimpan kehadiran. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router, userId, userRole]
