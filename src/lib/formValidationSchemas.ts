@@ -14,6 +14,8 @@ export const classSchema = z.object({
   capacity: z.coerce.number().min(1, { message: "Kapasitas kelas wajib diisi!" }),
   gradeId: z.coerce.number().min(1, { message: "Tingkat kelas wajib diisi!" }),
   supervisorId: z.coerce.string().optional(),
+  academicYear: z.string().min(4, { message: "Tahun ajaran wajib diisi!" }),
+  isActive: z.boolean().default(true),
 });
 
 export type ClassSchema = z.infer<typeof classSchema>;
@@ -106,35 +108,35 @@ export type LessonSchema = z.infer<typeof lessonSchema>;
 
 export const assignmentSchema = z.object({
   id: z.coerce.number().optional(),
-  title: z.string().min(1, { message: "Title is required!" }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
-  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+  title: z.string().min(1, { message: "Judul harus diisi!" }),
+  startTime: z.coerce.date({ message: "Waktu mulai harus diisi!" }),
+  endTime: z.coerce.date({ message: "Waktu berakhir harus diisi!" }),
+  lessonId: z.coerce.number({ message: "Pelajaran harus di isi"! }),
 });
 
 export type AssignmentSchema = z.infer<typeof assignmentSchema>;
 
 export const resultSchema = z.object({
   id: z.number().optional(),
-  studentId: z.string().min(1, "Student is required"),
+  studentId: z.string().min(1, "Siswa harus diisi"),
   examId: z.number().optional(),
   assignmentId: z.number().optional(),
-  score: z.coerce.number().min(0).max(100, "Score must be between 0 and 100"),
+  score: z.coerce.number().min(0).max(100, "Skor harus antara 0 dan 100"),
 });
 
 export type ResultSchema = z.infer<typeof resultSchema>;
 
 export const eventSchema = z.object({
   id: z.coerce.number().optional(),
-  title: z.string().min(1, { message: "Title is required!" }),
-  description: z.string().min(1, { message: "Description is required!" }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" })
+  title: z.string().min(1, { message: "Judul harus diisi!" }),
+  description: z.string().min(1, { message: "Deskripsi harus diisi!" }),
+  startTime: z.coerce.date({ message: "Waktu mulai harus diisi!" }),
+  endTime: z.coerce.date({ message: "Waktu berakhir harus diisi!" })
     .refine((date) => {
       const startTime = (date as any).parent?.startTime;
       if (!startTime) return true;
       return date > startTime;
-    }, { message: "End time must be after start time!" }),
+    }, { message: "Waktu berakhir harus setelah waktu mulai" }),
   classId: z.coerce.number().optional(),
 });
 
@@ -142,9 +144,9 @@ export type EventSchema = z.infer<typeof eventSchema>;
 
 export const announcementSchema = z.object({
   id: z.coerce.number().optional(),
-  title: z.string().min(1, { message: "Title is required!" }),
-  description: z.string().min(1, { message: "Description is required!" }),
-  date: z.coerce.date({ message: "Date is required!" }),
+  title: z.string().min(1, { message: "Judul harus diisi!" }),
+  description: z.string().min(1, { message: "Deskripsi harus diisi!" }),
+  date: z.coerce.date({ message: "Tanggal harus diisi!" }),
   classId: z.coerce.number().optional(),
 });
 
@@ -152,9 +154,9 @@ export type AnnouncementSchema = z.infer<typeof announcementSchema>;
 
 export const attendanceSchema = z.object({
   id: z.number().optional(),
-  studentId: z.string().min(1, "Student is required"),
-  lessonId: z.number().min(1, "Lesson is required"),
-  date: z.string().min(1, "Date is required"),
+  studentId: z.string().min(1, "Siswa harus diisi"),
+  lessonId: z.number().min(1, "Pelajaran harus diisi!"),
+  date: z.string().min(1, "Tanggal harus diisi"),
   status: z.enum(["PRESENT", "SICK", "PERMITTED", "ABSENT"]),
 });
 

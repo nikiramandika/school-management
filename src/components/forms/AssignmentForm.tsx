@@ -74,7 +74,7 @@ const AssignmentForm = ({
     async (formData: AssignmentSchema) => {
       try {
         if (!dateRange?.from || !dateRange?.to) {
-          toast.error("Please select both start and end dates");
+          toast.error("Silakan pilih tanggal mulai dan berakhirnya");
           return;
         }
 
@@ -93,19 +93,19 @@ const AssignmentForm = ({
 
         if (result.success) {
           toast.success(
-            `Assignment has been ${type === "create" ? "created" : "updated"}!`
+            `Tugas telah ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
             result.message ||
-              "Failed to save assignment data. Please try again."
+              "Gagal menyimpan data penugasan. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router, dateRange, userId, userRole]

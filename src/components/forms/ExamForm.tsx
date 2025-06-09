@@ -71,7 +71,7 @@ const ExamForm = ({
     async (formData: ExamSchema) => {
       try {
         if (!dateRange?.from || !dateRange?.to) {
-          toast.error("Please select both start and end dates");
+          toast.error("Silakan pilih tanggal mulai dan berakhirnya");
           return;
         }
 
@@ -90,18 +90,18 @@ const ExamForm = ({
 
         if (result.success) {
           toast.success(
-            `Exam has been ${type === "create" ? "created" : "updated"}!`
+            `Ujian telah ${type === "create" ? "dibuat" : "diperbarui"}!`
           );
           setOpen(false);
           router.refresh();
         } else {
           toast.error(
-            result.message || "Failed to save exam data. Please try again."
+            result.message || "Gagal menyimpan data ujian. Silakan coba lagi."
           );
         }
       } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        console.error("Kesalahan pengiriman formulir:", error);
+        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
       }
     },
     [type, setOpen, router, dateRange, userId, userRole]

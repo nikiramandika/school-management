@@ -115,7 +115,7 @@ const LoginPage = () => {
         </h1>
         <hr />
         <h1 className="pt-2 text-md font-medium text-gray-900">
-          Welcome Back!
+          Selamat Datang!
         </h1>
         {error && <div className="text-sm text-red-400">{error}</div>}
         <div className="flex flex-col gap-2  pb-2">
@@ -129,7 +129,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="flex flex-col gap-2 pb-6">
-          <label className="text-sm text-gray-500">Password</label>
+          <label className="text-sm text-gray-500">Kata Sandi</label>
           <input
             type="password"
             required

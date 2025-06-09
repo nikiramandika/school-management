@@ -5,7 +5,7 @@ import Performance from "@/components/Performance";
 import StudentAttendanceCard from "@/components/StudentAttendanceCard";
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { Class, Student } from "@prisma/client";
+import { Class, Student, Grade } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -27,12 +27,20 @@ const SingleStudentPage = async ({
 
   const student:
     | (Student & {
-        class: Class & { _count: { lessons: number } };
+        class: Class & { 
+          _count: { lessons: number };
+          grade: Grade;
+        };
       })
     | null = await prisma.student.findUnique({
     where: { id },
     include: {
-      class: { include: { _count: { select: { lessons: true } } } },
+      class: { 
+        include: { 
+          _count: { select: { lessons: true } },
+          grade: true 
+        } 
+      },
     },
   });
 
@@ -47,10 +55,10 @@ const SingleStudentPage = async ({
         {/* TOP */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* USER INFO CARD */}
-          <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
+          <div className="bg-lamaSky dark:bg-gray-800 py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
-                src={student.img || "/noAvatar.png"}
+                src={student.img || "/Avatar.png"}
                 alt=""
                 width={144}
                 height={144}
@@ -59,25 +67,23 @@ const SingleStudentPage = async ({
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
               <div className="flex items-center gap-4">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold dark:text-white">
                   {student.name + " " + student.surname}
                 </h1>
-                {role === "admin" && (<TooltipProvider>
+                {role === "admin" && (
+                  <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="inline-flex items-center justify-center">
                           <FormContainer table="student" type="update" data={student} />
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent>Ubah Data Siswa</TooltipContent>
+                      <TooltipContent className="dark:bg-gray-800 dark:text-white">Ubah Data Siswa</TooltipContent>
                     </Tooltip>
-                  </TooltipProvider> 
+                  </TooltipProvider>
                 )}
               </div>
-              <p className="text-sm text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              </p>
-              <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
+              <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium dark:text-gray-300">
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/blood.png" alt="" width={14} height={14} />
                   <span>{student.bloodType}</span>
@@ -102,21 +108,20 @@ const SingleStudentPage = async ({
           {/* SMALL CARDS */}
           <div className="flex-1 flex gap-4 justify-between flex-wrap">
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleAttendance.png"
                 alt=""
                 width={24}
                 height={24}
                 className="w-6 h-6"
-                
               />
               <Suspense fallback="loading...">
                 <StudentAttendanceCard id={student.id} />
               </Suspense>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleBranch.png"
                 alt=""
@@ -125,14 +130,14 @@ const SingleStudentPage = async ({
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">
-                  {student.class.name.charAt(0)}th
+                <h1 className="text-xl font-semibold dark:text-white">
+                  {student.class.grade.level === 1 ? "X " : student.class.grade.level === 2 ? "XI " : "XII "}
                 </h1>
-                <span className="text-sm text-gray-400">Tingkat</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Tingkat</span>
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleLesson.png"
                 alt=""
@@ -141,14 +146,14 @@ const SingleStudentPage = async ({
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold dark:text-white">
                   {student.class._count.lessons}
                 </h1>
-                <span className="text-sm text-gray-400">Pelajaran</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Pelajaran</span>
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleClass.png"
                 alt=""
@@ -157,49 +162,51 @@ const SingleStudentPage = async ({
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">{student.class.name}</h1>
-                <span className="text-sm text-gray-400">Kelas</span>
+                <h1 className="text-xl font-semibold dark:text-white">
+                  {student.class.grade.level === 1 ? "X " : student.class.grade.level === 2 ? "XI " : "XII "}{student.class.name}
+                </h1>
+                <span className="text-sm text-gray-400 dark:text-gray-500">Kelas</span>
               </div>
             </div>
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
-          <h1>Jadwal Siswa</h1>
+        <div className="mt-4 bg-white dark:bg-gray-800 rounded-md p-4 h-[800px]">
+          <h1 className="dark:text-white">Jadwal Siswa</h1>
           <BigCalendarContainer type="classId" id={student.class.id} />
         </div>
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Pintasan</h1>
-          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-md">
+          <h1 className="text-xl font-semibold dark:text-white">Pintasan</h1>
+          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500 dark:text-gray-400">
             <Link
-              className="p-3 rounded-md bg-lamaSkyLight"
+              className="p-3 rounded-md bg-lamaSkyLight dark:bg-gray-700 dark:text-white hover:bg-lamaSky dark:hover:bg-gray-600 transition-colors"
               href={`/list/lessons?classId=${student.class.id}`}
             >
               Pelajaran Siswa
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaPurpleLight"
+              className="p-3 rounded-md bg-lamaPurpleLight dark:bg-gray-700 dark:text-white hover:bg-lamaPurple dark:hover:bg-gray-600 transition-colors"
               href={`/list/teachers?classId=${student.class.id}`}
             >
               Guru Siswa
             </Link>
             <Link
-              className="p-3 rounded-md bg-pink-50"
+              className="p-3 rounded-md bg-pink-50 dark:bg-gray-700 dark:text-white hover:bg-pink-100 dark:hover:bg-gray-600 transition-colors"
               href={`/list/exams?classId=${student.class.id}`}
             >
               Ujian Siswa
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaSkyLight"
+              className="p-3 rounded-md bg-lamaSkyLight dark:bg-gray-700 dark:text-white hover:bg-lamaSky dark:hover:bg-gray-600 transition-colors"
               href={`/list/assignments?classId=${student.class.id}`}
             >
               Tugas Siswa
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaYellowLight"
+              className="p-3 rounded-md bg-lamaYellowLight dark:bg-gray-700 dark:text-white hover:bg-lamaYellow dark:hover:bg-gray-600 transition-colors"
               href={`/list/results?studentId=${student.id}`}
             >
               Nilai Siswa

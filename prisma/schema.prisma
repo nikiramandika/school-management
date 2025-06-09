@@ -65,6 +65,8 @@ model Class {
   capacity      Int
   supervisorId  String?
   gradeId       Int
+  academicYear  String        @default("2023/2024")
+  isActive      Boolean       @default(true)
   announcements Announcement[]
   grade         Grade          @relation(fields: [gradeId], references: [id])
   supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])

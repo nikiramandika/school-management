@@ -256,7 +256,14 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           label = "Pengaturan";
           break;
         default:
-          label = segment.charAt(0).toUpperCase() + segment.slice(1);
+          // Jika segment adalah id user (user_...) tampilkan label ramah sesuai konteks
+          if (segment.startsWith("user_")) {
+            if (segments[index - 1] === "teachers") label = "Profil Guru";
+            else if (segments[index - 1] === "students") label = "Profil Siswa";
+            else label = "Profil Pengguna";
+          } else {
+            label = segment.charAt(0).toUpperCase() + segment.slice(1);
+          }
       }
       return [...acc, { path: segment, label }];
     },
@@ -306,27 +313,18 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
 
         {/* Mobile Title */}
         <div className="md:hidden text-lg font-semibold flex items-center">
-          <Link href="/" className="hover:text-foreground transition-colors">
-            Beranda
-          </Link>
-          {filteredSegments.map((segment, index) => (
-            <React.Fragment key={segment.path}>
-              <HiChevronRight className="h-4 w-4 mx-1" />
-              <Link
-                href={buildPath(index + 1)}
-                className={`hover:text-foreground transition-colors ${
-                  index === filteredSegments.length - 1 ? "font-medium" : ""
-                }`}
-              >
-                {segment.label}
-              </Link>
-            </React.Fragment>
-          ))}
+          {filteredSegments.length > 0 ? (
+            <>
+              <span>{filteredSegments[filteredSegments.length - 1].label}</span>
+            </>
+          ) : (
+            <span>Beranda</span>
+          )}
         </div>
 
         <div className="ml-auto flex items-center gap-2 md:gap-4">
           {/* Desktop Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Popover>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -470,7 +468,11 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                           <div className="mt-2 flex items-center gap-1">
                             <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded">
                               {announcement.class
-                                ? announcement.class.name
+                                ? announcement.class.grade?.level === 1
+                                  ? "X " + announcement.class.name
+                                  : announcement.class.grade?.level === 2
+                                  ? "XI " + announcement.class.name
+                                  : "XII " + announcement.class.name
                                 : "Semua Kelas"}
                             </span>
                           </div>

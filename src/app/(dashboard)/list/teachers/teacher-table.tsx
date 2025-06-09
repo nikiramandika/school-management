@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
-import { Class, Subject, Teacher } from "@prisma/client";
+import { Class, Subject, Teacher, Grade } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { HiAcademicCap, HiBookOpen, HiCollection } from "react-icons/hi";
 
-type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
+type TeacherList = Teacher & { 
+  subjects: Subject[] 
+} & { 
+  classes: (Class & {
+    grade: Grade | null;
+  })[] 
+};
 
 interface TeacherTableProps {
   data: TeacherList[];
@@ -166,6 +172,11 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
                 className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 text-xs"
               >
                 <HiCollection className="mr-1 h-3 w-3" />
+                {classItem.grade?.level === 1
+                  ? "X "
+                  : classItem.grade?.level === 2
+                  ? "XI "
+                  : "XII " }
                 {classItem.name}
               </Badge>
             ))}

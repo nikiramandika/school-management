@@ -23,7 +23,11 @@ const TeacherListPage = async () => {
   const data = await prisma.teacher.findMany({
     include: {
       subjects: true,
-      classes: true,
+      classes: {
+        include: {
+          grade: true,
+        },
+      },
     },
   });
 

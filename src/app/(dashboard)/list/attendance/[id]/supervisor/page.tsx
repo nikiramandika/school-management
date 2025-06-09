@@ -45,7 +45,7 @@ import {
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { AttendancePDFDownload } from "@/components/AttendancePDFDownload";
-import { HiAcademicCap } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen } from "react-icons/hi";
 
 interface ClassPageProps {
   params: {
