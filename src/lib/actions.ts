@@ -1971,7 +1971,30 @@ export const createAttendance = async (
         date: data.date,
         status: data.status,
       },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            class: {
+              include: { grade: true }
+            },
+          },
+        },
+      },
     });
+
+    // Map status ke bahasa Indonesia
+    const statusMap = {
+      PRESENT: "Hadir",
+      SICK: "Sakit",
+      PERMITTED: "Izin",
+      ABSENT: "Tidak Hadir"
+    };
+
+    const lessonName = attendance.lesson?.name || "-";
+    const className = attendance.lesson?.class
+      ? `${attendance.lesson.class.grade?.level === 1 ? "X" : attendance.lesson.class.grade?.level === 2 ? "XI" : "XII"} ${attendance.lesson.class.name}`
+      : "-";
 
     // Logging logic khusus attendance
     if (data.userId && data.userRole) {
@@ -1990,7 +2013,11 @@ export const createAttendance = async (
         action: "CREATE",
         entityType: "Attendance",
         entityId: attendance.id.toString(),
-        description: getActivityDescription("CREATE", "Attendance", `Siswa: ${data.studentId}, Status: ${data.status}`),
+        description: getActivityDescription(
+          "CREATE",
+          "Attendance",
+          `Siswa: ${attendance.student.name} ${attendance.student.surname}, Status: ${statusMap[data.status]}, Pelajaran: ${lessonName}, Kelas: ${className}`
+        ),
         metadata: { ...attendance },
       });
     }

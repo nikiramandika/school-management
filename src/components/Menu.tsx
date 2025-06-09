@@ -154,6 +154,12 @@ const Menu = () => {
   const role = (user?.publicMetadata?.role as string) || "student";
 
   const checkIsActive = (path: string) => {
+    if (path === "/list/teachers") {
+      return pathname.startsWith("/list/teachers");
+    }
+    if (path === "/list/students") {
+      return pathname.startsWith("/list/students");
+    }
     if (path === "/list/results") {
       return pathname.startsWith("/list/results");
     }

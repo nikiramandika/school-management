@@ -64,10 +64,12 @@ export function ClassTable({
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 dark:text-white">
+              {row.original.grade?.level === 1
+                ? "X "
+                : row.original.grade?.level === 2
+                ? "XI "
+                : "XII "}
               {row.original.name}
-            </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Kelas {row.original.grade?.level || row.original.name[0]}
             </span>
           </div>
         </div>
@@ -100,33 +102,7 @@ export function ClassTable({
         </div>
       ),
     },
-    {
-      accessorKey: "grade",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="hidden lg:flex hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold"
-          >
-            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
-            Tingkat
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="hidden lg:flex">
-          <Badge
-            variant="outline"
-            className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300"
-          >
-            <HiCollection className="mr-2 h-4 w-4 text-purple-600 dark:text-puple-500" />
-            Tingkat {row.original.grade?.level || row.original.name[0]}
-          </Badge>
-        </div>
-      ),
-    },
+
     {
       accessorKey: "supervisor",
       header: ({ column }) => {

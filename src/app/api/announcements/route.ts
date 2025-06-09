@@ -27,6 +27,11 @@ export async function GET() {
         class: {
           select: {
             name: true,
+            grade: {
+              select: {
+                level: true,
+              },
+            },
           },
         },
       },
