@@ -188,12 +188,24 @@ const TeacherForm = ({
           register={register}
           error={errors.address}
         />
-        <InputField
-          label="Golongan Darah"
-          name="bloodType"
-          register={register}
-          error={errors.bloodType}
-        />
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Golongan Darah</label>
+          <select
+            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("bloodType")}
+          >
+            <option value="">Pilih Golongan Darah</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="AB">AB</option>
+            <option value="O">O</option>
+          </select>
+          {errors.bloodType?.message && (
+            <p className="text-xs text-red-400">
+              {errors.bloodType.message.toString()}
+            </p>
+          )}
+        </div>
         <InputField
           label="Tanggal Lahir"
           name="birthday"
