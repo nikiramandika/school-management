@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { teacherSchema, TeacherSchema } from "@/lib/formValidationSchemas";
 import { createTeacher, updateTeacher } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Select from "react-select";
 
 const TeacherForm = ({
   type,
@@ -117,7 +117,26 @@ const TeacherForm = ({
     [type, setOpen, router, setError]
   );
 
+  // Options untuk dropdown
+  const bloodTypeOptions = [
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' },
+    { value: 'AB', label: 'AB' },
+    { value: 'O', label: 'O' },
+  ];
+
+  const sexOptions = [
+    { value: 'MALE', label: 'Laki-laki' },
+    { value: 'FEMALE', label: 'Perempuan' },
+  ];
+
   const { subjects } = relatedData || {};
+
+  // Prepare subjects options
+  const subjectOptions = subjects?.map((subject: { id: number; name: string }) => ({
+    value: subject.id.toString(),
+    label: subject.name,
+  })) || [];
 
   // Debug logs
   console.log("Data Guru:", data);
@@ -132,9 +151,7 @@ const TeacherForm = ({
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Membuat Guru Baru" : "Memperbarui Guru"}
       </h1>
-      {/* <span className="text-xs text-gray-400 font-medium">
-        Informasi Autentikasi
-      </span> */}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="NIP"
@@ -160,9 +177,12 @@ const TeacherForm = ({
           </>
         )}
       </div>
+
+      
       <span className="text-xs text-gray-400 font-medium">
         Informasi Pribadi
       </span>
+      <div className="flex flex-col space-y-3">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="Nama Depan"
@@ -188,24 +208,18 @@ const TeacherForm = ({
           register={register}
           error={errors.address}
         />
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Golongan Darah</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("bloodType")}
-          >
-            <option value="">Pilih Golongan Darah</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="AB">AB</option>
-            <option value="O">O</option>
-          </select>
-          {errors.bloodType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.bloodType.message.toString()}
-            </p>
-          )}
-        </div>
+        
+        {/* Blood Type Dropdown - menggunakan SelectField */}
+        <SelectField
+          label="Golongan Darah"
+          name="bloodType"
+          control={control}
+          options={bloodTypeOptions}
+          error={errors.bloodType}
+          placeholder="Pilih Golongan Darah"
+          isSearchable={false}
+        />
+
         <InputField
           label="Tanggal Lahir"
           name="birthday"
@@ -213,6 +227,7 @@ const TeacherForm = ({
           register={register}
           error={errors.birthday}
         />
+        
         {data && (
           <InputField
             label="Id"
@@ -223,83 +238,51 @@ const TeacherForm = ({
           />
         )}
       </div>
+      
       <div className="flex gap-4 w-full">
-        <div className="flex flex-col gap-2 w-1/3">
-          <label className="text-xs text-gray-500">Jenis Kelamin</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full "
-            {...register("sex")}
-          >
-            <option value="MALE">Laki-Laki</option>
-            <option value="FEMALE">Perempuan</option>
-          </select>
-          {errors.sex?.message && (
-            <p className="text-xs text-red-400">
-              {errors.sex.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-2/3 ">
-          <label className="text-xs text-gray-500">Mata Pelajaran</label>
-          <Controller
+        {/* Sex Dropdown - menggunakan SelectField */}
+        <div className="w-1/3">
+          <SelectField
+            label="Jenis Kelamin"
+            name="sex"
             control={control}
-            name="subjects"
-            render={({ field }) => {
-              // Debug logs
-              console.log("Field value:", field.value);
-              console.log("Available subjects:", subjects);
-
-              const selectedIds = field.value || [];
-              const selectedOptions = selectedIds
-                .map((id: string) => {
-                  const subject = subjects.find(
-                    (s: { id: number }) => s.id.toString() === id
-                  );
-                  return subject
-                    ? { value: subject.id.toString(), label: subject.name }
-                    : null;
-                })
-                .filter(Boolean);
-
-              // Debug log
-              console.log("Selected options:", selectedOptions);
-
-              return (
-                <Select
-                  isMulti
-                  isSearchable
-                  options={subjects.map(
-                    (subject: { id: number; name: string }) => ({
-                      value: subject.id.toString(),
-                      label: subject.name,
-                    })
-                  )}
-                  value={selectedOptions}
-                  onChange={(selected) => {
-                    console.log("Selected subjects changed:", selected);
-                    field.onChange(
-                      selected ? selected.map((s: any) => s.value) : []
-                    );
-                  }}
-                  classNamePrefix="react-select custom-select"
-                  placeholder="Pilih Mata Pelajaran..."
-                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-                />
-              );
-            }}
+            options={sexOptions}
+            error={errors.sex}
+            placeholder="Pilih Jenis Kelamin"
+            isSearchable={false}
           />
-          {errors.subjects?.message && (
-            <p className="text-xs text-red-400">
-              {errors.subjects.message.toString()}
-            </p>
-          )}
+        </div>
+        
+        {/* Subjects Multi-Select Dropdown - menggunakan SelectField */}
+        <div className="w-2/3">
+          <SelectField
+            label="Mata Pelajaran"
+            name="subjects"
+            control={control}
+            options={subjectOptions}
+            error={errors.subjects}
+            placeholder="Pilih Mata Pelajaran..."
+            isMulti={true}
+            isSearchable={true}
+          />
         </div>
       </div>
+      </div>
+      
       <button
-        className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
+        className="bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white p-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
         disabled={isSubmitting}
       >
-        {type === "create" ? "Buat" : "Perbarui"}
+        {isSubmitting ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+            {type === "create" ? "Membuat..." : "Memperbarui..."}
+          </>
+        ) : (
+          <>
+            {type === "create" ? "Buat" : "Perbarui"}
+          </>
+        )}
       </button>
     </form>
   );

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField"; 
 import { classSchema, ClassSchema as ClassSchemaBase } from "@/lib/formValidationSchemas";
 import { createClass, updateClass } from "@/lib/actions";
 import { useFormState } from "react-dom";
@@ -54,6 +55,7 @@ const ClassForm = ({
   if (typeof data?.isActive !== 'boolean') {
     console.warn('PERINGATAN: data.isActive tidak ditemukan atau bukan boolean! Nilai:', data?.isActive, typeof data?.isActive);
   }
+  
   // Get teachers and grades from relatedData
   const teachers = relatedData?.teachers || [];
   const grades = relatedData?.grades || [];
@@ -81,6 +83,7 @@ const ClassForm = ({
   const {
     register,
     handleSubmit,
+    control, // Tambahkan control untuk SelectField
     formState: { errors, isSubmitting },
     getValues,
     setValue,
@@ -88,6 +91,37 @@ const ClassForm = ({
     resolver: zodResolver(classSchema),
     defaultValues,
   });
+
+  // Prepare options for SelectField
+  const teacherOptions = [
+    { value: "", label: "Pilih Wali Kelas" },
+    ...teachers.map((teacher: {
+      id: string;
+      name: string;
+      surname: string;
+      isSupervisor?: boolean;
+    }) => {
+      const isDisabled = teacher.isSupervisor && teacher.id !== currentSupervisorId;
+      return {
+        value: teacher.id,
+        label: `${teacher.name} ${teacher.surname}${isDisabled ? " (Already a supervisor)" : ""}`,
+        isDisabled
+      };
+    })
+  ];
+
+  const gradeOptions = [
+    { value: "", label: "Pilih Tingkatan" },
+    ...grades.map((grade: { id: number; level: number }) => ({
+      value: grade.id.toString(),
+      label: grade.level.toString()
+    }))
+  ];
+
+  const academicYearOptions = academicYears.map((year) => ({
+    value: year,
+    label: year
+  }));
 
   // SUBMIT
   const onSubmit: SubmitHandler<ClassSchema> = async (formData) => {
@@ -145,81 +179,48 @@ const ClassForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Wali Kelas</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("supervisorId")}
-            defaultValue={currentSupervisorId}
-          >
-            <option value="">Pilih Wali Kelas</option>
-            {teachers.map(
-              (teacher: {
-                id: string;
-                name: string;
-                surname: string;
-                isSupervisor?: boolean;
-              }) => {
-                const isDisabled =
-                  teacher.isSupervisor && teacher.id !== currentSupervisorId;
-                return (
-                  <option
-                    value={teacher.id}
-                    key={teacher.id}
-                    disabled={isDisabled}
-                  >
-                    {teacher.name + " " + teacher.surname}
-                    {isDisabled ? " (Already a supervisor)" : ""}
-                  </option>
-                );
-              }
-            )}
-          </select>
-          {errors.supervisorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.supervisorId.message.toString()}
-            </p>
-          )}
+        
+        {/* Wali Kelas menggunakan SelectField */}
+        <SelectField
+          label="Wali Kelas"
+          name="supervisorId"
+          control={control}
+          options={teacherOptions}
+          error={errors?.supervisorId}
+          placeholder="Pilih Wali Kelas"
+          isClearable={true}
+          isSearchable={true}
+        />
+
+        {/* Tingkat menggunakan SelectField */}
+        <div className="w-full md:w-1/4">
+          <SelectField
+            label="Tingkat"
+            name="gradeId"
+            control={control}
+            options={gradeOptions}
+            error={errors?.gradeId}
+            placeholder="Pilih Tingkatan"
+            isClearable={false}
+            isSearchable={false}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Tingkat</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("gradeId")}
-            defaultValue={data?.gradeId}
-          >
-            <option value="">Pilih Tingkatan</option>
-            {grades.map((grade: { id: number; level: number }) => (
-              <option value={grade.id} key={grade.id}>
-                {grade.level}
-              </option>
-            ))}
-          </select>
-          {errors.gradeId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.gradeId.message.toString()}
-            </p>
-          )}
+
+        {/* Tahun Ajaran menggunakan SelectField */}
+        <div className="w-full md:w-1/4">
+          <SelectField
+            label="Tahun Ajaran"
+            name="academicYear"
+            control={control}
+            options={academicYearOptions}
+            error={errors?.academicYear}
+            placeholder="Pilih Tahun Ajaran"
+            isClearable={false}
+            isSearchable={true}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Tahun Ajaran</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("academicYear")}
-            defaultValue={data?.academicYear}
-          >
-            {academicYears.map((year) => (
-              <option value={year} key={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-          {errors.academicYear?.message && (
-            <p className="text-xs text-red-400">
-              {errors.academicYear.message.toString()}
-            </p>
-          )}
-        </div>
+
+        {/* Checkbox untuk Status Aktif */}
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Aktif?</label>
           <input
@@ -229,6 +230,7 @@ const ClassForm = ({
           />
         </div>
       </div>
+      
       <button
         className="bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white p-2 rounded-md"
         disabled={isSubmitting}

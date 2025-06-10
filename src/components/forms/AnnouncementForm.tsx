@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField"; // Import SelectField
 import {
   announcementSchema,
   AnnouncementSchema,
@@ -62,16 +63,24 @@ const AnnouncementForm = ({
     ? [...teacherClasses, ...(homeroomClass ? [homeroomClass] : [])]
     : classes;
 
+  // Convert classes to options for SelectField
+  const classOptions = availableClasses?.map((cls: { id: number; name: string; grade: { level: number } }) => ({
+    value: cls.id.toString(),
+    label: `${cls.grade.level === 1 ? "X" : cls.grade.level === 2 ? "XI" : cls.grade.level === 3 ? "XII" : cls.grade.level} ${cls.name}`
+  })) || [];
+
   const {
     register,
     handleSubmit,
     setValue,
+    control, // Add control for SelectField
     formState: { errors, isSubmitting },
   } = useForm<AnnouncementSchema>({
     resolver: zodResolver(announcementSchema),
     defaultValues: {
       ...data,
       date: data?.date ? new Date(data.date) : undefined,
+      classId: data?.classId ? data.classId.toString() : undefined, // Safely convert to string for SelectField
     },
   });
 
@@ -106,7 +115,7 @@ const AnnouncementForm = ({
             formData.date instanceof Date
               ? formData.date.toISOString()
               : formData.date,
-          classId: formData.classId,
+          classId: formData.classId ? (typeof formData.classId === 'string' ? parseInt(formData.classId) : formData.classId) : undefined,
           userId,
           userRole,
         };
@@ -218,7 +227,7 @@ const AnnouncementForm = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
           {userRole !== "teacher" && (
             <div className="flex items-center gap-2 mb-2">
               <input
@@ -233,24 +242,19 @@ const AnnouncementForm = ({
               </label>
             </div>
           )}
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full disabled:opacity-50 disabled:cursor-not-allowed"
-            {...register("classId", { valueAsNumber: true })}
-            defaultValue={data?.classId}
-            disabled={isAllClasses && userRole !== "teacher"}
-          >
-            <option value="">Pilih Kelas</option>
-            {availableClasses?.map((cls: { id: number; name: string; grade: { level: number } }) => (
-              <option value={cls.id} key={cls.id}>
-                {cls.grade.level === 1 ? "X" : cls.grade.level === 2 ? "XI" : cls.grade.level === 3 ? "XII" : cls.grade.level} {cls.name}
-              </option>
-            ))}
-          </select>
-          {errors.classId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.classId.message.toString()}
-            </p>
-          )}
+          
+          {/* Replace the select element with SelectField */}
+          <SelectField
+            label="Kelas"
+            name="classId"
+            control={control}
+            options={classOptions}
+            error={errors.classId}
+            placeholder="Pilih Kelas"
+            isSearchable={true}
+            isClearable={true}
+            hidden={isAllClasses && userRole !== "teacher"}
+          />
         </div>
 
         {data && (

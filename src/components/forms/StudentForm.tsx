@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField"; 
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { studentSchema, StudentSchema } from "@/lib/formValidationSchemas";
 import { createStudent, updateStudent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Select from "react-select";
 
 const StudentForm = ({
   type,
@@ -105,94 +105,6 @@ const StudentForm = ({
     [type, setOpen, router, setError]
   );
 
-  // Custom styles for react-select
-  const customSelectStyles = {
-    control: (provided: any, state: any) => ({
-      ...provided,
-      minHeight: '44px',
-      border: state.isFocused ? '2px solid #06b6d4' : '1px solid #d1d5db',
-      borderRadius: '8px',
-      boxShadow: state.isFocused ? '0 0 0 3px rgba(6, 182, 212, 0.1)' : 'none',
-      '&:hover': {
-        borderColor: '#06b6d4',
-      },
-      backgroundColor: '#ffffff',
-      cursor: 'pointer',
-    }),
-    valueContainer: (provided: any) => ({
-      ...provided,
-      padding: '8px 12px',
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: '#374151',
-      fontSize: '14px',
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      borderRadius: '8px',
-      border: '1px solid #e5e7eb',
-      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-      zIndex: 9999,
-      marginTop: '4px',
-    }),
-    menuList: (provided: any) => ({
-      ...provided,
-      padding: '8px',
-      maxHeight: '200px',
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected 
-        ? '#06b6d4' 
-        : state.isFocused 
-        ? '#f0f9ff' 
-        : 'transparent',
-      color: state.isSelected 
-        ? '#ffffff' 
-        : state.isFocused 
-        ? '#0c4a6e' 
-        : '#374151',
-      borderRadius: '6px',
-      margin: '2px 0',
-      padding: '10px 12px',
-      cursor: 'pointer',
-      fontSize: '14px',
-      fontWeight: state.isSelected ? '500' : '400',
-      '&:active': {
-        backgroundColor: '#0891b2',
-      },
-    }),
-    placeholder: (provided: any) => ({
-      ...provided,
-      color: '#9ca3af',
-      fontSize: '14px',
-    }),
-    input: (provided: any) => ({
-      ...provided,
-      color: '#374151',
-      fontSize: '14px',
-    }),
-    indicatorSeparator: (provided: any) => ({
-      ...provided,
-      backgroundColor: '#d1d5db',
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      color: '#6b7280',
-      '&:hover': {
-        color: '#06b6d4',
-      },
-    }),
-    clearIndicator: (provided: any) => ({
-      ...provided,
-      color: '#6b7280',
-      '&:hover': {
-        color: '#dc2626',
-      },
-    }),
-  };
-
   // Options for dropdowns
   const bloodTypeOptions = [
     { value: 'A', label: 'A' },
@@ -283,38 +195,17 @@ const StudentForm = ({
           error={errors.address}
         />
         
-        {/* Blood Type Dropdown */}
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Golongan Darah
-          </label>
-          <Controller
-            control={control}
-            name="bloodType"
-            render={({ field }) => {
-              const selectedOption = bloodTypeOptions.find(
-                option => option.value === field.value
-              );
-              
-              return (
-                <Select
-                  options={bloodTypeOptions}
-                  value={selectedOption}
-                  onChange={(selected) => field.onChange(selected?.value || null)}
-                  styles={customSelectStyles}
-                  placeholder="Pilih Golongan Darah"
-                  isClearable={true}
-                  isSearchable={false}
-                />
-              );
-            }}
-          />
-          {errors.bloodType?.message && (
-            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-              {errors.bloodType.message.toString()}
-            </p>
-          )}
-        </div>
+        {/* Blood Type Dropdown using SelectField */}
+        <SelectField
+          label="Golongan Darah"
+          name="bloodType"
+          control={control}
+          options={bloodTypeOptions}
+          error={errors.bloodType}
+          placeholder="Pilih Golongan Darah"
+          isSearchable={false}
+          isClearable={true}
+        />
 
         <InputField
           label="Tanggal Lahir"
@@ -336,71 +227,29 @@ const StudentForm = ({
           />
         )}
         
-        {/* Sex Dropdown */}
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Jenis Kelamin
-          </label>
-          <Controller
-            control={control}
-            name="sex"
-            render={({ field }) => {
-              const selectedOption = sexOptions.find(
-                option => option.value === field.value
-              );
-              
-              return (
-                <Select
-                  options={sexOptions}
-                  value={selectedOption}
-                  onChange={(selected) => field.onChange(selected?.value || null)}
-                  styles={customSelectStyles}
-                  placeholder="Pilih Jenis Kelamin"
-                  isClearable={true}
-                  isSearchable={false}
-                />
-              );
-            }}
-          />
-          {errors.sex?.message && (
-            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-              {errors.sex.message.toString()}
-            </p>
-          )}
-        </div>
+        {/* Sex Dropdown using SelectField */}
+        <SelectField
+          label="Jenis Kelamin"
+          name="sex"
+          control={control}
+          options={sexOptions}
+          error={errors.sex}
+          placeholder="Pilih Jenis Kelamin"
+          isSearchable={false}
+          isClearable={true}
+        />
         
-        {/* Class Dropdown */}
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Kelas
-          </label>
-          <Controller
-            control={control}
-            name="classId"
-            render={({ field }) => {
-              const selectedOption = classOptions.find(
-                option => option.value === field.value?.toString()
-              );
-              
-              return (
-                <Select
-                  options={classOptions}
-                  value={selectedOption}
-                  onChange={(selected) => field.onChange(selected?.value === '' ? null : parseInt(selected?.value || '0'))}
-                  styles={customSelectStyles}
-                  placeholder="Pilih Kelas"
-                  isClearable={true}
-                  isSearchable={true}
-                />
-              );
-            }}
-          />
-          {errors.classId?.message && (
-            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-              {errors.classId.message.toString()}
-            </p>
-          )}
-        </div>
+        {/* Class Dropdown using SelectField */}
+        <SelectField
+          label="Kelas"
+          name="classId"
+          control={control}
+          options={classOptions}
+          error={errors.classId}
+          placeholder="Pilih Kelas"
+          isSearchable={true}
+          isClearable={true}
+        />
       </div>
       
       <button
