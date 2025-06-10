@@ -12,11 +12,10 @@ const CountChartContainer = async () => {
   const girls = data.find((d) => d.sex === "FEMALE")?._count || 0;
 
   return (
-    <div className="bg-white shadow-sm dark:bg-card rounded-xl w-full h-full p-4">
+    <div className="bg-white shadow-sm dark:bg-card rounded-xl w-full h-full p-4 pb-6">
       {/* TITLE */}
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Siswa</h1>
-        <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>      {/* CHART */}
       <CountChart boys={boys} girls={girls} />
       {/* BOTTOM */}

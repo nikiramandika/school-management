@@ -43,7 +43,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { HiAcademicCap } from "react-icons/hi";
+import { HiAcademicCap, HiClipboardCheck } from "react-icons/hi";
 
 interface ClassPageProps {
   params: {
@@ -247,7 +247,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                     value="exam"
                     className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600 rounded-md px-4 py-2"
                   >
-                    <BarChart2 className="h-4 w-4" />
+                    <HiClipboardCheck className="h-4 w-4" />
                     Ujian
                     <Badge
                       variant="secondary"
@@ -289,7 +289,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                             <AccordionTrigger className="hover:no-underline px-6 py-4">
                               <div className="flex items-center gap-3 text-left">
                                 <div className="p-2 bg-cyan-500  rounded-lg">
-                                  <BarChart2 className="h-4 w-4 text-white" />
+                                  <HiClipboardCheck className="h-4 w-4 text-white" />
                                 </div>
                                 <div>
                                   <span className="font-semibold text-gray-900 dark:text-white">
@@ -398,7 +398,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                       <CardContent className="text-center py-12">
                         <div className="flex flex-col items-center gap-4">
                           <div className="p-4 bg-gray-100 dark:bg-slate-700 rounded-full">
-                            <BarChart2 className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                            <HiClipboardCheck className="h-8 w-8 text-gray-400 dark:text-gray-500" />
                           </div>
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">

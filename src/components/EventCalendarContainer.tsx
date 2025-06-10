@@ -17,7 +17,7 @@ const EventCalendarContainer = ({
   return (
     <div className="space-y-6">
       {/* Calendar Card */}
-      <div className="bg-white dark:bg-card rounded-xl shadow-md border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
         {/* Calendar Header with Gradient bg-gradient-to-r from-indigo-300 to-cyan-200 dark:from-indigo-400 dark:to-cyan-500*/}
         <div className="bg-indigo-400 px-6 py-5">
           <div className="flex items-center justify-between">
@@ -90,7 +90,7 @@ const EventCalendarContainer = ({
       </div>
 
       {/* Events Card */}
-      <div className="bg-white dark:bg-card rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
         {/* Events Header with Gradient */}
         <div className="bg-teal-500 px-6 py-5">
           <div className="flex items-center justify-between">

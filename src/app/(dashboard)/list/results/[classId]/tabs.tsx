@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { BarChart2, FileText } from "lucide-react";
+import { HiClipboardCheck } from "react-icons/hi";
 
 interface TabsProps {
   classId: string;
@@ -25,9 +26,9 @@ const Tabs = ({
     {
       name: "Ujian",
       href: `/list/results/${classId}/exam`,
-      icon: BarChart2,
+      icon: HiClipboardCheck,
       count: totalExams,
-      color: "purple",
+      color: "cyan",
     },
     {
       name: "Tugas",
@@ -60,7 +61,7 @@ const Tabs = ({
               <Icon
                 className={cn(
                   "h-4 w-4 transition-colors",
-                  isActive && tab.color === "purple" && "text-purple-600",
+                  isActive && tab.color === "cyan" && "text-cyan-600",
                   isActive && tab.color === "orange" && "text-orange-600",
                   !isActive && "text-gray-500 dark:text-gray-400"
                 )}
@@ -70,10 +71,10 @@ const Tabs = ({
                 variant="secondary"
                 className={cn(
                   "ml-1 text-xs font-semibold",
-                  tab.color === "purple" &&
-                    "bg-cyan-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300",
+                  tab.color === "cyan" &&
+                    "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/50 dark:text-cyan-300",
                   tab.color === "orange" &&
-                    "bg-cyan-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300"
+                    "bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300"
                 )}
               >
                 {tab.count}

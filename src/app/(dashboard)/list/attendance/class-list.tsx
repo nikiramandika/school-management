@@ -21,7 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { HiCollection, HiIdentification , HiUserGroup} from "react-icons/hi";
+import { HiCollection, HiIdentification , HiUserGroup, HiAcademicCap} from "react-icons/hi";
 
 type ClassWithRelations = Class & {
   supervisor: Teacher | null;
@@ -68,7 +68,12 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
             </div>
             <div>
               <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                {classItem.grade?.level === 1 ? "X" : classItem.grade?.level === 2 ? "XI" : "XII"} {classItem.name}
+                {classItem.grade?.level === 1
+                  ? "X"
+                  : classItem.grade?.level === 2
+                  ? "XI"
+                  : "XII"}{" "}
+                {classItem.name}
               </CardTitle>
               {isSupervisor && (
                 <Badge
@@ -88,8 +93,8 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
         <div className="space-y-3">
           {/* Grade Level */}
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-cyan-100 dark:bg-purple-900/30 rounded-md">
-              <GraduationCap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+              <GraduationCap className="h-4 w-4 text-gray-900 dark:text-white" />
             </div>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Tingkat {classItem.grade?.level || "N/A"}
@@ -98,8 +103,8 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
 
           {/* Capacity */}
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-cyan-100 dark:bg-orange-900/30 rounded-md">
-              <HiUserGroup className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+            <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+              <HiUserGroup className="h-4 w-4 text-gray-900 dark:text-white" />
             </div>
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Kapasitas:{" "}
@@ -113,8 +118,8 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           {/* Current Students (if available) */}
           {classItem.students && (
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-md">
-                <UserCheck className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+              <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                <UserCheck className="h-4 w-4 text-gray-900 dark:text-white" />
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 Siswa aktif:{" "}
@@ -128,8 +133,8 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           {/* Supervisor (for non-supervised classes) */}
           {!isSupervisor && classItem.supervisor && (
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-md">
-                <User className="h-4 w-4 text-cyan-600 dark:text-indigo-400" />
+              <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                <HiAcademicCap className="h-4 w-4 text-gray-900 dark:text-white" />
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 Wali Kelas:{" "}
@@ -217,7 +222,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
           <Card className="border-dashed border-2 border-gray-300 dark:border-gray-600">
             <CardContent className="p-8 text-center">
               <div className="flex flex-col items-center gap-3">
-                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-full">
+                <div className="p-3 bg-gray-100 dark:bg-card rounded-full">
                   <HiCollection className="h-6 w-6 text-gray-400" />
                 </div>
                 <div>

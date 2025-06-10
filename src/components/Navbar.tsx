@@ -322,7 +322,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           )}
         </div>
 
-        <div className="ml-auto flex items-center gap-2 md:gap-4">
+        <div className="ml-auto flex items-center gap-2 md:gap-2">
           {/* Desktop Buttons */}
           <div className="flex items-center gap-2">
             <Popover>
@@ -514,7 +514,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           </DropdownMenu>
 
           {/* Desktop User Info */}
-          <div className="hidden md:flex flex-col">
+          <div className="hidden md:flex flex-col pl-2">
             <span className="text-xs leading-3 font-medium">
               {user?.fullName || user?.username}
             </span>

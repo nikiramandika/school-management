@@ -89,7 +89,7 @@ const PageHeader = ({
                 <p className="text-3xl font-bold">-</p>
               </div>
               <div className="p-3 bg-white/20 rounded-full">
-                <BarChart3 className="h-6 w-6" />
+                <HiClipboardCheck className="h-6 w-6" />
               </div>
             </div>
           </CardContent>

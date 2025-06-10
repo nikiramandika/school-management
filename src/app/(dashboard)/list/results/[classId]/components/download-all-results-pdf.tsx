@@ -132,7 +132,7 @@ export default function DownloadAllResultsPDFButton({ students = [], exams = [],
             <Button 
               onClick={handleDownloadAllPDF} 
               disabled={loading || hasNoAssessments} 
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               <Download className="h-4 w-4 mr-2" />
               {loading ? "Membuat PDF..." : "Download Rekap PDF"}

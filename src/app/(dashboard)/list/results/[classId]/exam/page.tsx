@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { DownloadButton } from "../components/download-button";
 import DownloadAllResultsPDFButton from "../components/download-all-results-pdf";
+import { HiClipboardCheck } from "react-icons/hi";
 
 interface ExamPageProps {
   params: {
@@ -58,9 +59,9 @@ const PageHeader = ({
     {/* Main Header */}
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-purple-500 rounded-lg">
-          <BarChart2 className="h-6 w-6 text-white" />
-        </div>
+        <div className="p-2 bg-cyan-500 rounded-lg">
+                      <HiClipboardCheck className="h-5 w-5 text-white" />
+                    </div>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Hasil Ujian {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}

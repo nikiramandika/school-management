@@ -49,7 +49,7 @@ const TeacherListPage = async () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 rounded-2xl">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-400 rounded-lg">
+              <div className="p-2 bg-cyan-500 rounded-lg">
                 <HiAcademicCap className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -78,11 +78,11 @@ const TeacherListPage = async () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-indigo-400 text-white border-0 shadow-md">
+          <Card className="bg-cyan-500 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-indigo-100 text-sm font-medium">
+                  <p className="text-cyan-100 text-sm font-medium">
                     Total Guru
                   </p>
                   <p className="text-3xl font-bold">{totalTeachers}</p>
@@ -94,11 +94,11 @@ const TeacherListPage = async () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-indigo-400 text-white border-0 shadow-md">
+          <Card className="bg-cyan-500 text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-indigo-100 text-sm font-medium">
+                  <p className="text-cyan-100 text-sm font-medium">
                     Guru Wali Kelas
                   </p>
                   <p className="text-3xl font-bold">{teachersWithClasses}</p>
@@ -114,13 +114,13 @@ const TeacherListPage = async () => {
         {/* Main Teachers Table Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-400 rounded-lg">
+            <div className="p-2 bg-cyan-500 rounded-lg">
               <HiAcademicCap className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white/90">
               Data Guru
             </h1>
-            <Badge variant="secondary" className="ml-2 bg-indigo-500/30">
+            <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
               {totalTeachers} Guru
             </Badge>
           </div>

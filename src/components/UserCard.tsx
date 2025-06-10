@@ -20,13 +20,13 @@ const UserCard = async ({
         <span className="text-[10px] font-bold bg-white dark:bg-white px-2 py-1 rounded-full text-cyan-500 dark:text-cyan-5 00/90 shadow-xs">
           2024/25
         </span>
-        <Image
+        {/* <Image
           src="/more.png"
           alt=""
           width={20}
           height={20}
           className="dark:invert"
-        />
+        /> */}
       </div>
       <h1 className="text-2xl font-semibold my-4 dark:text-white">{data}</h1>
       <h2 className="capitalize text-sm font-medium text-gray-600 dark:text-gray-200">
