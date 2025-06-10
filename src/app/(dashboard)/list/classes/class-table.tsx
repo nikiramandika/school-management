@@ -171,7 +171,11 @@ export function ClassTable({
       cell: ({ row }) => (
         <Badge
           variant={row.original.isActive ? "default" : "outline"}
-          className={`${row.original.isActive ? "bg-green-500" : "bg-red-500"}`}
+          className={`${
+            row.original.isActive
+              ? "bg-transparent text-teal-400 border-teal-400"
+              : "bg-transparent text-rose-400 border-rose-400"
+          }`}
         >
           {row.original.isActive ? "Aktif" : "Tidak Aktif"}
         </Badge>

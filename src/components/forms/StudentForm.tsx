@@ -110,9 +110,9 @@ const StudentForm = ({
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Membuat Siswa Baru" : "Memperbarui Siswa"}
       </h1>
-      <span className="text-xs text-gray-400 font-medium">
+      {/* <span className="text-xs text-gray-400 font-medium">
         Informasi Autentikasi
-      </span>
+      </span> */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InputField
           label="NISN"

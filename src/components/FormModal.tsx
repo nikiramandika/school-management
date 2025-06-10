@@ -275,7 +275,7 @@ const FormModal = ({
             onChange={(e) => setConfirmDelete(e.target.checked)}
             className="h-6 w-6 rounded-xl border-gray-300 accent-teal-600 focus:ring-teal-600 focus:ring-0 cursor-pointer" // teal-500
           />
-          <label htmlFor="confirmDelete" className="text-sm text-gray-600">
+          <label htmlFor="confirmDelete" className="text-sm text-gray-600 pl-2">
             "Saya menyadari bahwa penghapusan {tableNameMap[table] || table} ini
             bersifat permanen dan tidak dapat dipulihkan."
           </label>
@@ -355,7 +355,7 @@ const FormModal = ({
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-4"
+              className="absolute top-6 right-6"
               onClick={handleClose}
             >
               <X className="h-4 w-4" />

@@ -1,18 +1,29 @@
 "use client";
 import Image from "next/image";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
-
-const data = [
-  { name: "Group A", value: 92, fill: "#b3eaf5" },
-  { name: "Group B", value: 8, fill: "#ccd6ff" },
-];
+import { useTheme } from "next-themes"; // atau sesuai theme provider yang kamu gunakan
 
 const Performance = () => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const data = [
+    {
+      name: "Group A",
+      value: 92,
+      fill: isDark ? "#737ced" : "#737ced",
+    },
+    {
+      name: "Group B",
+      value: 8,
+      fill: isDark ? "#00b8db" : "#00b8db",
+    },
+  ];
+
   return (
-    <div className="bg-gray-50 dark:bg-card p-4 rounded-md h-80 relative">
+    <div className="bg-lamaSky dark:bg-card p-4 sm:p-6 rounded-2xl h-80 relative">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Performa</h1>
-        <Image src="/moreDark.png" alt="" width={16} height={16} />
       </div>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
