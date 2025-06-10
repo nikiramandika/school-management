@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField";
 import {
   assignmentSchema,
   AssignmentSchema,
@@ -14,6 +15,7 @@ import {
   useCallback,
   useState,
   useEffect,
+  useMemo,
 } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -50,6 +52,7 @@ const AssignmentForm = ({
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<AssignmentSchema>({
     resolver: zodResolver(assignmentSchema),
@@ -114,13 +117,38 @@ const AssignmentForm = ({
   // Get lessons from relatedData
   const lessons = relatedData?.lessons || [];
 
-  // Get current lesson ID
-  const currentLessonId = data?.lessonId || data?.lesson?.id;
+  // Convert lessons to SelectField options
+  const lessonOptions = useMemo(
+    () => [
+      { value: "", label: "Pilih Pelajaran" },
+      ...lessons.map(
+        (lesson: {
+          id: number;
+          name: string;
+          subject: { id: number; name: string };
+          class: { id: number; name: string; grade: { level: number } };
+          teacher: { id: string; name: string; surname: string };
+        }) => ({
+          value: String(lesson.id),
+          label: `${lesson.subject.name} - ${
+            lesson.class.grade?.level === 1
+              ? "X"
+              : lesson.class.grade?.level === 2
+              ? "XI"
+              : "XII"
+          } ${lesson.class.name} (${lesson.name}) - ${lesson.teacher.name} ${
+            lesson.teacher.surname
+          }`,
+        })
+      ),
+    ],
+    [lessons]
+  );
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Buat Tugas Baru" : "Mmeperbarui Tugas"}
+        {type === "create" ? "Buat Tugas Baru" : "Memperbarui Tugas"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
@@ -132,34 +160,18 @@ const AssignmentForm = ({
           error={errors?.title}
         />
 
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Pelajaran</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("lessonId")}
-            defaultValue={currentLessonId}
-          >
-            <option value="">Pilih Pelajaran</option>
-            {lessons.map(
-              (lesson: {
-                id: number;
-                name: string;
-                subject: { id: number; name: string };
-                class: { id: number; name: string; grade: { level: number } };
-                teacher: { id: string; name: string; surname: string };
-              }) => (
-                <option value={lesson.id} key={lesson.id}>
-                  {lesson.subject.name} - {lesson.class.grade?.level === 1 ? "X" : lesson.class.grade?.level === 2 ? "XI" : "XII"} {lesson.class.name} ({lesson.name}) -{" "}
-                  {lesson.teacher.name} {lesson.teacher.surname}
-                </option>
-              )
-            )}
-          </select>
-          {errors.lessonId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.lessonId.message.toString()}
-            </p>
-          )}
+        <div className="w-full">
+          <SelectField
+            label="Pelajaran"
+            name="lessonId"
+            control={control}
+            options={lessonOptions}
+            error={errors?.lessonId}
+            placeholder="Pilih Pelajaran"
+            valueAsNumber={true}
+            isSearchable={true}
+            isClearable={true}
+          />
         </div>
 
         <div className="flex flex-col gap-2 w-full">

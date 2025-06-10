@@ -1,8 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useController } from "react-hook-form";
 import InputField from "../InputField";
+import SelectField from "../SelectField"; 
 import { lessonSchema, LessonSchema } from "@/lib/formValidationSchemas";
 import { createLesson, updateLesson } from "@/lib/actions";
 import { Dispatch, SetStateAction, useCallback } from "react";
@@ -24,6 +25,7 @@ const LessonForm = ({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<LessonSchema>({
     resolver: zodResolver(lessonSchema),
@@ -43,6 +45,8 @@ const LessonForm = ({
             minute: "2-digit",
           })
         : undefined,
+      subjectId: data?.subjectId || undefined,
+      classId: data?.classId || undefined,
     },
   });
 
@@ -51,8 +55,6 @@ const LessonForm = ({
       try {
         const submitData = {
           ...formData,
-          subjectId: Number(formData.subjectId),
-          classId: Number(formData.classId),
         };
 
         const action = type === "create" ? createLesson : updateLesson;
@@ -82,6 +84,30 @@ const LessonForm = ({
 
   const { subjects, classes, teachers } = relatedData || {};
 
+  // Prepare options for SelectField
+  const subjectOptions = subjects?.map((subject: { id: number; name: string }) => ({
+    value: String(subject.id),
+    label: subject.name,
+  })) || [];
+
+  const classOptions = classes?.map((class_: { id: number; name: string; grade: { level: number } }) => ({
+    value: String(class_.id),
+    label: `${class_.grade.level === 1 ? "X" : class_.grade.level === 2 ? "XI" : "XII"} ${class_.name}`,
+  })) || [];
+
+  const teacherOptions = teachers?.map((teacher: { id: string; name: string; surname: string }) => ({
+    value: teacher.id,
+    label: `${teacher.name} ${teacher.surname}`,
+  })) || [];
+
+  const dayOptions = [
+    { value: "MONDAY", label: "Senin" },
+    { value: "TUESDAY", label: "Selasa" },
+    { value: "WEDNESDAY", label: "Rabu" },
+    { value: "THURSDAY", label: "Kamis" },
+    { value: "FRIDAY", label: "Jumat" },
+  ];
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-xl font-semibold">
@@ -106,87 +132,61 @@ const LessonForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Mata Pelajaran</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("subjectId", { valueAsNumber: true })}
-            defaultValue={data?.subjectId}
-          >
-            <option value="">Pilih Mata Pelajaran</option>
-            {subjects?.map((subject: { id: number; name: string }) => (
-              <option value={subject.id} key={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-          {errors.subjectId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.subjectId.message.toString()}
-            </p>
-          )}
+
+        <div className="flex gap-4 w-full">
+        <div className="w-full md:w-1/2">
+          <SelectField
+            label="Mata Pelajaran"
+            name="subjectId"
+            control={control}
+            options={subjectOptions}
+            error={errors?.subjectId}
+            placeholder="Pilih Mata Pelajaran"
+            isSearchable
+            isClearable
+            valueAsNumber={true}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Kelas</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("classId", { valueAsNumber: true })}
-            defaultValue={data?.classId}
-          >
-            <option value="">Pilih Kelas</option>
-            {classes?.map((class_: { id: number; name: string; grade: { level: number } }) => (
-              <option value={class_.id} key={class_.id}>
-                {class_.grade.level === 1 ? "X" : class_.grade.level === 2 ? "XI" : "XII"} {class_.name}
-              </option>
-            ))}
-          </select>
-          {errors.classId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.classId.message.toString()}
-            </p>
-          )}
+
+        <div className="w-full md:w-1/4">
+          <SelectField
+            label="Kelas"
+            name="classId"
+            control={control}
+            options={classOptions}
+            error={errors?.classId}
+            placeholder="Pilih Kelas"
+            isSearchable
+            isClearable
+            valueAsNumber={true}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Hari</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("day")}
-            defaultValue={data?.day}
-          >
-            <option value="">Pilih Hari</option>
-            <option value="MONDAY">Senin</option>
-            <option value="TUESDAY">Selasa</option>
-            <option value="WEDNESDAY">Rabu</option>
-            <option value="THURSDAY">Kamis</option>
-            <option value="FRIDAY">Jumat</option>
-          </select>
-          {errors.day?.message && (
-            <p className="text-xs text-red-400">
-              {errors.day.message.toString()}
-            </p>
-          )}
+
+        <div className="w-full md:w-1/4">
+          <SelectField
+            label="Hari"
+            name="day"
+            control={control}
+            options={dayOptions}
+            error={errors?.day}
+            placeholder="Pilih Hari"
+            isSearchable={false}
+            isClearable
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Guru</label>
-          <select
-            className="dark:bg-[#27272e] ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("teacherId")}
-            defaultValue={data?.teacherId}
-          >
-            <option value="">Pilih Guru</option>
-            {teachers?.map(
-              (teacher: { id: string; name: string; surname: string }) => (
-                <option value={teacher.id} key={teacher.id}>
-                  {teacher.name} {teacher.surname}
-                </option>
-              )
-            )}
-          </select>
-          {errors.teacherId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.teacherId.message.toString()}
-            </p>
-          )}
+        </div>
+
+        <div className="w-full">
+          <SelectField
+            label="Guru"
+            name="teacherId"
+            control={control}
+            options={teacherOptions}
+            error={errors?.teacherId}
+            placeholder="Pilih Guru"
+            isSearchable
+            isClearable
+          />
         </div>
 
         <div className="flex gap-4 w-full">

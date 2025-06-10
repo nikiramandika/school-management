@@ -17,6 +17,7 @@ interface SelectFieldProps {
   isSearchable?: boolean;
   isClearable?: boolean;
   hidden?: boolean;
+  valueAsNumber?: boolean; 
 }
 
 const SelectField = ({
@@ -30,6 +31,7 @@ const SelectField = ({
   isSearchable = true,
   isClearable = true,
   hidden = false,
+  valueAsNumber = false, // Default false
 }: SelectFieldProps) => {
   const customSelectStyles = {
     control: (provided: any, state: any) => ({
@@ -199,15 +201,24 @@ const SelectField = ({
               />
             );
           } else {
-            const selectedValue = options.find(
-              (opt) => opt.value === field.value
-            );
+            let selectedValue;
+            if (field.value !== undefined && field.value !== null) {
+              const searchValue = valueAsNumber ? String(field.value) : field.value;
+              selectedValue = options.find((opt) => opt.value === searchValue);
+            }
 
             return (
               <Select
                 {...commonProps}
                 value={selectedValue}
-                onChange={(selected) => field.onChange(selected?.value || null)}
+                onChange={(selected) => {
+                  if (selected) {
+                    const newValue = valueAsNumber ? Number(selected.value) : selected.value;
+                    field.onChange(newValue);
+                  } else {
+                    field.onChange(null);
+                  }
+                }}
               />
             );
           }
