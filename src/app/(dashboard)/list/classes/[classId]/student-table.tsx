@@ -4,8 +4,24 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Student } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, User2, Mail, BadgeInfo, Contact } from "lucide-react";
+import {
+  ArrowUpDown,
+  User2,
+  Mail,
+  BadgeInfo,
+  Contact,
+  Edit,
+  Eye,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import FormModal from "@/components/FormModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Link from "next/link";
 
 type StudentTableProps = {
   data: Student[];
@@ -13,7 +29,7 @@ type StudentTableProps = {
 };
 
 export function StudentTable({ data, role }: StudentTableProps) {
-  const columns: ColumnDef<Student>[] = [
+  const baseColumns: ColumnDef<Student>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -101,6 +117,43 @@ export function StudentTable({ data, role }: StudentTableProps) {
       ),
     },
   ];
+
+  const adminActionsColumn: ColumnDef<Student> = {
+    id: "actions",
+    header: () => (
+      <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
+        <Edit className="h-4 w-4 text-cyan-600" />
+        Aksi
+      </div>
+    ),
+    cell: ({ row }) => {
+      const item = row.original;
+      return (
+        <div className="flex items-center justify-center">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href={`/list/students/${item.id}`}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20 flex items-center justify-center w-8 h-8"
+                  >
+                    <Eye className="h-4 w-4 text-cyan-600" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>Lihat Detail Siswa</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      );
+    },
+  };
+
+  // Gabungkan kolom berdasarkan role
+  const columns =
+    role === "admin" ? [...baseColumns, adminActionsColumn] : baseColumns;
 
   return (
     <div className="w-full max-w-6xl mx-auto rounded-lg overflow-hidden">
