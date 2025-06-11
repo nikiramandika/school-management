@@ -31,7 +31,7 @@ const ClassListPage = async () => {
   let allGrades: { id: number; level: number }[] = [];
   let supervisedClasses: ClassWithRelations[] = [];
 
-  if (role === "admin") {
+  if (role === "admin" || role === "kepala_sekolah") {
     // Admin sees all classes
     data = await prisma.class.findMany({
       include: {

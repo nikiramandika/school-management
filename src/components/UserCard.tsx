@@ -30,7 +30,7 @@ const UserCard = async ({
       </div>
       <h1 className="text-2xl font-semibold my-4 dark:text-white">{data}</h1>
       <h2 className="capitalize text-sm font-medium text-gray-600 dark:text-gray-200">
-        {type}s
+        {type === "student" ? "Siswa" : type === "teacher" ? "Guru" : "Admin"}
       </h2>
     </div>
   );

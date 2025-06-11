@@ -16,10 +16,10 @@ import { useTheme } from "next-themes";
 const AttendanceChart = ({
   data,
 }: {
-  data: { name: string; present: number; absent: number }[];
-}) => {
+  data: { name: string; present: number; absent: number }[];}) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+
 
   return (
     <ResponsiveContainer width="100%" height="90%">
@@ -59,12 +59,14 @@ const AttendanceChart = ({
         /> 
         <Bar
           dataKey="present"
+          name="Hadir"
           fill="#00b8db"
           legendType="circle"
           radius={[10, 10, 0, 0]}
         />
         <Bar
           dataKey="absent"
+          name="Tidak Hadir"
           fill="#737ced"
           legendType="circle"
           radius={[10, 10, 0, 0]}

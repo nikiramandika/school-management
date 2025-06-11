@@ -32,7 +32,7 @@ const LoginPage = () => {
         <div className="flex flex-col items-center gap-4">
           <LoadingSpinner size="lg" />
           <p className="text-gray-500 dark:text-gray-400">
-            {isAuthenticating ? "Signing in..." : "Loading..."}
+            {isAuthenticating ? "Masuk ke akun..." : "Memuat..."}
           </p>
         </div>
       </div>
@@ -184,7 +184,7 @@ const LoginPage = () => {
           disabled={isButtonLoading}
         >
           <span className="relative">
-            {isButtonLoading ? "Sedang masuk..." : "Masuk"}
+            {isButtonLoading ? "Sedang Masuk..." : "Masuk"}
           </span>
         </button>
       </form>

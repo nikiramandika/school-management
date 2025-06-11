@@ -15,6 +15,8 @@ import {
   MapPin,
   UserCheck,
   Edit,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import FormModal from "@/components/FormModal";
 import {
@@ -129,6 +131,45 @@ export function StudentTable({ data, role }: StudentTableProps) {
                  row.original.class.grade.level === 2 ? 'XI' : 
                  row.original.class.grade.level === 3 ? 'XII' : ''} {row.original.class.name}
             </Badge>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "class.isActive",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="hidden md:flex hover:bg-emerald-50 dark:hover:bg-emerald-900/20 font-semibold"
+          >
+            <UserCheck className="mr-2 h-4 w-4 text-emerald-600" />
+            Status Kelas
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }: { row: { original: StudentList } }) => (
+        <div className="hidden md:flex justify-center">
+          <div className="hidden md:flex items-center gap-2">
+            {row.original.class.isActive ? (
+              <Badge
+                variant="outline"
+                className="border-emerald-200 text-emerald-700 dark:border-emerald-700 dark:text-emerald-300 text-xs"
+              >
+                <CheckCircle2 className="mr-1 h-3 w-3" />
+                Aktif
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className="border-red-200 text-red-700 dark:border-red-700 dark:text-red-300 text-xs"
+              >
+                <XCircle className="mr-1 h-3 w-3" />
+                Tidak Aktif
+              </Badge>
+            )}
           </div>
         </div>
       ),

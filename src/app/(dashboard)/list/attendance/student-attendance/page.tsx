@@ -27,6 +27,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { HiBookOpen } from "react-icons/hi";
 
 const StudentAttendancePage = async () => {
   const { userId } = await auth();
