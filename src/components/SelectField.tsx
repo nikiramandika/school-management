@@ -31,7 +31,7 @@ const SelectField = ({
   isSearchable = true,
   isClearable = true,
   hidden = false,
-  valueAsNumber = false, // Default false
+  valueAsNumber = false,
 }: SelectFieldProps) => {
   const customSelectStyles = {
     control: (provided: any, state: any) => ({
@@ -39,17 +39,15 @@ const SelectField = ({
       minHeight: "38px",
       height: "38px",
       border: state.isFocused
-        ? document.documentElement.classList.contains("dark")
-          ? "1.5px solid rgb(78, 87, 98)"
-          : "1.5px solid rgb(178, 185, 196)"
-        : document.documentElement.classList.contains("dark")
-        ? "1.5px solid #d1d5db"
-        : "1.5px solid #d1d5db",
+        ? "1.5px solid rgba(6, 182, 212, 0.5)" 
+        : "1.5px solid #d1d5db", 
       borderRadius: "6px",
-      boxShadow: "none",
+      boxShadow: state.isFocused 
+        ? "0 0 0 1px rgba(6, 182, 212, 0.5)" 
+        : "none",
       "&:hover": {
-        borderColor: document.documentElement.classList.contains("dark")
-          ? "#d1d5db"
+        borderColor: state.isFocused 
+          ? "rgba(6, 182, 212, 0.5)" 
           : "#d1d5db",
       },
       backgroundColor: document.documentElement.classList.contains("dark")
@@ -57,6 +55,7 @@ const SelectField = ({
         : "white",
       cursor: "pointer",
       fontSize: "14px",
+      transition: "all 0.2s ease-in-out", 
     }),
     valueContainer: (provided: any) => ({
       ...provided,
