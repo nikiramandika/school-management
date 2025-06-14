@@ -5,7 +5,7 @@ import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { Teacher } from "@prisma/client";
+import { Teacher, Day } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -17,6 +17,37 @@ import {
 } from "@/components/ui/tooltip";
 import { HiCollection, HiDocumentText, HiIdentification, HiAcademicCap } from "react-icons/hi";
 
+type TeacherWithRelations = Teacher & {
+  _count: {
+    subjects: number;
+    lessons: number;
+    classes: number;
+  };
+  subjects: { id: number; name: string }[];
+  classes: {
+    id: number;
+    name: string;
+    grade: {
+      level: number;
+    };
+  }[];
+  lessons: {
+    id: number;
+    day: Day;
+    startTime: Date;
+    endTime: Date;
+    subject: {
+      name: string;
+    };
+    class: {
+      name: string;
+      grade: {
+        level: number;
+      };
+    };
+  }[];
+};
+
 const SingleTeacherPage = async ({
   params: { id },
 }: {
@@ -25,12 +56,7 @@ const SingleTeacherPage = async ({
   const { sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
-  const teacher:
-    | (Teacher & {
-        _count: { subjects: number; lessons: number; classes: number };
-        subjects: { id: number; name: string }[];
-      })
-    | null = await prisma.teacher.findUnique({
+  const teacher = await prisma.teacher.findUnique({
     where: { id },
     include: {
       _count: {
@@ -46,13 +72,51 @@ const SingleTeacherPage = async ({
           name: true,
         },
       },
+      classes: {
+        select: {
+          id: true,
+          name: true,
+          grade: {
+            select: {
+              level: true,
+            },
+          },
+        },
+      },
+      lessons: {
+        take: 5,
+        orderBy: {
+          id: "desc",
+        },
+        include: {
+          subject: {
+            select: {
+              name: true,
+            },
+          },
+          class: {
+            select: {
+              name: true,
+              grade: {
+                select: {
+                  level: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
-  });
+  }) as TeacherWithRelations | null;
 
   if (!teacher) {
     return notFound();
   }
   
+  // Determine if user can edit
+  const canEdit = role === "admin";
+  const isViewOnly = role === "kepala_sekolah";
+
   return (
     <div className="p-3 sm:p-4 md:p-6 soft-light bg-softlight dark:bg-softdark m-2 sm:m-4 mt-0 rounded-3xl shadow-md">
       <div className="flex gap-4 sm:gap-6 flex-col xl:flex-row">
@@ -92,7 +156,7 @@ const SingleTeacherPage = async ({
                     </div>
 
                     {/* Edit Button */}
-                    {role === "admin" && (
+                    {canEdit && (
                       <div className="flex justify-center sm:justify-end">
                         <TooltipProvider>
                           <Tooltip>

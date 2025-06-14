@@ -451,26 +451,33 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
 
                     {/* Score and Actions */}
                     <div className="flex items-center gap-4">
-                      <div className="flex flex-col items-center gap-2">
-                        <Badge
-                          variant="outline"
-                          className={`${getScoreColor(
-                            result.score
-                          )} font-bold text-lg px-3 py-1`}
-                        >
-                          {getScoreIcon(result.score)} {result.score}
-                        </Badge>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(result.startTime).toLocaleString("id-ID", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </div>
-                      </div>
+                      <Badge
+                        variant="outline"
+                        className={`${getScoreColor(result.score)} px-3 py-1`}
+                      >
+                        <span className="mr-1">{getScoreIcon(result.score)}</span>
+                        {result.score}
+                      </Badge>
 
-                      {(role === "admin" || role === "teacher") && (
+                      {/* Download button for all roles */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => downloadIndividualResult(result)}
+                              className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
+                            >
+                              <Download className="h-4 w-4 text-cyan-600" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Download Hasil</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      {/* Edit and Delete buttons only for admin */}
+                      {role === "admin" && (
                         <div className="flex items-center gap-2">
                           <TooltipProvider>
                             <Tooltip>
@@ -504,26 +511,6 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                           </TooltipProvider>
                         </div>
                       )}
-
-                      <div className="flex items-center gap-2">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => downloadIndividualResult(result)}
-                                className="h-8 w-8"
-                              >
-                                <Download className="h-4 w-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Download hasil</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
                     </div>
                   </div>
                 </div>

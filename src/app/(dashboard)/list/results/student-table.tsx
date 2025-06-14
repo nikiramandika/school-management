@@ -672,6 +672,63 @@ const StudentTable = ({
                           )}
                         </div>
                       </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2">
+                        {/* Download button for all roles */}
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => downloadStudentResults(student)}
+                                className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
+                              >
+                                <Download className="h-4 w-4 text-cyan-600" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Download Hasil Siswa</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        {/* Edit and Delete buttons only for admin */}
+                        {role === "admin" && (
+                          <>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handleEdit(student.id)}
+                                    className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
+                                  >
+                                    <Pencil className="h-4 w-4 text-cyan-600" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Edit Nilai</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handleDelete(student.id)}
+                                    className="hover:bg-red-50 hover:border-red-200 dark:hover:bg-red-900/20"
+                                  >
+                                    <X className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Hapus Nilai</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );

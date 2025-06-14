@@ -49,6 +49,10 @@ const SingleStudentPage = async ({
     return notFound();
   }
 
+  // Determine if user can edit
+  const canEdit = role === "admin";
+  const isViewOnly = role === "kepala_sekolah";
+
   return (
     <div className="p-3 sm:p-4 md:p-6 soft-light bg-softlight dark:bg-softdark m-2 sm:m-4 mt-0 rounded-3xl shadow-md">
       <div className="flex gap-4 sm:gap-6 flex-col xl:flex-row">
@@ -94,7 +98,7 @@ const SingleStudentPage = async ({
                     </div>
 
                     {/* Edit Button */}
-                    {role === "admin" && (
+                    {canEdit && (
                       <div className="flex justify-center sm:justify-end">
                         <TooltipProvider>
                           <Tooltip>

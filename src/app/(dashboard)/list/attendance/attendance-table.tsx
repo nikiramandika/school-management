@@ -245,7 +245,7 @@ export function AttendanceTable({
 
   // Filter lessons based on role and current user
   const filteredLessons =
-    role === "admin"
+    role === "admin" || role === "kepala_sekolah"
       ? lessons
       : lessons.filter(
           (lesson) =>
@@ -474,26 +474,28 @@ export function AttendanceTable({
                                   <HiUserGroup className="h-4 w-4" />
                                   Detail Kehadiran Siswa
                                 </h4>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedLesson(
-                                      historyItem.lessonId.toString()
-                                    );
-                                    setSelectedDate(historyItem.date);
-                                    setIsEditing(true);
-                                    setTimeout(() => {
-                                      mainTableRef.current?.scrollIntoView({
-                                        behavior: "smooth",
-                                      });
-                                    }, 100);
-                                  }}
-                                  className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
-                                >
-                                  <Pencil className="h-4 w-4 mr-1" />
-                                  Edit
-                                </Button>
+                                {role !== "kepala_sekolah" && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedLesson(
+                                        historyItem.lessonId.toString()
+                                      );
+                                      setSelectedDate(historyItem.date);
+                                      setIsEditing(true);
+                                      setTimeout(() => {
+                                        mainTableRef.current?.scrollIntoView({
+                                          behavior: "smooth",
+                                        });
+                                      }, 100);
+                                    }}
+                                    className="border-green-200 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
+                                  >
+                                    <Pencil className="h-4 w-4 mr-1" />
+                                    Edit
+                                  </Button>
+                                )}
                               </div>
                               <div className="grid gap-2 max-h-32 overflow-y-auto">
                                 {historyItem.attendances.map((attendance) => {
@@ -605,8 +607,10 @@ export function AttendanceTable({
               <HiBookOpen className="h-4 w-4 text-blue-600" />
               <Select
                 value={selectedLesson}
-                onValueChange={setSelectedLesson}
-                disabled={filteredLessons.length === 0}
+                onValueChange={(value) => {
+                  setSelectedLesson(value);
+                  setIsEditing(false);
+                }}
               >
                 <SelectTrigger className="w-[280px] border-blue-200 focus:border-blue-400">
                   <SelectValue
@@ -634,47 +638,45 @@ export function AttendanceTable({
               <input
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  setIsEditing(false);
+                }}
                 className="px-3 py-2 border border-indigo-200 rounded-md focus:border-indigo-400 focus:outline-none"
               />
             </div>
 
-            {selectedLesson && (
+            {role !== "kepala_sekolah" && (
               <div className="flex gap-2">
                 {!isEditing ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={handleEdit}
-                          variant="outline"
-                          className="flex items-center gap-2 border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-900/20"
-                        >
-                          <Pencil className="h-4 w-4" />
-                          Edit Kehadiran
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Edit kehadiran siswa</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Button
+                    onClick={() => setIsEditing(true)}
+                    disabled={!selectedLesson}
+                    className="bg-teal-600 hover:bg-teal-700"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit Absensi
+                  </Button>
                 ) : (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          onClick={handleSaveAll}
-                          disabled={!hasChanges}
-                          className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white"
-                        >
-                          <Save className="h-4 w-4" />
-                          Simpan Semua
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Simpan semua perubahan kehadiran
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <>
+                    <Button
+                      onClick={handleSaveAll}
+                      disabled={!hasChanges}
+                      className="bg-teal-600 hover:bg-teal-700"
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      Simpan
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setAttendanceStatus({});
+                      }}
+                    >
+                      Batal
+                    </Button>
+                  </>
                 )}
               </div>
             )}

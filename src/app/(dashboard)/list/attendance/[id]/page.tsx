@@ -108,16 +108,18 @@ export default async function ClassAttendancePage({
   }
 
   // Check if user has access to this class
-  if (
-    role !== "admin" &&
-    !classItem.lessons.some((lesson) => lesson.teacher.id === currentUserId) &&
-    classItem.supervisorId !== currentUserId
-  ) {
-    return notFound();
+  if (role !== "admin" && role !== "kepala_sekolah") {
+    const hasAccess =
+      classItem.lessons.some((lesson) => lesson.teacher.id === currentUserId) ||
+      classItem.supervisorId === currentUserId;
+
+    if (!hasAccess) {
+      return notFound();
+    }
   }
 
-  // Redirect supervisor to the supervisor view
-  if (classItem.supervisorId === currentUserId) {
+  // Only redirect supervisor to supervisor view if they're not kepala_sekolah
+  if (classItem.supervisorId === currentUserId && role !== "kepala_sekolah") {
     redirect(`/list/attendance/${id}/supervisor`);
   }
 
@@ -143,7 +145,7 @@ export default async function ClassAttendancePage({
   const lessons = await prisma.lesson.findMany({
     where: {
       classId: classId,
-      ...(role !== "admin"
+      ...(role !== "admin" && role !== "kepala_sekolah"
         ? {
             OR: [
               { teacherId: currentUserId! },
@@ -181,7 +183,7 @@ export default async function ClassAttendancePage({
     where: {
       lesson: {
         classId: classId,
-        ...(role !== "admin"
+        ...(role !== "admin" && role !== "kepala_sekolah"
           ? {
               OR: [
                 { teacherId: currentUserId! },

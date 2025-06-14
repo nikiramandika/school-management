@@ -249,19 +249,19 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
     },
   ];
 
-  const adminColumns: ColumnDef<TeacherList>[] = [
+  const viewColumns: ColumnDef<TeacherList>[] = [
     {
-      id: "actions",
+      id: "view",
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-cyan-500" />
-          Aksi
+          <Eye className="h-4 w-4 text-cyan-600" />
+          Lihat
         </div>
       ),
       cell: ({ row }: { row: { original: TeacherList } }) => {
         const item = row.original;
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -278,7 +278,25 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
                 <TooltipContent>Lihat Detail Guru</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          </div>
+        );
+      },
+    },
+  ];
 
+  const adminColumns: ColumnDef<TeacherList>[] = [
+    {
+      id: "delete",
+      header: () => (
+        <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
+          <Edit className="h-4 w-4 text-cyan-600" />
+          Hapus
+        </div>
+      ),
+      cell: ({ row }: { row: { original: TeacherList } }) => {
+        const item = row.original;
+        return (
+          <div className="flex items-center justify-center">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -295,8 +313,11 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
     },
   ];
 
-  const columns =
-    role === "admin" ? [...baseColumns, ...adminColumns] : baseColumns;
+  const columns = [
+    ...baseColumns,
+    ...(role === "admin" || role === "kepala_sekolah" ? viewColumns : []),
+    ...(role === "admin" ? adminColumns : []),
+  ];
 
   return <DataTable columns={columns} data={data} searchKey="name" />;
 }

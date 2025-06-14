@@ -224,7 +224,7 @@ export function EventTable({ data, role }: EventTableProps) {
   ];
 
   const columns =
-    role === "admin" ? [...baseColumns, ...adminColumns] : baseColumns;
+    role === "admin" || role === "kepala_sekolah" ? [...baseColumns, ...adminColumns] : baseColumns;
 
   return <DataTable columns={columns} data={data} searchKey="title" />;
 }

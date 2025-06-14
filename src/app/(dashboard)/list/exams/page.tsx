@@ -120,24 +120,26 @@ const ExamListPage = async () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 self-end">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="inline-flex items-center justify-center">
-                      <FormContainer
-                        table="exam"
-                        type="create"
-                        relatedData={{
-                          lessons: allLessons,
-                        }}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>Tambah Ujian</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            {role === "admin" && (
+              <div className="flex items-center gap-4 self-end">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-flex items-center justify-center">
+                        <FormContainer
+                          table="exam"
+                          type="create"
+                          relatedData={{
+                            lessons: allLessons,
+                          }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Tambah Ujian</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            )}
           </div>
         )}
 

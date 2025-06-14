@@ -171,7 +171,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
   }
 
   // Check if user has access to this class
-  if (role !== "admin") {
+  if (role !== "admin" && role !== "kepala_sekolah") {
     const hasAccess =
       classData.supervisorId === currentUserId ||
       classData.lessons.some((lesson) => lesson.teacherId === currentUserId);
@@ -183,8 +183,8 @@ const ClassPage = async ({ params }: ClassPageProps) => {
 
   const isSupervisor = classData.supervisorId === currentUserId;
 
-  // If user is not supervisor, redirect to the original exam page
-  if (!isSupervisor) {
+  // Only redirect to exam page if user is a teacher (not admin or kepala_sekolah)
+  if (role === "teacher" && !isSupervisor) {
     redirect(`/list/results/${params.classId}/exam`);
   }
 

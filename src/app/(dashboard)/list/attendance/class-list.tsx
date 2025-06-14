@@ -13,6 +13,7 @@ import {
   User,
   Crown,
   BookOpen,
+  Eye,
 } from "lucide-react";
 import Link from "next/link";
 import {
