@@ -317,6 +317,8 @@ const StudentTable = ({
   const filteredAssessments =
     role === "admin"
       ? assessments
+      : role === "kepala_sekolah"
+      ? assessments // kepala_sekolah can see all assessments but can't edit
       : assessments.filter(
           (assessment) => assessment.teacherId === currentUserId
         );
@@ -324,6 +326,9 @@ const StudentTable = ({
   const selectedAssessmentDetails = filteredAssessments.find(
     (assessment) => assessment.id === selectedAssessment
   );
+
+  // Only allow editing for admin role
+  const canEditGrades = role === "admin";
 
   // Get grade statistics
   const currentGrades = existingGrades.filter(
@@ -575,7 +580,7 @@ const StudentTable = ({
                       {/* Grade Input/Display */}
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                          {isEditing ? (
+                          {isEditing && canEditGrades ? (
                             <div className="flex items-center gap-2">
                               <Input
                                 type="number"
@@ -649,85 +654,30 @@ const StudentTable = ({
                                   Belum Dinilai
                                 </Badge>
                               )}
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => handleEdit(student.id)}
-                                      className="h-8 w-8 p-0 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
-                                    >
-                                      <Pencil className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {existingGrade
-                                      ? "Edit nilai"
-                                      : "Input nilai"}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                              {canEditGrades && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleEdit(student.id)}
+                                        className="h-8 w-8 p-0 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
+                                      >
+                                        <Pencil className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {existingGrade
+                                        ? "Edit nilai"
+                                        : "Input nilai"}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
                             </div>
                           )}
                         </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center gap-2">
-                        {/* Download button for all roles */}
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => downloadStudentResults(student)}
-                                className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
-                              >
-                                <Download className="h-4 w-4 text-cyan-600" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Download Hasil Siswa</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-
-                        {/* Edit and Delete buttons only for admin */}
-                        {role === "admin" && (
-                          <>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => handleEdit(student.id)}
-                                    className="hover:bg-cyan-50 hover:border-cyan-200 dark:hover:bg-cyan-900/20"
-                                  >
-                                    <Pencil className="h-4 w-4 text-cyan-600" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Edit Nilai</TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => handleDelete(student.id)}
-                                    className="hover:bg-red-50 hover:border-red-200 dark:hover:bg-red-900/20"
-                                  >
-                                    <X className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Hapus Nilai</TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </>
-                        )}
                       </div>
                     </div>
                   </div>

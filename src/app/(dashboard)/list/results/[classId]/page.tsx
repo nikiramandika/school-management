@@ -183,8 +183,8 @@ const ClassPage = async ({ params }: ClassPageProps) => {
 
   const isSupervisor = classData.supervisorId === currentUserId;
 
-  // Only redirect to exam page if user is a teacher (not admin or kepala_sekolah)
-  if (role === "teacher" && !isSupervisor) {
+  // Only redirect non-supervisor teachers to the exam page
+  if (!isSupervisor && role === "teacher") {
     redirect(`/list/results/${params.classId}/exam`);
   }
 
@@ -349,13 +349,10 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                                 className="hover:bg-gray-50 dark:hover:bg-slate-700/50"
                                               >
                                                 <TableCell className="font-medium">
-                                                  {
-                                                    classData.students.find(
-                                                      (s) =>
-                                                        s.id ===
-                                                        result.studentId
-                                                    )?.name
-                                                  }
+                                                  {(() => {
+                                                    const student = classData.students.find((s) => s.id === result.studentId);
+                                                    return student ? `${student.name} ${student.surname}` : '';
+                                                  })()}
                                                 </TableCell>
                                                 <TableCell>
                                                   <Badge
@@ -495,13 +492,10 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                                 className="hover:bg-gray-50 dark:hover:bg-slate-700/50"
                                               >
                                                 <TableCell className="font-medium">
-                                                  {
-                                                    classData.students.find(
-                                                      (s) =>
-                                                        s.id ===
-                                                        result.studentId
-                                                    )?.name
-                                                  }
+                                                  {(() => {
+                                                    const student = classData.students.find((s) => s.id === result.studentId);
+                                                    return student ? `${student.name} ${student.surname}` : '';
+                                                  })()}
                                                 </TableCell>
                                                 <TableCell>
                                                   <Badge

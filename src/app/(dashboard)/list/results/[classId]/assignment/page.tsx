@@ -116,6 +116,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
   // Check if user has access to this class
   if (
     role !== "admin" &&
+    role !== "kepala_sekolah" &&
     !selectedClass.lessons.some(
       (lesson) => lesson.teacher.id === currentUserId
     ) &&

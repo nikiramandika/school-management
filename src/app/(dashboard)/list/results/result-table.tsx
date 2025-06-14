@@ -32,7 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { HiAcademicCap, HiClipboardCheck, HiUserGroup } from "react-icons/hi";
+import { HiAcademicCap, HiBookOpen, HiClipboardCheck, HiUserGroup } from "react-icons/hi";
 
 type ResultList = {
   id: number;
@@ -50,7 +50,7 @@ type ResultTableProps = {
   data: ResultList[];
   role?: string;
   relatedData?: {
-    classes: { id: string; name: string }[];
+    classes: { id: number; name: string }[];
     students: {
       id: string;
       name: string;
@@ -361,7 +361,8 @@ export function ResultTable({ data, role, relatedData }: ResultTableProps) {
                   {filteredData.length} Hasil
                 </Badge>
               </div>
-              {(role === "admin" || role === "teacher") && (
+              {/* Add button only for admin */}
+              {role === "admin" && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
