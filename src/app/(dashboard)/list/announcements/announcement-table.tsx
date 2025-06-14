@@ -243,5 +243,5 @@ export const AnnouncementTable = ({
   const columns =
     role === "admin" || role === "kepala_sekolah" ? [...baseColumns, ...adminColumns] : baseColumns;
 
-  return <DataTable columns={columns} data={data} searchKey="title" />;
+  return <DataTable columns={columns} data={data} searchKey={["title", "description", "className", "date"]} />;
 };

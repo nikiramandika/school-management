@@ -301,5 +301,5 @@ export function StudentTable({ data, role }: StudentTableProps) {
     ...(role === "admin" ? adminColumns : []),
   ];
 
-  return <DataTable columns={columns} data={data} searchKey="name" />;
+  return <DataTable columns={columns} data={data} searchKey={["name", "username", "class", "phone", "address"]} />;
 }

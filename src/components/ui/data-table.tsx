@@ -42,7 +42,7 @@ import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey?: string;
+  searchKey?: string | string[];
 }
 import {
   Tooltip,
@@ -61,6 +61,9 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [pageSize, setPageSize] = useState(10);
+  const [globalFilter, setGlobalFilter] = useState("");
+
+  const searchKeys = typeof searchKey === 'string' ? [searchKey] : searchKey || [];
 
   const table = useReactTable({
     data,
@@ -78,6 +81,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
     pageCount: Math.ceil(data.length / pageSize),
     initialState: {
@@ -85,21 +89,26 @@ export function DataTable<TData, TValue>({
         pageSize,
       },
     },
+    globalFilterFn: (row, columnId, filterValue) => {
+      if (!searchKeys.length) return true;
+      
+      const searchValue = filterValue.toLowerCase();
+      return searchKeys.some(key => {
+        const value = row.getValue(key);
+        return value?.toString().toLowerCase().includes(searchValue);
+      });
+    },
   });
 
   return (
     <div className="space-y-4 relative">
       <div className="flex items-center justify-between">
-        {searchKey && (
+        {searchKeys.length > 0 && (
           <div className="flex items-center py-4">
             <Input
               placeholder="Cari..."
-              value={
-                (table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn(searchKey)?.setFilterValue(event.target.value)
-              }
+              value={globalFilter}
+              onChange={(event) => setGlobalFilter(event.target.value)}
               className="max-w-sm"
             />
           </div>

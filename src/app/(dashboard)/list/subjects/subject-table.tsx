@@ -329,5 +329,5 @@ export function SubjectTable({ data, role, allTeachers }: SubjectTableProps) {
   const columns =
     role === "admin" ? [...baseColumns, ...adminColumns] : baseColumns;
 
-  return <DataTable columns={columns} data={data} searchKey="name" />;
+  return <DataTable columns={columns} data={data} searchKey={["name", "teachers", "lessons"]} />;
 }

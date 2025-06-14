@@ -319,5 +319,5 @@ export function TeacherTable({ data, role }: TeacherTableProps) {
     ...(role === "admin" ? adminColumns : []),
   ];
 
-  return <DataTable columns={columns} data={data} searchKey="name" />;
+  return <DataTable columns={columns} data={data} searchKey={["name", "username", "subjects", "classes", "phone", "address"]} />;
 }

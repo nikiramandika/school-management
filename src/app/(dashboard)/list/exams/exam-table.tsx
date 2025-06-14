@@ -305,5 +305,5 @@ export function ExamTable({ data, role, allLessons }: ExamTableProps) {
       ? [...baseColumns, ...adminColumns]
       : baseColumns;
 
-  return <DataTable columns={columns} data={data} searchKey="title" />;
+  return <DataTable columns={columns} data={data} searchKey={["title", "lesson.subject.name", "lesson.class.name", "lesson.teacher", "startTime", "endTime"]} />;
 }
