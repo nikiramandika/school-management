@@ -100,6 +100,7 @@ const LoginPage = () => {
 
   return (
     <div className="bg-img-light h-screen flex flex-col items-center justify-center w-screen p-6 gap-6">
+      <div className="flex flex-col gap-4 w-full max-w-md">
       <form
         onSubmit={handleLogin}
         className="backdrop-blur-lg bg-white/30 border border-white/40 p-8 rounded-3xl shadow-2xl xl:w-md md:w-md sm:w-sm flex-col gap-6 flex hover:bg-white/35 transition-all duration-300 ease-in-out"
@@ -206,6 +207,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
