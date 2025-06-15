@@ -899,7 +899,7 @@ export function AttendanceTable({
                 {isEditing && (
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Pilih Semua:
+                      Hadir Semua:
                     </span>
                     <Checkbox
                       checked={allPresent}

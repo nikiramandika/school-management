@@ -34,7 +34,7 @@ export default function DashboardLayout({
       <aside className="hidden md:flex flex-col lg:w-[16%] xl:w-[14%]  rounded-r-4xl soft-light bg-softlight dark:bg-softdark shadow-md ">
         {/* Logo dan Header dengan bayangan dinamis */}
         <div
-          className={`bg-transparent rounded-4xl px-4 pt-4 pb-4 bg-inherit z-10 ${
+          className={`rounded-4xl px-4 pt-4 pb-4 bg-inherit z-10 ${
             showShadow ? "shadow-md" : ""
           } transition-shadow`}
         >

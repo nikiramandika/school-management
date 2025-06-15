@@ -231,19 +231,20 @@ export function StudentTable({ data, role }: StudentTableProps) {
     },
   ];
 
-  const viewColumns: ColumnDef<StudentList>[] = [
+  const actionColumns: ColumnDef<StudentList>[] = [
     {
-      id: "view",
+      id: "actions",
+
       header: () => (
         <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Eye className="h-4 w-4 text-cyan-600" />
-          Lihat
+          <Edit className="h-4 w-4 text-cyan-600" />
+          Aksi
         </div>
       ),
       cell: ({ row }: { row: { original: StudentList } }) => {
         const item = row.original;
         return (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center gap-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -260,35 +261,19 @@ export function StudentTable({ data, role }: StudentTableProps) {
                 <TooltipContent>Lihat Detail Siswa</TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
-        );
-      },
-    },
-  ];
 
-  const adminColumns: ColumnDef<StudentList>[] = [
-    {
-      id: "delete",
-      header: () => (
-        <div className="flex items-center justify-center gap-2 font-semibold text-gray-500 dark:text-gray-100">
-          <Edit className="h-4 w-4 text-cyan-600" />
-          Hapus
-        </div>
-      ),
-      cell: ({ row }: { row: { original: StudentList } }) => {
-        const item = row.original;
-        return (
-          <div className="flex items-center justify-center">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="inline-flex items-center justify-center">
-                    <FormModal table="student" type="delete" id={item.id} />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>Hapus Data Siswa</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {role === "admin" && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="inline-flex items-center justify-center">
+                      <FormModal table="student" type="delete" id={item.id} />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Hapus Data Siswa</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
         );
       },
@@ -297,8 +282,7 @@ export function StudentTable({ data, role }: StudentTableProps) {
 
   const columns = [
     ...baseColumns,
-    ...(role === "admin" || role === "kepala_sekolah" ? viewColumns : []),
-    ...(role === "admin" ? adminColumns : []),
+    ...(role === "admin" || role === "kepala_sekolah" ? actionColumns : []),
   ];
 
   return <DataTable columns={columns} data={data} searchKey={["name", "username", "class", "phone", "address"]} />;

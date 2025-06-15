@@ -51,13 +51,23 @@ const SubjectForm = ({
           setOpen(false);
           router.refresh();
         } else {
-          toast.error(
-            result.message || "Gagal menyimpan data mata pelajaran. Silakan coba lagi."
-          );
+          // Handle specific error cases
+          if (result.message?.includes("Unique constraint failed on the fields: (`name`)")) {
+            toast.error("Mata pelajaran dengan nama tersebut sudah ada. Silakan gunakan nama yang berbeda.");
+          } else {
+            toast.error(
+              result.message || "Gagal menyimpan data mata pelajaran. Silakan coba lagi."
+            );
+          }
         }
       } catch (error) {
         console.error("Kesalahan pengiriman formulir:", error);
-        toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
+        // Check if it's a unique constraint error
+        if (error instanceof Error && error.message.includes("Unique constraint failed on the fields: (`name`)")) {
+          toast.error("Mata pelajaran dengan nama tersebut sudah ada. Silakan gunakan nama yang berbeda.");
+        } else {
+          toast.error("Terjadi kesalahan yang tidak diharapkan. Silakan coba lagi.");
+        }
       }
     },
     [type, setOpen, router]

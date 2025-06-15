@@ -183,8 +183,8 @@ const ClassPage = async ({ params }: ClassPageProps) => {
 
   const isSupervisor = classData.supervisorId === currentUserId;
 
-  // Only redirect non-supervisor teachers to the exam page
-  if (!isSupervisor && role === "teacher") {
+  // Redirect non-supervisor teachers and admin to the exam page for grade input
+  if ((!isSupervisor && role === "teacher") || role === "admin") {
     redirect(`/list/results/${params.classId}/exam`);
   }
 

@@ -315,10 +315,8 @@ const StudentTable = ({
 
   // Filter assessments based on role and current user
   const filteredAssessments =
-    role === "admin"
-      ? assessments
-      : role === "kepala_sekolah"
-      ? assessments // kepala_sekolah can see all assessments but can't edit
+    role === "admin" || role === "kepala_sekolah"
+      ? assessments // admin and kepala_sekolah can see all assessments
       : assessments.filter(
           (assessment) => assessment.teacherId === currentUserId
         );
@@ -327,8 +325,8 @@ const StudentTable = ({
     (assessment) => assessment.id === selectedAssessment
   );
 
-  // Only allow editing for admin role
-  const canEditGrades = role === "admin";
+  // Allow editing for admin and teachers (for their own assessments)
+  const canEditGrades = role === "admin" || (role === "teacher" && selectedAssessmentDetails?.teacherId === currentUserId);
 
   // Get grade statistics
   const currentGrades = existingGrades.filter(

@@ -83,25 +83,25 @@ export type StudentSchema = z.infer<typeof studentSchema>;
 
 export const examSchema = z.object({
   id: z.coerce.number().optional(),
-  title: z.string().min(1, { message: "Title name is required!" }),
-  startTime: z.coerce.date({ message: "Start time is required!" }),
-  endTime: z.coerce.date({ message: "End time is required!" }),
-  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+  title: z.string().min(1, { message: "Judul ujian wajib diisi!" }),
+  startTime: z.coerce.date({ message: "Waktu mulai wajib diisi!" }),
+  endTime: z.coerce.date({ message: "Waktu selesai wajib diisi!" }),
+  lessonId: z.coerce.number({ message: "Pelajaran wajib diisi!" }),
 });
 
 export type ExamSchema = z.infer<typeof examSchema>;
 
 export const lessonSchema = z.object({
   id: z.number().optional(),
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Nama pelajaran wajib diisi"),
   day: z.enum(["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"], {
-    required_error: "Day is required",
+    required_error: "Hari wajib diisi",
   }),
-  startTime: z.string().min(1, "Start time is required"),
-  endTime: z.string().min(1, "End time is required"),
-  subjectId: z.number().min(1, "Subject is required"),
-  classId: z.number().min(1, "Class is required"),
-  teacherId: z.string().min(1, "Teacher is required"),
+  startTime: z.string().min(1, "Waktu mulai wajib diisi"),
+  endTime: z.string().min(1, "Waktu selesai wajib diisi"),
+  subjectId: z.number().min(1, "Mata pelajaran wajib diisi"),
+  classId: z.number().min(1, "Kelas wajib diisi"),
+  teacherId: z.string().min(1, "Guru wajib diisi"),
 });
 
 export type LessonSchema = z.infer<typeof lessonSchema>;
@@ -118,10 +118,10 @@ export type AssignmentSchema = z.infer<typeof assignmentSchema>;
 
 export const resultSchema = z.object({
   id: z.number().optional(),
-  studentId: z.string().min(1, "Siswa harus diisi"),
+  studentId: z.string().min(1, "Siswa wajib diisi"),
   examId: z.number().optional(),
   assignmentId: z.number().optional(),
-  score: z.coerce.number().min(0).max(100, "Skor harus antara 0 dan 100"),
+  score: z.coerce.number().min(0).max(100, "Nilai harus antara 0 dan 100"),
 });
 
 export type ResultSchema = z.infer<typeof resultSchema>;
@@ -154,10 +154,12 @@ export type AnnouncementSchema = z.infer<typeof announcementSchema>;
 
 export const attendanceSchema = z.object({
   id: z.number().optional(),
-  studentId: z.string().min(1, "Siswa harus diisi"),
-  lessonId: z.number().min(1, "Pelajaran harus diisi!"),
-  date: z.string().min(1, "Tanggal harus diisi"),
-  status: z.enum(["PRESENT", "SICK", "PERMITTED", "ABSENT"]),
+  studentId: z.string().min(1, "Siswa wajib diisi"),
+  lessonId: z.number().min(1, "Pelajaran wajib diisi!"),
+  date: z.string().min(1, "Tanggal wajib diisi"),
+  status: z.enum(["PRESENT", "SICK", "PERMITTED", "ABSENT"], {
+    errorMap: () => ({ message: "Status kehadiran wajib diisi" }),
+  }),
 });
 
 export type AttendanceSchema = z.infer<typeof attendanceSchema>;
