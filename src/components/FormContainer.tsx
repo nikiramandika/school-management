@@ -96,7 +96,8 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
             class: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                semester: true
               }
             },
             teacher: {
@@ -125,7 +126,8 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
                 class: {
                   select: {
                     id: true,
-                    name: true
+                    name: true,
+                    semester: true
                   }
                 },
                 teacher: {
@@ -144,6 +146,70 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         }
 
         relatedData = { lessons: examLessons };
+        break;
+      case "assignment":
+        // Always fetch lessons for the dropdown
+        const assignmentLessons = await prisma.lesson.findMany({
+          include: {
+            subject: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            class: {
+              select: {
+                id: true,
+                name: true,
+                semester: true
+              }
+            },
+            teacher: {
+              select: {
+                id: true,
+                name: true,
+                surname: true
+              }
+            }
+          },
+        });
+        
+        // If it's an update form, ensure the current lesson is included
+        if (type === "update" && data?.lessonId) {
+          const currentLesson = assignmentLessons.find(lesson => lesson.id === data.lessonId);
+          if (!currentLesson) {
+            const lesson = await prisma.lesson.findUnique({
+              where: { id: data.lessonId },
+              include: {
+                subject: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                },
+                class: {
+                  select: {
+                    id: true,
+                    name: true,
+                    semester: true
+                  }
+                },
+                teacher: {
+                  select: {
+                    id: true,
+                    name: true,
+                    surname: true
+                  }
+                }
+              }
+            });
+            if (lesson) {
+              assignmentLessons.push(lesson);
+            }
+          }
+        }
+
+        relatedData = { lessons: assignmentLessons };
         break;
       case "event":
         const eventClasses = await prisma.class.findMany({

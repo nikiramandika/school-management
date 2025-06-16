@@ -49,6 +49,7 @@ const ExamForm = ({
     handleSubmit,
     setValue,
     control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ExamSchema>({
     resolver: zodResolver(examSchema),
@@ -61,6 +62,8 @@ const ExamForm = ({
     },
   });
 
+  const watchedLessonId = watch("lessonId");
+
   // Update form values when dateRange changes
   useEffect(() => {
     if (dateRange?.from) {
@@ -70,6 +73,14 @@ const ExamForm = ({
       setValue("endTime", dateRange.to);
     }
   }, [dateRange, setValue]);
+
+  // Update semester when lessonId changes
+  useEffect(() => {
+    const selectedLesson = relatedData?.lessons?.find(lesson => lesson.id === Number(watchedLessonId));
+    if (selectedLesson?.class?.semester) {
+      setValue("semester", selectedLesson.class.semester);
+    }
+  }, [watchedLessonId, relatedData?.lessons, setValue]);
 
   const onSubmit = useCallback(
     async (formData: ExamSchema) => {
@@ -158,19 +169,19 @@ const ExamForm = ({
         </div>
 
         <div className="w-full md:w-1/3">
-          <SelectField
-            label="Semester"
-            name="semester"
-            control={control}
-            options={[
-              { value: "GANJIL", label: "GANJIL" },
-              { value: "GENAP", label: "GENAP" },
-            ]}
-            error={errors?.semester}
-            placeholder="Pilih Semester"
-            isClearable={false}
-            isSearchable={false}
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-gray-500">Semester</label>
+            <input
+              type="text"
+              className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
+              value={watch("semester") || "Pilih pelajaran terlebih dahulu"}
+              readOnly
+            />
+            <input
+              type="hidden"
+              {...register("semester")}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2 w-full">

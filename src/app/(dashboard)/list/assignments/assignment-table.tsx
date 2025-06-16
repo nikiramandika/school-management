@@ -36,6 +36,7 @@ type AssignmentList = Assignment & {
     };
     class: {
       name: string;
+      semester: string;
       grade: {
         level: number;
       };

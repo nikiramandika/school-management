@@ -53,7 +53,7 @@ const ExamListPage = async () => {
           name: true,
           subject: { select: { name: true } },
           teacher: { select: { name: true, surname: true } },
-          class: { select: { name: true, grade: { select: { level: true } } } },
+          class: { select: { name: true, semester: true, grade: { select: { level: true } } } },
         },
       },
     },
@@ -75,6 +75,7 @@ const ExamListPage = async () => {
         select: {
           id: true,
           name: true,
+          semester: true,
           grade: {
             select: {
               level: true,

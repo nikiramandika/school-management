@@ -35,6 +35,7 @@ type ExamList = Exam & {
     };
     class: {
       name: string;
+      semester: string;
       grade: {
         level: number;
       };
