@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import ClassList from "./class-list";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Semester } from "@prisma/client";
 import {
   Award,
   Users,
@@ -96,21 +97,6 @@ const PageHeader = ({
         </Card>
       </div>
     )}
-
-    {/* Main Section Header */}
-    {/* <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-cyan-500  rounded-lg">
-          <HiClipboardCheck className="h-6 w-6 text-white" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Nilai Kelas
-        </h1>
-        <Badge variant="secondary" className="ml-2 bg-cyan-500/30">
-          {totalClasses} Kelas
-        </Badge>
-      </div>
-    </div> */}
   </div>
 );
 
@@ -137,27 +123,36 @@ const EmptyState = ({ role }: { role: string }) => (
   </Card>
 );
 
-const ResultListPage = async () => {
+const ResultListPage = async ({
+  searchParams,
+}: {
+  searchParams: { semester?: string };
+}) => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
 
-  // Fetch classes with their teachers
+  // Fetch classes with their teachers - tambahkan filter semester jika ada di searchParams
   const classes = await prisma.class.findMany({
     include: {
-      supervisor: true,
+      supervisor: {
+        include: {
+          subjects: true,
+        },
+      },
       grade: true,
       lessons: {
         include: {
           teacher: true,
+          subject: true,
         },
       },
       // Include students for counting
       students: true,
     },
-    where:
-      role === "admin" || role === "kepala_sekolah"
-        ? undefined
+    where: {
+      ...((role === "admin" || role === "kepala_sekolah")
+        ? (searchParams.semester ? { semester: searchParams.semester } : {})
         : {
             OR: [
               { supervisorId: currentUserId as string },
@@ -169,7 +164,14 @@ const ResultListPage = async () => {
                 },
               },
             ],
-          },
+          }),
+    },
+    // Sort by semester (GANJIL first, then GENAP) and then by grade level and class name
+    orderBy: [
+      { semester: 'asc' }, // GANJIL comes before GENAP alphabetically
+      { grade: { level: 'asc' } },
+      { name: 'asc' }
+    ],
   });
 
   // Calculate stats

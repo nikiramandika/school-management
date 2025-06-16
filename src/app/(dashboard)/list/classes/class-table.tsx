@@ -166,6 +166,22 @@ export function ClassTable({
       ),
     },
     {
+      accessorKey: "semester",
+      header: "Semester",
+      cell: ({ row }) => (
+        <Badge
+          variant="outline"
+          className={`${
+            row.original.semester === "GANJIL"
+              ? "border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
+              : "border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+          }`}
+        >
+          {row.original.semester}
+        </Badge>
+      ),
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ row }) => (
@@ -199,6 +215,7 @@ export function ClassTable({
           supervisorId: classItem.supervisor?.id,
           gradeId: classItem.grade?.id,
           isActive: classItem.isActive,
+          semester: classItem.semester,
           // Include the full objects for reference
           supervisor: {
             id: classItem.supervisor?.id,

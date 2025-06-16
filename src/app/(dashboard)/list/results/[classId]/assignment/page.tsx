@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import StudentTable from "../../student-table";
 import Tabs from "../tabs";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   FileText,
@@ -18,10 +18,14 @@ import {
 import Link from "next/link";
 import { DownloadButton } from "../components/download-button";
 import DownloadAllResultsPDFButton from "../components/download-all-results-pdf";
+import SemesterFilter from "../components/semester-filter";
 
 interface AssignmentPageProps {
   params: {
     classId: string;
+  };
+  searchParams: {
+    semester?: string;
   };
 }
 
@@ -29,6 +33,7 @@ interface AssignmentPageProps {
 const PageHeader = ({
   className,
   gradeLevel,
+  semester,
   totalStudents,
   totalExams,
   totalAssignments,
@@ -37,6 +42,7 @@ const PageHeader = ({
 }: {
   className: string;
   gradeLevel: number;
+  semester: string;
   totalStudents: number;
   totalExams: number;
   totalAssignments: number;
@@ -65,16 +71,22 @@ const PageHeader = ({
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Hasil Tugas  {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
           </h1>
+          <div className="mt-1">
+            <Badge variant="outline" className={semester === "GANJIL" ? "border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300" : "border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"}>
+              Semester: {semester}
+            </Badge>
+          </div>
         </div>
       </div>
     </div>
   </div>
 );
 
-const AssignmentPage = async ({ params }: AssignmentPageProps) => {
+const AssignmentPage = async ({ params, searchParams }: AssignmentPageProps) => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
+  const selectedSemester = searchParams.semester;
 
   const classId = parseInt(params.classId);
   if (isNaN(classId)) {
@@ -87,6 +99,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
     select: {
       id: true,
       name: true,
+      semester: true,
       supervisorId: true,
       grade: {
         select: {
@@ -102,6 +115,11 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
               id: true,
               name: true,
               surname: true,
+            },
+          },
+          subject: {
+            select: {
+              name: true,
             },
           },
         },
@@ -125,6 +143,9 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
     notFound();
   }
 
+  // Determine target semester for viewing (prioritize class semester if no selection)
+  const targetSemester = selectedSemester || selectedClass.semester;
+
   // Fetch students, exams, assignments, and existing grades for this class
   const [students, exams, assignments, existingGrades] =
     await prisma.$transaction([
@@ -146,7 +167,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
         where: {
           lesson: {
             classId,
-            ...(role !== "admin"
+            ...(role !== "admin" && role !== "kepala_sekolah"
               ? {
                   OR: [
                     { teacherId: currentUserId! },
@@ -161,12 +182,18 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           title: true,
           startTime: true,
           endTime: true,
+          semester: true,
           lesson: {
             select: {
               id: true,
               name: true,
               class: { select: { id: true, name: true } },
               teacher: { select: { id: true, name: true, surname: true } },
+              subject: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },
@@ -175,7 +202,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
         where: {
           lesson: {
             classId,
-            ...(role !== "admin"
+            ...(role !== "admin" && role !== "kepala_sekolah"
               ? {
                   OR: [
                     { teacherId: currentUserId! },
@@ -190,12 +217,14 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           title: true,
           startDate: true,
           dueDate: true,
+          semester: true,
           lesson: {
             select: {
               id: true,
               name: true,
               class: { select: { id: true, name: true } },
               teacher: { select: { id: true, name: true, surname: true } },
+              subject: { select: { name: true } },
             },
           },
         },
@@ -207,7 +236,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
               exam: {
                 lesson: {
                   classId,
-                  ...(role !== "admin"
+                  ...(role !== "admin" && role !== "kepala_sekolah"
                     ? {
                         OR: [
                           { teacherId: currentUserId! },
@@ -222,7 +251,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
               assignment: {
                 lesson: {
                   classId,
-                  ...(role !== "admin"
+                  ...(role !== "admin" && role !== "kepala_sekolah"
                     ? {
                         OR: [
                           { teacherId: currentUserId! },
@@ -244,6 +273,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           exam: {
             select: {
               title: true,
+              semester: true,
               lesson: {
                 select: {
                   teacher: {
@@ -264,6 +294,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
           assignment: {
             select: {
               title: true,
+              semester: true,
               lesson: {
                 select: {
                   teacher: {
@@ -299,18 +330,26 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
     existingGrades.some((grade) => grade.assignmentId === assignment.id)
   ).length;
 
+  // Filter for StudentTable (not for download)
+  const filteredExams = exams.filter(e => !e.semester || e.semester === targetSemester);
+  const filteredAssignments = assignments.filter(a => !a.semester || a.semester === targetSemester);
+
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
           className={selectedClass.name}
           gradeLevel={selectedClass.grade?.level}
+          semester={selectedClass.semester}
           totalStudents={totalStudents}
           totalExams={totalExams}
           totalAssignments={totalAssignments}
           completedAssignments={completedAssignments}
           role={role || ""}
         />
+
+        {/* Semester Filter */}
+        <SemesterFilter classSemester={selectedClass.semester} />
 
         <div className="flex justify-end mb-4">
           <DownloadAllResultsPDFButton
@@ -323,11 +362,13 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
               id: exam.id.toString(),
               title: exam.title,
               type: "Ujian",
+              semester: exam.semester,
             }))}
             assignments={assignments.map((assignment) => ({
               id: assignment.id.toString(),
               title: assignment.title,
               type: "Tugas",
+              semester: assignment.semester,
             }))}
             existingGrades={existingGrades.map((grade) => ({
               studentId: grade.studentId,
@@ -337,17 +378,19 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
                 ? `A-${grade.assignmentId}`
                 : "",
               score: grade.score,
+              semester: grade.exam?.semester || grade.assignment?.semester,
             }))}
             className={selectedClass.name}
             gradeLevel={selectedClass.grade?.level}
+            classSemester={selectedClass.semester}
           />
         </div>
 
         {/* Tabs Navigation */}
         <Tabs
           classId={params.classId}
-          totalExams={totalExams}
-          totalAssignments={totalAssignments}
+          totalExams={filteredExams.length}
+          totalAssignments={filteredAssignments.length}
           className="mb-6"
         />
 
@@ -362,12 +405,14 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
                   surname: student.surname,
                   className: student.class.name,
                 }))}
-                exams={exams.map((exam) => ({
+                exams={filteredExams.map((exam) => ({
                   id: exam.id.toString(),
                   title: exam.title,
                   className: exam.lesson.class.name,
                   teacherId: exam.lesson.teacher.id,
                   date: exam.startTime.toISOString(),
+                  semester: exam.semester,
+                  subject: exam.lesson.subject?.name,
                   class: {
                     name: exam.lesson.class.name,
                     grade: {
@@ -375,12 +420,16 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
                     }
                   }
                 }))}
-                assignments={assignments.map((assignment) => ({
+                assignments={filteredAssignments.map((assignment) => ({
                   id: assignment.id.toString(),
-                  title: assignment.title,
+                  title: assignment.lesson?.subject?.name
+                    ? `${assignment.title} (${assignment.lesson.subject.name})`
+                    : assignment.title,
                   className: assignment.lesson.class.name,
                   teacherId: assignment.lesson.teacher.id,
                   date: assignment.startDate.toISOString(),
+                  semester: assignment.semester,
+                  subject: assignment.lesson.subject?.name,
                   class: {
                     name: assignment.lesson.class.name,
                     grade: {
@@ -400,6 +449,7 @@ const AssignmentPage = async ({ params }: AssignmentPageProps) => {
                     : "",
                   studentId: grade.studentId,
                 }))}
+                classSemester={selectedClass.semester}
               />
             </div>
           </CardContent>

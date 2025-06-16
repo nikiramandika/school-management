@@ -60,6 +60,7 @@ const AssignmentForm = ({
       ...data,
       startTime: data?.startDate ? new Date(data.startDate) : undefined,
       endTime: data?.dueDate ? new Date(data.dueDate) : undefined,
+      semester: data?.semester || "GANJIL",
     },
   });
 
@@ -83,8 +84,8 @@ const AssignmentForm = ({
 
         const submitData = {
           ...formData,
-          startTime: dateRange.from,
-          endTime: dateRange.to,
+          startDate: dateRange.from,
+          dueDate: dateRange.to,
           userId,
           userRole,
         };
@@ -171,6 +172,22 @@ const AssignmentForm = ({
             valueAsNumber={true}
             isSearchable={true}
             isClearable={true}
+          />
+        </div>
+
+        <div className="w-full md:w-1/3">
+          <SelectField
+            label="Semester"
+            name="semester"
+            control={control}
+            options={[
+              { value: "GANJIL", label: "GANJIL" },
+              { value: "GENAP", label: "GENAP" },
+            ]}
+            error={errors?.semester}
+            placeholder="Pilih Semester"
+            isClearable={false}
+            isSearchable={false}
           />
         </div>
 

@@ -178,6 +178,7 @@ export const createClass = async (
         name: data.name,
         gradeId: data.gradeId,
         academicYear: data.academicYear,
+        semester: data.semester,
       },
     });
 
@@ -185,7 +186,7 @@ export const createClass = async (
       return {
         success: false,
         error: true,
-        message: "Kelas dengan nama, tingkat, dan tahun ajaran yang sama sudah ada",
+        message: "Kelas dengan nama, tingkat, tahun ajaran, dan semester yang sama sudah ada",
       };
     }
 
@@ -196,6 +197,7 @@ export const createClass = async (
         gradeId: data.gradeId,
         supervisorId: data.supervisorId,
         academicYear: data.academicYear,
+        semester: data.semester,
         isActive: data.isActive !== false,
       },
     });
@@ -223,6 +225,7 @@ export const updateClass = async (
         name: data.name,
         gradeId: data.gradeId,
         academicYear: data.academicYear,
+        semester: data.semester,
         id: {
           not: data.id // Exclude current class from duplicate check
         }
@@ -233,7 +236,7 @@ export const updateClass = async (
       return {
         success: false,
         error: true,
-        message: "Kelas dengan nama, tingkat, dan tahun ajaran yang sama sudah ada",
+        message: "Kelas dengan nama, tingkat, tahun ajaran, dan semester yang sama sudah ada",
       };
     }
 
@@ -245,6 +248,7 @@ export const updateClass = async (
         name: data.name,
         capacity: data.capacity,
         academicYear: data.academicYear,
+        semester: data.semester,
         isActive: data.isActive !== false,
         grade: { connect: { id: data.gradeId } },
         supervisor: data.supervisorId ? { connect: { id: data.supervisorId } } : undefined,
@@ -946,6 +950,7 @@ export const createExam = async (
         startTime: data.startTime,
         endTime: data.endTime,
         lessonId: data.lessonId,
+        semester: data.semester,
       },
     });
 
@@ -975,6 +980,7 @@ export const updateExam = async (
         startTime: data.startTime,
         endTime: data.endTime,
         lessonId: data.lessonId,
+        semester: data.semester,
       },
     });
 
@@ -1368,6 +1374,7 @@ export const createAssignment = async (
         startDate: data.startTime,
         dueDate: data.endTime,
         lessonId: data.lessonId,
+        semester: data.semester,
       },
     });
     console.log("Tugas berhasil dibuat:", result);
@@ -1403,6 +1410,7 @@ export const updateAssignment = async (
         startDate: data.startTime,
         dueDate: data.endTime,
         lessonId: data.lessonId,
+        semester: data.semester,
       },
     });
     console.log("Tugas berhasil diperbarui:", result);

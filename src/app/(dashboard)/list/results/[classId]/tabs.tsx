@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { BarChart2, FileText } from "lucide-react";
@@ -21,6 +21,8 @@ const Tabs = ({
 }: TabsProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const semester = searchParams.get("semester");
 
   const tabs = [
     {
@@ -45,11 +47,12 @@ const Tabs = ({
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
           const Icon = tab.icon;
+          const hrefWithSemester = semester ? `${tab.href}?semester=${semester}` : tab.href;
 
           return (
             <button
               key={tab.name}
-              onClick={() => router.push(tab.href)}
+              onClick={() => router.push(hrefWithSemester)}
               className={cn(
                 "flex items-center justify-center gap-2 rounded-md px-4 py-3 text-sm font-medium transition-all duration-200",
                 "hover:shadow-sm hover:scale-[1.02] active:scale-[0.98]",

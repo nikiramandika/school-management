@@ -54,6 +54,8 @@ interface Assessment {
   teacherId: string;
   date?: string;
   description?: string;
+  semester?: string;
+  subject?: string;
   class: {
     name: string;
     grade?: {
@@ -76,6 +78,7 @@ interface StudentTableProps {
   role?: string;
   currentUserId?: string;
   existingGrades: Grade[];
+  classSemester?: string;
 }
 
 const StudentTable = ({
@@ -85,6 +88,7 @@ const StudentTable = ({
   role,
   currentUserId,
   existingGrades,
+  classSemester,
 }: StudentTableProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -101,6 +105,15 @@ const StudentTable = ({
   const { user } = useUser();
   const userId = user?.id;
   const userRole = user?.publicMetadata?.role as string;
+
+  // Check if current assessment is from different semester than class
+  const selectedAssessmentData = assessments.find(assessment => assessment.id === selectedAssessment);
+  const isAssessmentFromDifferentSemester = selectedAssessmentData?.semester && 
+    classSemester && 
+    selectedAssessmentData.semester !== classSemester;
+
+  // Disable input if assessment is from different semester
+  const isInputDisabled = isAssessmentFromDifferentSemester;
 
   // Initialize scores from existing grades when assessment is selected
   useEffect(() => {
@@ -384,8 +397,13 @@ const StudentTable = ({
                   <SelectContent>
                     {filteredAssessments.map((assessment) => (
                       <SelectItem key={assessment.id} value={assessment.id}>
-                        <div className="flex items-center gap-2">
-                          {assessment.title}
+                        <div className="flex flex-col items-start gap-1">
+                          <div className="font-medium">{assessment.title}</div>
+                          {assessment.subject && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {assessment.subject}
+                            </div>
+                          )}
                         </div>
                       </SelectItem>
                     ))}
@@ -451,6 +469,19 @@ const StudentTable = ({
                       Rata-rata: {averageScore}
                     </Badge>
                   </div>
+                  {selectedAssessmentDetails.semester && (
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={selectedAssessmentDetails.semester === "GANJIL" 
+                          ? "border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300" 
+                          : "border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+                        }
+                      >
+                        Semester {selectedAssessmentDetails.semester}
+                      </Badge>
+                    </div>
+                  )}
                 </div>
               </div>
               {selectedAssessmentDetails.description && (
@@ -458,6 +489,22 @@ const StudentTable = ({
                   {selectedAssessmentDetails.description}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Warning message for different semester */}
+          {isInputDisabled && selectedAssessmentDetails && (
+            <div className="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <div className="text-sm">
+                <p className="font-medium text-amber-800 dark:text-amber-200">
+                  Mode Hanya Lihat
+                </p>
+                <p className="text-amber-700 dark:text-amber-300">
+                  Anda sedang melihat {assessmentType.toLowerCase()} semester {selectedAssessmentDetails.semester}. 
+                  Input nilai hanya tersedia untuk semester {classSemester} (semester kelas saat ini).
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -590,6 +637,7 @@ const StudentTable = ({
                                 }
                                 className="w-20 text-center"
                                 placeholder="0-100"
+                                disabled={isInputDisabled}
                               />
                               <div className="flex gap-1">
                                 <TooltipProvider>
@@ -598,7 +646,7 @@ const StudentTable = ({
                                       <Button
                                         size="sm"
                                         onClick={() => handleSave(student.id)}
-                                        disabled={!scores[student.id]}
+                                        disabled={!scores[student.id] || isInputDisabled}
                                         className="h-8 w-8 p-0 bg-teal-600 hover:bg-teal-700 text-white"
                                       >
                                         <Check className="h-4 w-4" />

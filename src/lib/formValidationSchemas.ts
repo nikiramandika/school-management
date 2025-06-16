@@ -15,6 +15,7 @@ export const classSchema = z.object({
   gradeId: z.coerce.number().min(1, { message: "Tingkat kelas wajib diisi!" }),
   supervisorId: z.coerce.string().optional(),
   academicYear: z.string().min(4, { message: "Tahun ajaran wajib diisi!" }),
+  semester: z.enum(["GANJIL", "GENAP"], { message: "Semester wajib diisi!" }),
   isActive: z.boolean().default(true),
 });
 
@@ -87,6 +88,7 @@ export const examSchema = z.object({
   startTime: z.coerce.date({ message: "Waktu mulai wajib diisi!" }),
   endTime: z.coerce.date({ message: "Waktu selesai wajib diisi!" }),
   lessonId: z.coerce.number({ message: "Pelajaran wajib diisi!" }),
+  semester: z.enum(["GANJIL", "GENAP"], { message: "Semester wajib diisi!" }),
 });
 
 export type ExamSchema = z.infer<typeof examSchema>;
@@ -112,6 +114,7 @@ export const assignmentSchema = z.object({
   startTime: z.coerce.date({ message: "Waktu mulai harus diisi!" }),
   endTime: z.coerce.date({ message: "Waktu berakhir harus diisi!" }),
   lessonId: z.coerce.number({ message: "Pelajaran harus di isi"! }),
+  semester: z.enum(["GANJIL", "GENAP"], { message: "Semester wajib diisi!" }),
 });
 
 export type AssignmentSchema = z.infer<typeof assignmentSchema>;

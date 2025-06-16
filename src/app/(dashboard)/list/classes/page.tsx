@@ -246,9 +246,21 @@ const ClassListPage = async () => {
                               : "XII"}{" "}
                             {classItem.name}
                           </CardTitle>
-                          <Badge variant="outline" className="mt-1">
-                            Tingkat {classItem.grade?.level}
-                          </Badge>
+                          <div className="flex gap-2 mt-1">
+                            <Badge variant="outline">
+                              Tingkat {classItem.grade?.level}
+                            </Badge>
+                            <Badge 
+                              variant="outline"
+                              className={`${
+                                classItem.semester === "GANJIL"
+                                  ? "border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300"
+                                  : "border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"
+                              }`}
+                            >
+                              {classItem.semester}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                       <Button

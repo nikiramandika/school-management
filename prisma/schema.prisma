@@ -66,6 +66,7 @@ model Class {
   supervisorId  String?
   gradeId       Int
   academicYear  String        @default("2023/2024")
+  semester      Semester      @default(GANJIL)
   isActive      Boolean       @default(true)
   announcements Announcement[]
   grade         Grade          @relation(fields: [gradeId], references: [id])
@@ -105,6 +106,7 @@ model Exam {
   startTime DateTime
   endTime   DateTime
   lessonId  Int
+  semester      Semester      @default(GANJIL)
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
   results   Result[]
 }
@@ -115,6 +117,7 @@ model Assignment {
   startDate DateTime
   dueDate   DateTime
   lessonId  Int
+  semester      Semester      @default(GANJIL)
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
   results   Result[]
 }
@@ -177,6 +180,11 @@ enum Day {
   WEDNESDAY
   THURSDAY
   FRIDAY
+}
+
+enum Semester {
+  GANJIL
+  GENAP
 }
 
 enum ActivityType {

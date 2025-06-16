@@ -57,6 +57,7 @@ const ExamForm = ({
       startTime: data?.startTime ? new Date(data.startTime) : undefined,
       endTime: data?.endTime ? new Date(data.endTime) : undefined,
       lessonId: data?.lessonId || data?.lesson?.id || undefined,
+      semester: data?.semester,
     },
   });
 
@@ -153,6 +154,22 @@ const ExamForm = ({
             isSearchable
             isClearable
             valueAsNumber={true}
+          />
+        </div>
+
+        <div className="w-full md:w-1/3">
+          <SelectField
+            label="Semester"
+            name="semester"
+            control={control}
+            options={[
+              { value: "GANJIL", label: "GANJIL" },
+              { value: "GENAP", label: "GENAP" },
+            ]}
+            error={errors?.semester}
+            placeholder="Pilih Semester"
+            isClearable={false}
+            isSearchable={false}
           />
         </div>
 

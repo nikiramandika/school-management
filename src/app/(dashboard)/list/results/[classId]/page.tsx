@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +35,7 @@ import {
   Grade,
   Exam,
   Assignment,
+  Subject,
 } from "@prisma/client";
 import {
   Accordion,
@@ -44,10 +44,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HiAcademicCap, HiClipboardCheck } from "react-icons/hi";
+import SemesterFilter from "./components/semester-filter";
+import DownloadReportCardPDFButton from "./components/download-report-card-pdf";
 
 interface ClassPageProps {
   params: {
     classId: string;
+  };
+  searchParams: {
+    semester?: string;
   };
 }
 
@@ -63,6 +68,7 @@ type ClassWithRelations = Class & {
   students: Student[];
   lessons: (Lesson & {
     teacher: Teacher;
+    subject: Subject | null;
     exams: (Exam & {
       results: ResultWithTimestamp[];
     })[];
@@ -74,6 +80,7 @@ type ClassWithRelations = Class & {
 
 type LessonWithResults = Lesson & {
   teacher: Teacher;
+  subject: Subject | null;
   examResults: ResultWithTimestamp[];
   assignmentResults: ResultWithTimestamp[];
   exams: (Exam & {
@@ -88,19 +95,27 @@ type LessonWithResults = Lesson & {
 const PageHeader = ({
   className,
   gradeLevel,
+  semester,
   totalStudents,
   totalExams,
   totalAssignments,
   totalLessons,
   role,
+  isSupervisor,
+  students,
+  lessons,
 }: {
   className: string;
   gradeLevel: number | null;
+  semester: string;
   totalStudents: number;
   totalExams: number;
   totalAssignments: number;
   totalLessons: number;
   role: string;
+  isSupervisor: boolean;
+  students: Student[];
+  lessons: LessonWithResults[];
 }) => (
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
@@ -116,24 +131,48 @@ const PageHeader = ({
 
     {/* Main Header */}
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-cyan-500  rounded-lg">
-          <Award className="h-6 w-6 text-white" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-cyan-500  rounded-lg">
+            <Award className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Hasil Belajar {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
+            </h1>
+            <div className="mt-1">
+              <Badge variant="outline" className={semester === "GANJIL" ? "border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300" : "border-green-200 text-green-700 dark:border-green-700 dark:text-green-300"}>
+                Semester: {semester}
+              </Badge>
+            </div>
+          </div>
         </div>
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Hasil Belajar {gradeLevel === 1 ? "X" : gradeLevel === 2 ? "XI" : "XII"} {className}
-          </h1>
-        </div>
+        
+        {/* Download buttons for supervisor */}
+        {isSupervisor && (
+          <div className="flex items-center gap-2">
+            <DownloadReportCardPDFButton
+              students={students}
+              lessons={lessons}
+              className={className}
+              gradeLevel={gradeLevel}
+              classSemester={semester}
+            />
+          </div>
+        )}
       </div>
     </div>
   </div>
 );
 
-const ClassPage = async ({ params }: ClassPageProps) => {
+const ClassPage = async ({ 
+  params,
+  searchParams 
+}: ClassPageProps) => {
   const { userId, sessionClaims } = await auth();
   const role = (sessionClaims?.metadata as { role?: string })?.role;
   const currentUserId = userId;
+  const selectedSemester = searchParams.semester;
 
   // Fetch class details with students and their results
   const classData = (await prisma.class.findUnique({
@@ -151,6 +190,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
       lessons: {
         include: {
           teacher: true,
+          subject: true,
           exams: {
             include: {
               results: true,
@@ -183,13 +223,30 @@ const ClassPage = async ({ params }: ClassPageProps) => {
 
   const isSupervisor = classData.supervisorId === currentUserId;
 
-  // Redirect non-supervisor teachers and admin to the exam page for grade input
-  if ((!isSupervisor && role === "teacher") || role === "admin") {
+  // Redirect admin, kepala_sekolah, and non-supervisor teachers to the exam page for grade input
+  // Only supervisors can access this results page
+  if (role === "admin" || role === "kepala_sekolah" || (role === "teacher" && !isSupervisor)) {
     redirect(`/list/results/${params.classId}/exam`);
   }
 
+  // Filter lessons based on selected semester (prioritize class semester if no selection)
+  const targetSemester = selectedSemester || classData.semester;
+  
+  // Filter data on client side like in assignment page
+  const filteredLessons = classData.lessons.map(lesson => ({
+    ...lesson,
+    exams: lesson.exams.filter(exam => !exam.semester || exam.semester === targetSemester),
+    assignments: lesson.assignments.filter(assignment => !assignment.semester || assignment.semester === targetSemester),
+  }));
+  
+  // Update classData with filtered lessons
+  const updatedClassData = {
+    ...classData,
+    lessons: filteredLessons,
+  };
+
   // Group results by lesson
-  const lessonsWithResults: LessonWithResults[] = classData.lessons.map(
+  const lessonsWithResults: LessonWithResults[] = updatedClassData.lessons.map(
     (lesson) => {
       const examResults = lesson.exams.flatMap((exam) =>
         exam.results.map((result) => ({
@@ -213,13 +270,13 @@ const ClassPage = async ({ params }: ClassPageProps) => {
   );
 
   // Calculate statistics
-  const totalStudents = classData.students.length;
-  const totalLessons = classData.lessons.length;
-  const totalExams = classData.lessons.reduce(
+  const totalStudents = updatedClassData.students.length;
+  const totalLessons = updatedClassData.lessons.length;
+  const totalExams = updatedClassData.lessons.reduce(
     (sum, lesson) => sum + lesson.exams.length,
     0
   );
-  const totalAssignments = classData.lessons.reduce(
+  const totalAssignments = updatedClassData.lessons.reduce(
     (sum, lesson) => sum + lesson.assignments.length,
     0
   );
@@ -228,50 +285,43 @@ const ClassPage = async ({ params }: ClassPageProps) => {
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
         <PageHeader
-          className={classData.name}
-          gradeLevel={classData.grade?.level || null}
+          className={updatedClassData.name}
+          gradeLevel={updatedClassData.grade?.level || null}
+          semester={updatedClassData.semester || "GANJIL"}
           totalStudents={totalStudents}
           totalExams={totalExams}
           totalAssignments={totalAssignments}
           totalLessons={totalLessons}
           role={role || ""}
+          isSupervisor={isSupervisor}
+          students={updatedClassData.students}
+          lessons={lessonsWithResults}
         />
+
+        {/* Semester Filter */}
+        <SemesterFilter classSemester={updatedClassData.semester || "GANJIL"} />
 
         {/* Main Content Section */}
         <Card className="border-0 shadow-md bg-white dark:bg-slate-800 rounded-xl">
           <CardContent className="p-0 bg-gray-100 dark:bg-slate-700 rounded-xl">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow border border-gray-200 dark:border-slate-600 p-6">
-              <Tabs defaultValue="exam" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-slate-700 p-1 rounded-lg">
-                  <TabsTrigger
-                    value="exam"
-                    className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600 rounded-md px-4 py-2"
-                  >
-                    <HiClipboardCheck className="h-4 w-4" />
-                    Ujian
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 bg-cyan-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300"
-                    >
-                      {totalExams}
-                    </Badge>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="assignment"
-                    className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600 rounded-md px-4 py-2"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Tugas
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 bg-cyan-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300"
-                    >
-                      {totalAssignments}
-                    </Badge>
-                  </TabsTrigger>
-                </TabsList>
+              <div className="space-y-8">
+                {/* Exam Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-cyan-500 rounded-lg">
+                      <HiClipboardCheck className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        Hasil Ujian
+                      </h2>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {totalExams} ujian tersedia
+                      </p>
+                    </div>
+                  </div>
 
-                <TabsContent value="exam" className="space-y-6">
                   {lessonsWithResults.some((l) => l.examResults.length > 0) ? (
                     <Accordion
                       type="single"
@@ -301,9 +351,17 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                                     >
                                       <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
-                                      {lesson.teacher.name}{" "}
-                                      {lesson.teacher.surname}
+                                      {lesson.teacher.name} {lesson.teacher.surname}
                                     </Badge>
+                                    {lesson.subject?.name && (
+                                      <Badge
+                                        variant="outline"
+                                        className="border-cyan-200 text-cyan-700 dark:border-cyan-700 dark:text-cyan-300 justify-center"
+                                      >
+                                        <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
+                                        {lesson.subject.name}
+                                      </Badge>
+                                    )}
                                   </div>
                                 </div>
                                 <Badge variant="outline" className="ml-auto">
@@ -350,7 +408,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                               >
                                                 <TableCell className="font-medium">
                                                   {(() => {
-                                                    const student = classData.students.find((s) => s.id === result.studentId);
+                                                    const student = updatedClassData.students.find((s) => s.id === result.studentId);
                                                     return student ? `${student.name} ${student.surname}` : '';
                                                   })()}
                                                 </TableCell>
@@ -410,9 +468,24 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                       </CardContent>
                     </Card>
                   )}
-                </TabsContent>
+                </div>
 
-                <TabsContent value="assignment" className="space-y-6">
+                {/* Assignment Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-500 rounded-lg">
+                      <FileText className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        Hasil Tugas
+                      </h2>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {totalAssignments} tugas tersedia
+                      </p>
+                    </div>
+                  </div>
+
                   {lessonsWithResults.some(
                     (l) => l.assignmentResults.length > 0
                   ) ? (
@@ -444,9 +517,17 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                       className="border-orange-200 text-orange-700 dark:border-orange-700 dark:text-orange-300 justify-center"
                                     >
                                       <HiAcademicCap className="mr-2 h-4 w-4 text-orange-600" />
-                                      {lesson.teacher.name}{" "}
-                                      {lesson.teacher.surname}
+                                      {lesson.teacher.name} {lesson.teacher.surname}
                                     </Badge>
+                                    {lesson.subject?.name && (
+                                      <Badge
+                                        variant="outline"
+                                        className="border-cyan-200 text-cyan-700 dark:border-cyan-700 dark:text-cyan-300 justify-center"
+                                      >
+                                        <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
+                                        {lesson.subject.name}
+                                      </Badge>
+                                    )}
                                   </div>
                                 </div>
                                 <Badge variant="outline" className="ml-auto">
@@ -493,7 +574,7 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                                               >
                                                 <TableCell className="font-medium">
                                                   {(() => {
-                                                    const student = classData.students.find((s) => s.id === result.studentId);
+                                                    const student = updatedClassData.students.find((s) => s.id === result.studentId);
                                                     return student ? `${student.name} ${student.surname}` : '';
                                                   })()}
                                                 </TableCell>
@@ -553,8 +634,8 @@ const ClassPage = async ({ params }: ClassPageProps) => {
                       </CardContent>
                     </Card>
                   )}
-                </TabsContent>
-              </Tabs>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Class, Teacher, Grade } from "@prisma/client";
+import { Class, Teacher, Grade, Subject } from "@prisma/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,9 +9,12 @@ import Link from "next/link";
 import { HiCollection, HiUserGroup, HiAcademicCap, HiClipboardCheck } from "react-icons/hi";
 
 type ClassWithRelations = Class & {
-  supervisor: Teacher | null;
+  supervisor: (Teacher & {
+    subjects: Subject[];
+  }) | null;
   grade: Grade | null;
   students?: any[];
+  lessons?: any[];
 };
 
 type ClassListProps = {
@@ -32,119 +35,148 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
   const ClassCard = ({
     classItem,
     isSupervisor = false,
+    userId,
   }: {
     classItem: ClassWithRelations;
     isSupervisor?: boolean;
-  }) => (
-    <Card className="border-[1] border-gray-200/20 group transition-all duration-300 shadow-md hover:shadow-xl bg-white dark:bg-white/5 dark:border-gray-800/20 hover:bg-cyan-500/5 dark:hover:bg-cyan-500/10">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div
-              className={`p-2 rounded-lg ${
-                isSupervisor ? "bg-cyan-500" : "bg-cyan-500"
-              }`}
-            >
-              {isSupervisor ? (
-                <Crown className="h-5 w-5 text-white" />
-              ) : (
-                <HiCollection className="h-5 w-5 text-white" />
-              )}
-            </div>
-            <div>
-              <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                {classItem.grade?.level === 1
-                  ? "X"
-                  : classItem.grade?.level === 2
-                  ? "XI"
-                  : "XII"}{" "}
-                {classItem.name}
-              </CardTitle>
-              {isSupervisor && (
-                <Badge
-                  variant="secondary"
-                  className="mt-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
-                >
-                  <Crown className="mr-1 h-3 w-3" />
-                  Wali Kelas
-                </Badge>
-              )}
+    userId: string;
+  }) => {
+    // Ambil lessons yang diajar oleh user yang login
+    const myLessons = classItem.lessons?.filter(
+      (lesson: any) => lesson.teacherId === userId
+    );
+    // Ambil nama-nama mapel unik
+    const mySubjects = [
+      ...new Set(myLessons?.map((lesson: any) => lesson.subject?.name).filter(Boolean))
+    ];
+    return (
+      <Card className="border-[1] border-gray-200/20 group transition-all duration-300 shadow-md hover:shadow-xl bg-white dark:bg-white/5 dark:border-gray-800/20 hover:bg-cyan-500/5 dark:hover:bg-cyan-500/10">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={`p-2 rounded-lg ${
+                  isSupervisor ? "bg-cyan-500" : "bg-cyan-500"
+                }`}
+              >
+                {isSupervisor ? (
+                  <Crown className="h-5 w-5 text-white" />
+                ) : (
+                  <HiCollection className="h-5 w-5 text-white" />
+                )}
+              </div>
+              <div>
+                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                  {classItem.grade?.level === 1
+                    ? "X"
+                    : classItem.grade?.level === 2
+                    ? "XI"
+                    : "XII"}{" "}
+                  {classItem.name}
+                </CardTitle>
+                {isSupervisor && (
+                  <Badge
+                    variant="secondary"
+                    className="mt-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                  >
+                    <Crown className="mr-1 h-3 w-3" />
+                    Wali Kelas
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      <CardContent className="pt-0">
-        <div className="space-y-3">
-          {/* Grade Level */}
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
-              <GraduationCap className="h-4 w-4 text-gray-900 dark:text-white" />
-            </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Tingkat {classItem.grade?.level || "N/A"}
-            </span>
-          </div>
-
-          {/* Capacity */}
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
-              <HiUserGroup className="h-4 w-4 text-gray-900 dark:text-white" />
-            </div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              Kapasitas:{" "}
-              <span className="font-semibold text-gray-900 dark:text-white">
-                {classItem.capacity}
-              </span>{" "}
-              siswa
-            </span>
-          </div>
-
-          {/* Current Students (if available) */}
-          {classItem.students && (
+        <CardContent className="pt-0">
+          <div className="space-y-3">
+            {/* Grade Level */}
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
-                <UserCheck className="h-4 w-4 text-gray-900 dark:text-white" />
+                <GraduationCap className="h-4 w-4 text-gray-900 dark:text-white" />
+              </div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Tingkat {classItem.grade?.level || "N/A"}
+              </span>
+            </div>
+
+            {/* Capacity */}
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                <HiUserGroup className="h-4 w-4 text-gray-900 dark:text-white" />
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                Siswa aktif:{" "}
+                Kapasitas:{" "}
                 <span className="font-semibold text-gray-900 dark:text-white">
-                  {classItem.students.length}
-                </span>
+                  {classItem.capacity}
+                </span>{" "}
+                siswa
               </span>
             </div>
-          )}
 
-          {/* Supervisor (for non-supervised classes) */}
-          {!isSupervisor && classItem.supervisor && (
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
-                <HiAcademicCap className="h-4 w-4 text-gray-900 dark:text-white" />
+            {/* Current Students (if available) */}
+            {classItem.students && (
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                  <UserCheck className="h-4 w-4 text-gray-900 dark:text-white" />
+                </div>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Siswa aktif:{" "}
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {classItem.students.length}
+                  </span>
+                </span>
               </div>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Wali Kelas:{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {classItem.supervisor.name} {classItem.supervisor.surname}
-                </span>
-              </span>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Action Button */}
-        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
-          <Button
-            className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
-            asChild
-          >
-            <Link href={`/list/results/${classItem.id}`}>
-              Lihat Nilai
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+            {/* Supervisor (for non-supervised classes) */}
+            {!isSupervisor && classItem.supervisor && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                    <HiAcademicCap className="h-4 w-4 text-gray-900 dark:text-white" />
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Wali Kelas:{" "}
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {classItem.supervisor.name} {classItem.supervisor.surname}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Mata pelajaran yang diajarkan guru login (hanya untuk teaching, bukan wali kelas) */}
+            {!isSupervisor && mySubjects.length > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-gray-100 dark:bg-card rounded-md">
+                  <HiClipboardCheck className="h-4 w-4 text-gray-900 dark:text-white" />
+                </div>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Mata Pelajaran:{" "}
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {mySubjects.join(", ")}
+                  </span>
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Action Button */}
+          <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
+            <Button
+              className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
+              asChild
+            >
+              <Link href={`/list/results/${classItem.id}`}>
+                Lihat Nilai
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -171,6 +203,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
                 key={`supervised-${classItem.id}`}
                 classItem={classItem}
                 isSupervisor={true}
+                userId={userId || ""}
               />
             ))}
           </div>
@@ -202,6 +235,7 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
                 key={`teaching-${classItem.id}`}
                 classItem={classItem}
                 isSupervisor={false}
+                userId={userId || ""}
               />
             ))}
           </div>

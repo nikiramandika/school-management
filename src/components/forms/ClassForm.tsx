@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { AlertTriangle, Info } from "lucide-react";
 
 type FormState = {
   success: boolean;
@@ -34,9 +35,10 @@ function getTingkatLabel(level: number) {
 }
 
 // Override agar academicYear dan isActive selalu required
-type ClassSchema = Omit<ClassSchemaBase, "academicYear" | "isActive"> & {
+type ClassSchema = Omit<ClassSchemaBase, "academicYear" | "isActive" | "semester"> & {
   academicYear: string;
   isActive: boolean;
+  semester: "GANJIL" | "GENAP";
 };
 
 const ClassForm = ({
@@ -51,6 +53,9 @@ const ClassForm = ({
   relatedData?: any;
 }) => {
   const router = useRouter();
+  const [semesterWarning, setSemesterWarning] = useState<string | null>(null);
+  const [hasExistingData, setHasExistingData] = useState(false);
+  
   console.log("data.isActive:", data?.isActive, typeof data?.isActive);
   if (typeof data?.isActive !== 'boolean') {
     console.warn('PERINGATAN: data.isActive tidak ditemukan atau bukan boolean! Nilai:', data?.isActive, typeof data?.isActive);
@@ -77,6 +82,7 @@ const ClassForm = ({
     gradeId: data?.gradeId ?? (grades[0]?.id ?? 1),
     supervisorId: data?.supervisorId ?? "",
     academicYear: data?.academicYear ?? `${currentYear}/${currentYear + 1}`,
+    semester: data?.semester,
     isActive: typeof data?.isActive === "boolean" ? data.isActive : true,
   };
 
@@ -87,10 +93,53 @@ const ClassForm = ({
     formState: { errors, isSubmitting },
     getValues,
     setValue,
+    watch,
   } = useForm({
     resolver: zodResolver(classSchema),
     defaultValues,
   });
+
+  // Watch semester changes
+  const currentSemester = watch("semester");
+  const originalSemester = data?.semester;
+
+  // Check for existing data when semester changes
+  useEffect(() => {
+    if (type === "update" && data?.id && currentSemester !== originalSemester) {
+      // Check if class has existing data
+      const checkExistingData = async () => {
+        try {
+          const response = await fetch(`/api/classes/${data.id}/check-data`);
+          const result = await response.json();
+          
+          if (result.hasData) {
+            setHasExistingData(true);
+            setSemesterWarning(
+              `⚠️ PERINGATAN: Kelas ini memiliki ${result.examCount} ujian dan ${result.assignmentCount} tugas dengan nilai. ` +
+              `Mengubah semester dari ${originalSemester} ke ${currentSemester} tidak akan menghapus data tersebut. ` +
+              `Data akan tetap tersimpan tetapi mungkin tidak sesuai dengan semester baru.`
+            );
+          } else {
+            setHasExistingData(false);
+            setSemesterWarning(null);
+          }
+        } catch (error) {
+          console.error("Error checking existing data:", error);
+          // If we can't check, assume there might be data
+          setHasExistingData(true);
+          setSemesterWarning(
+            `⚠️ PERINGATAN: Mengubah semester dari ${originalSemester} ke ${currentSemester}. ` +
+            `Pastikan tidak ada data ujian/tugas yang perlu dipertahankan.`
+          );
+        }
+      };
+      
+      checkExistingData();
+    } else {
+      setHasExistingData(false);
+      setSemesterWarning(null);
+    }
+  }, [currentSemester, originalSemester, data?.id, type]);
 
   // Prepare options for SelectField
   const teacherOptions = [
@@ -153,6 +202,34 @@ const ClassForm = ({
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Membuat Kelas Baru" : "Memperbarui Kelas"}
       </h1>
+
+      {/* Semester Warning */}
+      {semesterWarning && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-yellow-800">
+              <p className="font-medium mb-2">Perubahan Semester</p>
+              <p>Apakah Anda yakin ingin mengubah semester? Data lama tetap tersimpan.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Info for new classes */}
+      {type === "create" && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-blue-800">
+              <p className="font-medium mb-1">Informasi Semester</p>
+              <p>• Pilih semester yang sesuai dengan periode akademik saat ini</p>
+              <p>• Data nilai akan terpisah berdasarkan semester</p>
+              <p>• Gunakan filter semester untuk beralih antar periode</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
@@ -217,6 +294,23 @@ const ClassForm = ({
             placeholder="Pilih Tahun Ajaran"
             isClearable={false}
             isSearchable={true}
+          />
+        </div>
+
+        {/* Semester menggunakan SelectField */}
+        <div className="w-full md:w-1/4">
+          <SelectField
+            label="Semester"
+            name="semester"
+            control={control}
+            options={[
+              { value: "GANJIL", label: "GANJIL" },
+              { value: "GENAP", label: "GENAP" },
+            ]}
+            error={errors?.semester}
+            placeholder="Pilih Semester"
+            isClearable={false}
+            isSearchable={false}
           />
         </div>
 
