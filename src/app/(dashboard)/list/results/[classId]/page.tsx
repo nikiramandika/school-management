@@ -65,7 +65,9 @@ type ResultWithTimestamp = Result & {
 type ClassWithRelations = Class & {
   supervisor: Teacher | null;
   grade: Grade | null;
-  students: Student[];
+  students: (Student & {
+    results: Result[];
+  })[];
   lessons: (Lesson & {
     teacher: Teacher;
     subject: Subject | null;
@@ -104,6 +106,7 @@ const PageHeader = ({
   isSupervisor,
   students,
   lessons,
+  skillGrades,
 }: {
   className: string;
   gradeLevel: number | null;
@@ -114,8 +117,11 @@ const PageHeader = ({
   totalLessons: number;
   role: string;
   isSupervisor: boolean;
-  students: Student[];
+  students: (Student & {
+    results: Result[];
+  })[];
   lessons: LessonWithResults[];
+  skillGrades: any[];
 }) => (
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
@@ -157,6 +163,7 @@ const PageHeader = ({
               className={className}
               gradeLevel={gradeLevel}
               classSemester={semester}
+              skillGrades={skillGrades}
             />
           </div>
         )}
@@ -186,7 +193,11 @@ const ClassPage = async ({
           level: true,
         },
       },
-      students: true,
+      students: {
+        include: {
+          results: true,
+        },
+      },
       lessons: {
         include: {
           teacher: true,
@@ -281,6 +292,30 @@ const ClassPage = async ({
     0
   );
 
+  // Get skill grades for this class and semester
+  const skillGrades = await prisma.skillGrade.findMany({
+    where: {
+      lesson: {
+        classId: parseInt(params.classId),
+      },
+      semester: targetSemester as any,
+    },
+    include: {
+      student: true,
+      lesson: {
+        include: {
+          subject: true,
+        },
+      },
+    },
+  });
+
+  // Calculate average scores
+  const allResults = updatedClassData.students.flatMap(student => student.results);
+  const averageScore = allResults.length > 0
+    ? (allResults.reduce((sum, result) => sum + result.score, 0) / allResults.length).toFixed(1)
+    : "0";
+
   return (
     <div className="soft-light bg-softlight dark:bg-softdark m-4 p-4 flex-1 mt-0 rounded-3xl shadow-md">
       <div className="container mx-auto p-6 space-y-8">
@@ -296,6 +331,7 @@ const ClassPage = async ({
           isSupervisor={isSupervisor}
           students={updatedClassData.students}
           lessons={lessonsWithResults}
+          skillGrades={skillGrades}
         />
 
         {/* Semester Filter */}

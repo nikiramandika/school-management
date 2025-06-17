@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Users, User, Archive } from "lucide-react";
-import { useState } from "react";
+import { Download, FileText, Users, User, Archive, Edit3, Save, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -27,7 +27,18 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Student, Lesson, Teacher, Subject, Exam, Assignment, Result } from "@prisma/client";
+import { upsertSkillGrade } from "@/lib/actions";
+import { toast } from "sonner";
+
+interface SkillGrade {
+  id: number;
+  score: number;
+  studentId: string;
+  lessonId: number;
+  semester: string;
+}
 
 interface ResultWithTimestamp extends Result {
   updatedAt: Date;
@@ -54,6 +65,17 @@ interface DownloadReportCardPDFButtonProps {
   className: string;
   gradeLevel?: number | null;
   classSemester?: string;
+  skillGrades?: SkillGrade[];
+}
+
+// Interface untuk nilai yang diedit
+interface EditedGrades {
+  [studentId: string]: {
+    [lessonId: number]: {
+      knowledge: number | null; // Nilai pengetahuan (rata-rata tugas & ujian)
+      skill: number | null;     // Nilai keterampilan
+    };
+  };
 }
 
 export default function DownloadReportCardPDFButton({ 
@@ -61,13 +83,17 @@ export default function DownloadReportCardPDFButton({
   lessons = [], 
   className, 
   gradeLevel, 
-  classSemester = "GANJIL" 
+  classSemester = "GANJIL",
+  skillGrades = []
 }: DownloadReportCardPDFButtonProps) {
   const [loading, setLoading] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(classSemester);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [downloadMode, setDownloadMode] = useState<"all" | "selected">("all");
+  const [editingMode, setEditingMode] = useState(false);
+  const [editedGrades, setEditedGrades] = useState<EditedGrades>({});
+  const [savingGrades, setSavingGrades] = useState(false);
 
   // Filter lessons based on selected semester
   const filteredLessons = lessons.map(lesson => ({
@@ -89,7 +115,8 @@ export default function DownloadReportCardPDFButton({
     filteredLessons: filteredLessons.length,
     hasDataForSemester,
     selectedSemester,
-    classSemester
+    classSemester,
+    skillGrades: skillGrades.length
   });
 
   // Calculate student's final grade for each lesson
@@ -116,6 +143,16 @@ export default function DownloadReportCardPDFButton({
     return Math.round(average * 100) / 100;
   };
 
+  // Get skill grade from database
+  const getSkillGradeFromDB = (studentId: string, lessonId: number) => {
+    const skillGrade = skillGrades.find(sg => 
+      sg.studentId === studentId && 
+      sg.lessonId === lessonId && 
+      sg.semester === selectedSemester
+    );
+    return skillGrade ? skillGrade.score : null;
+  };
+
   // Calculate student's overall average
   const calculateStudentAverage = (studentId: string) => {
     const grades = filteredLessons
@@ -124,6 +161,100 @@ export default function DownloadReportCardPDFButton({
 
     if (grades.length === 0) return null;
     return Math.round((grades.reduce((sum, grade) => sum + grade, 0) / grades.length) * 100) / 100;
+  };
+
+  // Get edited or calculated grade
+  const getStudentGrade = (studentId: string, lesson: LessonWithResults) => {
+    if (editingMode && editedGrades[studentId]?.[lesson.id]?.knowledge !== undefined) {
+      return editedGrades[studentId][lesson.id].knowledge;
+    }
+    return calculateStudentGrade(studentId, lesson);
+  };
+
+  // Get edited or database skill grade
+  const getStudentSkillGrade = (studentId: string, lesson: LessonWithResults) => {
+    if (editingMode && editedGrades[studentId]?.[lesson.id]?.skill !== undefined) {
+      return editedGrades[studentId][lesson.id].skill;
+    }
+    // Get from database, fallback to knowledge grade if not found
+    const dbSkillGrade = getSkillGradeFromDB(studentId, lesson.id);
+    if (dbSkillGrade !== null) {
+      return dbSkillGrade;
+    }
+    return calculateStudentGrade(studentId, lesson);
+  };
+
+  // Handle grade editing
+  const handleGradeChange = (studentId: string, lessonId: number, type: 'knowledge' | 'skill', value: string) => {
+    const numValue = value === '' ? null : parseFloat(value);
+    
+    setEditedGrades(prev => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        [lessonId]: {
+          ...prev[studentId]?.[lessonId],
+          [type]: numValue
+        }
+      }
+    }));
+  };
+
+  // Initialize edited grades
+  const initializeEditedGrades = () => {
+    const initial: EditedGrades = {};
+    students.forEach(student => {
+      initial[student.id] = {};
+      filteredLessons.forEach(lesson => {
+        const knowledgeGrade = calculateStudentGrade(student.id, lesson);
+        const skillGrade = getSkillGradeFromDB(student.id, lesson.id) || knowledgeGrade;
+        initial[student.id][lesson.id] = {
+          knowledge: knowledgeGrade,
+          skill: skillGrade
+        };
+      });
+    });
+    setEditedGrades(initial);
+  };
+
+  // Save edited grades to database
+  const handleSaveEditedGrades = async () => {
+    setSavingGrades(true);
+    
+    try {
+      const savePromises: Promise<any>[] = [];
+      
+      Object.entries(editedGrades).forEach(([studentId, lessonGrades]) => {
+        Object.entries(lessonGrades).forEach(([lessonId, grades]) => {
+          if (grades.skill !== null && grades.skill !== undefined) {
+            savePromises.push(
+              upsertSkillGrade(
+                { success: false, error: false, message: "" },
+                {
+                  studentId,
+                  lessonId: parseInt(lessonId),
+                  score: grades.skill,
+                  semester: selectedSemester,
+                }
+              )
+            );
+          }
+        });
+      });
+
+      if (savePromises.length > 0) {
+        await Promise.all(savePromises);
+        toast.success("Nilai keterampilan berhasil disimpan ke database");
+      } else {
+        toast.info("Tidak ada nilai keterampilan yang perlu disimpan");
+      }
+      
+    } catch (error) {
+      console.error("Error saving skill grades:", error);
+      toast.error("Gagal menyimpan nilai keterampilan");
+    } finally {
+      setSavingGrades(false);
+    }
   };
 
   const handleSelectAllStudents = () => {
@@ -195,59 +326,101 @@ export default function DownloadReportCardPDFButton({
 
     // Prepare data for table
     const tableData = filteredLessons.map((lesson, idx) => {
-      const grade = calculateStudentGrade(student.id, lesson);
+      const knowledgeGrade = getStudentGrade(student.id, lesson);
+      const skillGrade = getStudentSkillGrade(student.id, lesson);
       const subjectName = lesson.subject?.name || lesson.name;
-      let description = "-";
-      let predikat = "-";
-      if (grade !== null) {
-        if (grade >= 90) {
-          predikat = "A";
-          description = "Sudah menguasai semua kompetensi dengan sangat baik, mampu memahami dan menerapkan materi secara menyeluruh.";
-        } else if (grade >= 75) {
-          predikat = "B";
-          description = "Sudah menguasai kompetensi dengan baik, mampu memahami materi dan menerapkannya dengan cukup baik.";
-        } else if (grade >= 60) {
-          predikat = "C";
-          description = "Menguasai sebagian kompetensi, namun masih perlu meningkatkan pemahaman dan penerapan materi.";
+      
+      let knowledgePredikat = "-";
+      let skillPredikat = "-";
+      let knowledgeDescription = "-";
+      let skillDescription = "-";
+      
+      if (knowledgeGrade !== null) {
+        if (knowledgeGrade >= 90) {
+          knowledgePredikat = "A";
+          knowledgeDescription = "Sudah menguasai semua kompetensi dengan sangat baik, mampu memahami dan menerapkan materi secara menyeluruh.";
+        } else if (knowledgeGrade >= 75) {
+          knowledgePredikat = "B";
+          knowledgeDescription = "Sudah menguasai kompetensi dengan baik, mampu memahami materi dan menerapkannya dengan cukup baik.";
+        } else if (knowledgeGrade >= 60) {
+          knowledgePredikat = "C";
+          knowledgeDescription = "Menguasai sebagian kompetensi, namun masih perlu meningkatkan pemahaman dan penerapan materi.";
         } else {
-          predikat = "D";
-          description = "Belum menguasai kompetensi, perlu bimbingan lebih lanjut.";
+          knowledgePredikat = "D";
+          knowledgeDescription = "Belum menguasai kompetensi, perlu bimbingan lebih lanjut.";
         }
       }
+
+      if (skillGrade !== null) {
+        if (skillGrade >= 90) {
+          skillPredikat = "A";
+          skillDescription = "Sangat terampil dalam menerapkan konsep dan prinsip yang dipelajari.";
+        } else if (skillGrade >= 75) {
+          skillPredikat = "B";
+          skillDescription = "Terampil dalam menerapkan konsep dan prinsip yang dipelajari.";
+        } else if (skillGrade >= 60) {
+          skillPredikat = "C";
+          skillDescription = "Cukup terampil dalam menerapkan konsep dan prinsip yang dipelajari.";
+        } else {
+          skillPredikat = "D";
+          skillDescription = "Kurang terampil dalam menerapkan konsep dan prinsip yang dipelajari.";
+        }
+      }
+
       return [
         (idx + 1).toString(),
         subjectName,
-        grade !== null ? grade.toString() : "-",
-        predikat,
-        description
+        knowledgeGrade !== null ? knowledgeGrade.toString() : "-",
+        knowledgePredikat,
+        skillGrade !== null ? skillGrade.toString() : "-",
+        skillPredikat,
+        knowledgeDescription,
+        skillDescription
       ];
     });
 
     // Calculate overall average
-    const overallAverage = calculateStudentAverage(student.id);
+    const knowledgeGrades = filteredLessons
+      .map(lesson => getStudentGrade(student.id, lesson))
+      .filter(grade => grade !== null) as number[];
+    
+    const skillGrades = filteredLessons
+      .map(lesson => getStudentSkillGrade(student.id, lesson))
+      .filter(grade => grade !== null) as number[];
+
+    const knowledgeAverage = knowledgeGrades.length > 0 
+      ? Math.round((knowledgeGrades.reduce((sum, grade) => sum + grade, 0) / knowledgeGrades.length) * 100) / 100
+      : null;
+    
+    const skillAverage = skillGrades.length > 0 
+      ? Math.round((skillGrades.reduce((sum, grade) => sum + grade, 0) / skillGrades.length) * 100) / 100
+      : null;
 
     // Create table
     autoTable(doc, {
       startY: 42,
-      head: [["No", "Mata Pelajaran", "Nilai", "Predikat", "Deskripsi"]],
+      head: [["No", "Mata Pelajaran", "Nilai Pengetahuan", "Predikat", "Nilai Keterampilan", "Predikat", "Deskripsi Pengetahuan", "Deskripsi Keterampilan"]],
       body: tableData,
       theme: "striped",
-      styles: { fontSize: 8, cellPadding: 4 },
+      styles: { fontSize: 7, cellPadding: 3 },
       headStyles: { 
         fillColor: [41, 128, 185], 
         textColor: 255, 
         fontStyle: 'bold',
         halign: 'center',
-        fontSize: 8
+        fontSize: 7
       },
       alternateRowStyles: { fillColor: [240, 240, 240] },
       margin: { left: 14, right: 14 },
       columnStyles: {
-        0: { cellWidth: 12, halign: 'center' },
-        1: { cellWidth: 60 },
-        2: { cellWidth: 25, halign: 'center' },
-        3: { cellWidth: 20, halign: 'center' },
-        4: { cellWidth: 60 }
+        0: { cellWidth: 8, halign: 'center' },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 20, halign: 'center' },
+        3: { cellWidth: 15, halign: 'center' },
+        4: { cellWidth: 20, halign: 'center' },
+        5: { cellWidth: 15, halign: 'center' },
+        6: { cellWidth: 35 },
+        7: { cellWidth: 35 }
       }
     });
 
@@ -259,8 +432,9 @@ export default function DownloadReportCardPDFButton({
     
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Rata-rata Keseluruhan: ${overallAverage || "-"}`, 14, finalY + 8);
-    doc.text(`Jumlah Mata Pelajaran: ${filteredLessons.length}`, 14, finalY + 16);
+    doc.text(`Rata-rata Pengetahuan: ${knowledgeAverage || "-"}`, 14, finalY + 8);
+    doc.text(`Rata-rata Keterampilan: ${skillAverage || "-"}`, 14, finalY + 16);
+    doc.text(`Jumlah Mata Pelajaran: ${filteredLessons.length}`, 14, finalY + 24);
 
     // Footer
     doc.setFontSize(9);
@@ -313,7 +487,7 @@ export default function DownloadReportCardPDFButton({
       // Check if any student has data
       const studentsWithData = studentsToDownload.filter(student => {
         return filteredLessons.some(lesson => {
-          const grade = calculateStudentGrade(student.id, lesson);
+          const grade = getStudentGrade(student.id, lesson);
           return grade !== null;
         });
       });
@@ -349,6 +523,8 @@ export default function DownloadReportCardPDFButton({
     setLoading(false);
     setShowDialog(false);
     setSelectedStudents([]);
+    setEditingMode(false);
+    setEditedGrades({});
   };
 
   return (
@@ -388,7 +564,7 @@ export default function DownloadReportCardPDFButton({
             Download Rapor Siswa
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Download Rapor Siswa</DialogTitle>
             <DialogDescription>
@@ -426,6 +602,31 @@ export default function DownloadReportCardPDFButton({
                   Pilih Siswa Tertentu
                 </Label>
               </div>
+            </div>
+
+            {/* Edit Mode Toggle */}
+            <div className="flex items-center space-x-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <Checkbox 
+                id="edit-mode" 
+                checked={editingMode}
+                onCheckedChange={(checked) => {
+                  setEditingMode(checked === true);
+                  if (checked === true) {
+                    initializeEditedGrades();
+                  } else {
+                    setEditedGrades({});
+                  }
+                }}
+              />
+              <Label htmlFor="edit-mode" className="flex items-center gap-2 font-medium">
+                <Edit3 className="h-4 w-4" />
+                Edit Nilai Sebelum Download
+              </Label>
+              {editingMode && (
+                <Badge variant="outline" className="ml-2 border-blue-200 text-blue-700">
+                  Mode Edit Aktif
+                </Badge>
+              )}
             </div>
 
             {/* Student Selection */}
@@ -473,6 +674,71 @@ export default function DownloadReportCardPDFButton({
               </div>
             )}
 
+            {/* Grade Editing Section */}
+            {editingMode && (
+              <div className="space-y-4 border rounded-lg p-4 bg-gray-50 dark:bg-gray-900/20">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-lg">Edit Nilai Siswa</h3>
+                  <Button 
+                    onClick={handleSaveEditedGrades}
+                    disabled={savingGrades}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    {savingGrades ? "Menyimpan..." : "Simpan Nilai Keterampilan"}
+                  </Button>
+                </div>
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {students.map((student) => (
+                    <div key={student.id} className="border rounded-lg p-3 bg-white dark:bg-gray-800">
+                      <h4 className="font-medium mb-3">{student.name} {student.surname}</h4>
+                      <div className="space-y-2">
+                        {filteredLessons.map((lesson) => {
+                          const knowledgeGrade = getStudentGrade(student.id, lesson);
+                          const skillGrade = getStudentSkillGrade(student.id, lesson);
+                          const subjectName = lesson.subject?.name || lesson.name;
+                          
+                          return (
+                            <div key={lesson.id} className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">{subjectName}</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  <Label className="text-xs">Pengetahuan:</Label>
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={knowledgeGrade?.toString() || ""}
+                                    onChange={(e) => handleGradeChange(student.id, lesson.id, 'knowledge', e.target.value)}
+                                    className="w-16 h-8 text-center text-xs"
+                                    placeholder="0-100"
+                                  />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Label className="text-xs">Keterampilan:</Label>
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={skillGrade?.toString() || ""}
+                                    onChange={(e) => handleGradeChange(student.id, lesson.id, 'skill', e.target.value)}
+                                    className="w-16 h-8 text-center text-xs"
+                                    placeholder="0-100"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-4">
               <Button 
@@ -480,6 +746,8 @@ export default function DownloadReportCardPDFButton({
                 onClick={() => {
                   setShowDialog(false);
                   setSelectedStudents([]);
+                  setEditingMode(false);
+                  setEditedGrades({});
                 }}
               >
                 Batal

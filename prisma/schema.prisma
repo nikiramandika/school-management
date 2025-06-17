@@ -30,6 +30,7 @@ model Student {
   birthday    DateTime
   attendances Attendance[]
   results     Result[]
+  skillGrades SkillGrade[]
   class       Class        @relation(fields: [classId], references: [id])
   grade       Grade        @relation(fields: [gradeId], references: [id])
 }
@@ -95,6 +96,7 @@ model Lesson {
   assignments Assignment[]
   attendances Attendance[]
   exams       Exam[]
+  skillGrades SkillGrade[]
   class       Class        @relation(fields: [classId], references: [id])
   subject     Subject      @relation(fields: [subjectId], references: [id])
   teacher     Teacher      @relation(fields: [teacherId], references: [id])
@@ -131,6 +133,20 @@ model Result {
   assignment   Assignment? @relation(fields: [assignmentId], references: [id])
   exam         Exam?       @relation(fields: [examId], references: [id])
   student      Student     @relation(fields: [studentId], references: [id])
+}
+
+model SkillGrade {
+  id        Int      @id @default(autoincrement())
+  score     Int
+  studentId String
+  lessonId  Int
+  semester  Semester @default(GANJIL)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  student   Student  @relation(fields: [studentId], references: [id])
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+
+  @@unique([studentId, lessonId, semester])
 }
 
 enum AttendanceStatus {

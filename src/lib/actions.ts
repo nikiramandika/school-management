@@ -2153,3 +2153,353 @@ export const updateAttendance = async (
     };
   }
 };
+
+export async function createSkillGrade(
+  prevState: { success: boolean; error: boolean; message: string },
+  formData: {
+    studentId: string;
+    lessonId: number;
+    score: number;
+    semester: string;
+    userId?: string;
+    userRole?: string;
+  }
+) {
+  "use server";
+  
+  try {
+    console.log('Membuat nilai keterampilan dengan data:', formData);
+
+    // Validate required fields
+    if (!formData.studentId || !formData.lessonId || formData.score === undefined) {
+      console.log('Kolom yang harus diisi tidak lengkap:', formData);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kolom yang harus diisi tidak lengkap" 
+      };
+    }
+
+    // Validate score range and convert to integer
+    const score = Math.round(formData.score);
+    if (score < 0 || score > 100) {
+      console.log('Skor tidak valid:', score);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Skor harus antara 0 dan 100" 
+      };
+    }
+
+    // Check if skill grade already exists
+    const existingSkillGrade = await prisma.skillGrade.findFirst({
+      where: {
+        studentId: formData.studentId,
+        lessonId: formData.lessonId,
+        semester: formData.semester as any,
+      }
+    });
+
+    if (existingSkillGrade) {
+      console.log('Nilai keterampilan sudah ada', existingSkillGrade);
+      return {
+        success: false,
+        error: true,
+        message: "Nilai keterampilan sudah ada untuk siswa dan mata pelajaran ini"
+      };
+    }
+
+    const skillGrade = await prisma.skillGrade.create({
+      data: {
+        studentId: formData.studentId,
+        lessonId: formData.lessonId,
+        score: score,
+        semester: formData.semester as any,
+      },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+          }
+        },
+      },
+    });
+
+    // Logging logic
+    if (formData.userId && formData.userRole) {
+      let logUserId = formData.userId;
+      if (formData.userRole === "admin") {
+        logUserId = "admin";
+      } else if (formData.userRole === "teacher" && formData.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: formData.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const studentName = `${skillGrade.student.name} ${skillGrade.student.surname}`;
+      const subjectName = skillGrade.lesson.subject?.name || skillGrade.lesson.name;
+
+      await logActivity({
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "CREATE",
+        entityType: "Skill Grade",
+        entityId: skillGrade.id.toString(),
+        description: getActivityDescription("CREATE", "Skill Grade", `${studentName} - ${subjectName} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          lessonId: formData.lessonId,
+          subjectName,
+          semester: formData.semester,
+        },
+      });
+    }
+
+    console.log('Created skill grade:', skillGrade);
+
+    // Revalidate the current page
+    revalidatePath(`/list/results/${skillGrade.lesson.classId}`);
+    
+    return { 
+      success: true, 
+      error: false, 
+      message: "Nilai keterampilan berhasil disimpan" 
+    };
+  } catch (err) {
+    console.error("Kesalahan dalam menyimpan nilai keterampilan:", err);
+    return { 
+      success: false, 
+      error: true, 
+      message: err instanceof Error ? err.message : "Gagal menyimpan nilai keterampilan" 
+    };
+  }
+}
+
+export async function updateSkillGrade(
+  prevState: { success: boolean; error: boolean; message: string },
+  formData: {
+    id: number;
+    studentId: string;
+    lessonId: number;
+    score: number;
+    semester: string;
+    userId?: string;
+    userRole?: string;
+  }
+) {
+  "use server";
+  
+  try {
+    console.log('Memperbarui nilai keterampilan dengan data:', formData);
+
+    // Validate required fields
+    if (!formData.id || !formData.studentId || !formData.lessonId || formData.score === undefined) {
+      console.log('Kolom yang harus diisi tidak lengkap:', formData);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kolom yang harus diisi tidak lengkap" 
+      };
+    }
+
+    // Validate score range and convert to integer
+    const score = Math.round(formData.score);
+    if (score < 0 || score > 100) {
+      console.log('Skor tidak valid:', score);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Skor harus antara 0 dan 100" 
+      };
+    }
+
+    const skillGrade = await prisma.skillGrade.update({
+      where: {
+        id: formData.id,
+      },
+      data: {
+        score: score,
+      },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+          }
+        },
+      },
+    });
+
+    // Logging logic
+    if (formData.userId && formData.userRole) {
+      let logUserId = formData.userId;
+      if (formData.userRole === "admin") {
+        logUserId = "admin";
+      } else if (formData.userRole === "teacher" && formData.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: formData.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const studentName = `${skillGrade.student.name} ${skillGrade.student.surname}`;
+      const subjectName = skillGrade.lesson.subject?.name || skillGrade.lesson.name;
+
+      await logActivity({
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "UPDATE",
+        entityType: "Skill Grade",
+        entityId: skillGrade.id.toString(),
+        description: getActivityDescription("UPDATE", "Skill Grade", `${studentName} - ${subjectName} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          lessonId: formData.lessonId,
+          subjectName,
+          semester: formData.semester,
+        },
+      });
+    }
+
+    console.log('Updated skill grade:', skillGrade);
+
+    // Revalidate the current page
+    revalidatePath(`/list/results/${skillGrade.lesson.classId}`);
+    
+    return { 
+      success: true, 
+      error: false, 
+      message: "Nilai keterampilan berhasil diperbarui" 
+    };
+  } catch (err) {
+    console.error("Kesalahan dalam memperbarui nilai keterampilan:", err);
+    return { 
+      success: false, 
+      error: true, 
+      message: err instanceof Error ? err.message : "Gagal memperbarui nilai keterampilan" 
+    };
+  }
+}
+
+export async function upsertSkillGrade(
+  prevState: { success: boolean; error: boolean; message: string },
+  formData: {
+    studentId: string;
+    lessonId: number;
+    score: number;
+    semester: string;
+    userId?: string;
+    userRole?: string;
+  }
+) {
+  "use server";
+  
+  try {
+    console.log('Upsert nilai keterampilan dengan data:', formData);
+
+    // Validate required fields
+    if (!formData.studentId || !formData.lessonId || formData.score === undefined) {
+      console.log('Kolom yang harus diisi tidak lengkap:', formData);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Kolom yang harus diisi tidak lengkap" 
+      };
+    }
+
+    // Validate score range and convert to integer
+    const score = Math.round(formData.score);
+    if (score < 0 || score > 100) {
+      console.log('Skor tidak valid:', score);
+      return { 
+        success: false, 
+        error: true, 
+        message: "Skor harus antara 0 dan 100" 
+      };
+    }
+
+    const skillGrade = await prisma.skillGrade.upsert({
+      where: {
+        studentId_lessonId_semester: {
+          studentId: formData.studentId,
+          lessonId: formData.lessonId,
+          semester: formData.semester as any,
+        },
+      },
+      update: {
+        score: score,
+      },
+      create: {
+        studentId: formData.studentId,
+        lessonId: formData.lessonId,
+        score: score,
+        semester: formData.semester as any,
+      },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+          }
+        },
+      },
+    });
+
+    // Logging logic
+    if (formData.userId && formData.userRole) {
+      let logUserId = formData.userId;
+      if (formData.userRole === "admin") {
+        logUserId = "admin";
+      } else if (formData.userRole === "teacher" && formData.userId) {
+        const teacher = await prisma.teacher.findUnique({ where: { id: formData.userId } });
+        if (teacher) {
+          logUserId = `${teacher.name} ${teacher.surname}`;
+        }
+      }
+
+      const studentName = `${skillGrade.student.name} ${skillGrade.student.surname}`;
+      const subjectName = skillGrade.lesson.subject?.name || skillGrade.lesson.name;
+
+      await logActivity({
+        userId: logUserId,
+        userRole: formData.userRole,
+        action: "UPDATE",
+        entityType: "Skill Grade",
+        entityId: skillGrade.id.toString(),
+        description: getActivityDescription("UPDATE", "Skill Grade", `${studentName} - ${subjectName} (${score})`),
+        metadata: { 
+          studentId: formData.studentId,
+          studentName,
+          score,
+          lessonId: formData.lessonId,
+          subjectName,
+          semester: formData.semester,
+        },
+      });
+    }
+
+    console.log('Upserted skill grade:', skillGrade);
+
+    // Revalidate the current page
+    revalidatePath(`/list/results/${skillGrade.lesson.classId}`);
+    
+    return { 
+      success: true, 
+      error: false, 
+      message: "Nilai keterampilan berhasil disimpan" 
+    };
+  } catch (err) {
+    console.error("Kesalahan dalam menyimpan nilai keterampilan:", err);
+    return { 
+      success: false, 
+      error: true, 
+      message: err instanceof Error ? err.message : "Gagal menyimpan nilai keterampilan" 
+    };
+  }
+}
