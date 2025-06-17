@@ -79,7 +79,13 @@ const AssignmentForm = ({
 
   // Update semester when lessonId changes
   useEffect(() => {
-    const selectedLesson = relatedData?.lessons.find(lesson => lesson.id === Number(watchedLessonId));
+    const selectedLesson = relatedData?.lessons.find((lesson: {
+      id: number;
+      name: string;
+      subject: { id: number; name: string };
+      class: { id: number; name: string; grade: { level: number }; semester: string };
+      teacher: { id: string; name: string; surname: string };
+    }) => lesson.id === Number(watchedLessonId));
     if (selectedLesson?.class?.semester) {
       setValue("semester", selectedLesson.class.semester);
     }

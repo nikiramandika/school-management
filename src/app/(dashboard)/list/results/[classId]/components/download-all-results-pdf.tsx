@@ -27,11 +27,13 @@ interface Assessment {
   id: string;
   title: string;
   type: "Ujian" | "Tugas";
+  semester?: string;
 }
 interface Grade {
   studentId: string;
   assessmentId: string;
   score: number;
+  semester?: string;
 }
 
 interface DownloadAllResultsPDFButtonProps {
@@ -44,7 +46,15 @@ interface DownloadAllResultsPDFButtonProps {
   classSemester?: string;
 }
 
-export default function DownloadAllResultsPDFButton({ students = [], exams = [], assignments = [], existingGrades = [], className, gradeLevel, classSemester = "GANJIL" }) {
+export default function DownloadAllResultsPDFButton({ 
+  students = [], 
+  exams = [], 
+  assignments = [], 
+  existingGrades = [], 
+  className, 
+  gradeLevel, 
+  classSemester = "GANJIL" 
+}: DownloadAllResultsPDFButtonProps) {
   const [loading, setLoading] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(classSemester);
   const [showSemesterSelect, setShowSemesterSelect] = useState(false);

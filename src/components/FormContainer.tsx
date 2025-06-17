@@ -112,7 +112,13 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         
         // If it's an update form, ensure the current lesson is included
         if (type === "update" && data?.lessonId) {
-          const currentLesson = examLessons.find(lesson => lesson.id === data.lessonId);
+          const currentLesson = examLessons.find((lesson: {
+            id: number;
+            name: string;
+            subject: { id: number; name: string };
+            class: { id: number; name: string; semester: string };
+            teacher: { id: string; name: string; surname: string };
+          }) => lesson.id === data.lessonId);
           if (!currentLesson) {
             const lesson = await prisma.lesson.findUnique({
               where: { id: data.lessonId },
@@ -176,7 +182,13 @@ const FormContainer = async ({ table, type, data, id, relatedData: initialRelate
         
         // If it's an update form, ensure the current lesson is included
         if (type === "update" && data?.lessonId) {
-          const currentLesson = assignmentLessons.find(lesson => lesson.id === data.lessonId);
+          const currentLesson = assignmentLessons.find((lesson: {
+            id: number;
+            name: string;
+            subject: { id: number; name: string };
+            class: { id: number; name: string; semester: string };
+            teacher: { id: string; name: string; surname: string };
+          }) => lesson.id === data.lessonId);
           if (!currentLesson) {
             const lesson = await prisma.lesson.findUnique({
               where: { id: data.lessonId },

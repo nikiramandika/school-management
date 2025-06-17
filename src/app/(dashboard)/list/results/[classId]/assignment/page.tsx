@@ -20,6 +20,27 @@ import { DownloadButton } from "../components/download-button";
 import DownloadAllResultsPDFButton from "../components/download-all-results-pdf";
 import SemesterFilter from "../components/semester-filter";
 
+// Type definitions for the download component
+interface StudentForDownload {
+  id: string;
+  name: string;
+  surname: string;
+}
+
+interface AssessmentForDownload {
+  id: string;
+  title: string;
+  type: "Ujian" | "Tugas";
+  semester?: string;
+}
+
+interface GradeForDownload {
+  studentId: string;
+  assessmentId: string;
+  score: number;
+  semester?: string;
+}
+
 interface AssignmentPageProps {
   params: {
     classId: string;
@@ -353,24 +374,24 @@ const AssignmentPage = async ({ params, searchParams }: AssignmentPageProps) => 
 
         <div className="flex justify-end mb-4">
           <DownloadAllResultsPDFButton
-            students={students.map((student) => ({
+            students={students.map((student): StudentForDownload => ({
               id: student.id.toString(),
               name: student.name,
               surname: student.surname,
             }))}
-            exams={exams.map((exam) => ({
+            exams={exams.map((exam): AssessmentForDownload => ({
               id: exam.id.toString(),
               title: exam.title,
               type: "Ujian",
               semester: exam.semester,
             }))}
-            assignments={assignments.map((assignment) => ({
+            assignments={assignments.map((assignment): AssessmentForDownload => ({
               id: assignment.id.toString(),
               title: assignment.title,
               type: "Tugas",
               semester: assignment.semester,
             }))}
-            existingGrades={existingGrades.map((grade) => ({
+            existingGrades={existingGrades.map((grade): GradeForDownload => ({
               studentId: grade.studentId,
               assessmentId: grade.examId != null
                 ? `E-${grade.examId}`

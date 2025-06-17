@@ -72,8 +72,8 @@ export default function DownloadReportCardPDFButton({
   // Filter lessons based on selected semester
   const filteredLessons = lessons.map(lesson => ({
     ...lesson,
-    exams: lesson.exams.filter(exam => !exam.semester || exam.semester === selectedSemester),
-    assignments: lesson.assignments.filter(assignment => !assignment.semester || assignment.semester === selectedSemester),
+    exams: Array.isArray(lesson.exams) ? lesson.exams.filter(exam => !exam.semester || exam.semester === selectedSemester) : [],
+    assignments: Array.isArray(lesson.assignments) ? lesson.assignments.filter(assignment => !assignment.semester || assignment.semester === selectedSemester) : [],
   }));
 
   // Check if there's data for selected semester
@@ -147,6 +147,13 @@ export default function DownloadReportCardPDFButton({
     const autoTable = (await import("jspdf-autotable")).default;
     const doc = new jsPDF();
 
+    // Siapkan label kelas
+    let levelLabel = "";
+    if (gradeLevel === 1) levelLabel = "X";
+    else if (gradeLevel === 2) levelLabel = "XI";
+    else if (gradeLevel === 3) levelLabel = "XII";
+    const kelasText = levelLabel ? `${levelLabel} ${className}` : className;
+
     // Header dengan logo sekolah
     const logoUrl = "/LogoSMAN5Medan.png";
     const getBase64FromUrl = async (url: string) => {
@@ -162,79 +169,96 @@ export default function DownloadReportCardPDFButton({
     const logoBase64 = await getBase64FromUrl(logoUrl);
     doc.addImage(logoBase64, "PNG", 14, 10, 18, 18);
 
-    doc.setFontSize(16);
-    doc.text("SMA NEGERI 5 MEDAN", 35, 18);
-    doc.setFontSize(10);
-    doc.text("Jl. Pelajar No. 17, Medan", 35, 24);
-    doc.setFontSize(13);
-    
-    let levelLabel = "";
-    if (gradeLevel === 1) levelLabel = "X";
-    else if (gradeLevel === 2) levelLabel = "XI";
-    else if (gradeLevel === 3) levelLabel = "XII";
-    
-    const kelasText = levelLabel ? `${levelLabel} ${className}` : className;
-    doc.text(`RAPOR NILAI SISWA`, 14, 38);
-    doc.setFontSize(10);
-    doc.text(`Nama: ${student.name} ${student.surname}`, 14, 44);
-    doc.text(`Kelas: ${kelasText}`, 14, 50);
-    doc.text(`Semester: ${selectedSemester}`, 14, 56);
-    doc.text(`Tanggal: ${new Date().toLocaleDateString("id-ID")}`, 14, 62);
+    // Header dua kolom
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Nama Sekolah", 35, 16);
+    doc.text(": SMA Negeri 5 Medan", 65, 16);
+    doc.text("Kelas", 140, 16);
+    doc.text(": " + kelasText, 160, 16);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text("Alamat", 35, 22);
+    doc.text(": Jl. Pelajar No. 17, Medan", 65, 22);
+    doc.text("Semester", 140, 22);
+    doc.text(": " + selectedSemester, 160, 22);
+
+    doc.text("Nama Siswa", 35, 28);
+    doc.text(": " + student.name + " " + student.surname, 65, 28);
+    doc.text("Tahun Pelajaran", 140, 28);
+    doc.text(": " + new Date().getFullYear() + "/" + (new Date().getFullYear() + 1), 160, 28);
+
+    // Cek NISN jika ada di student, jika tidak ada pakai '-'
+    const nisn = (student as any).username || "-";
+    doc.text("NISN", 35, 34);
+    doc.text(": " + nisn, 65, 34);
 
     // Prepare data for table
-    const tableData = filteredLessons
-      .filter(lesson => {
-        // Only include lessons that have results for this student in the selected semester
-        const studentGrade = calculateStudentGrade(student.id, lesson);
-        return studentGrade !== null;
-      })
-      .map(lesson => {
-        const grade = calculateStudentGrade(student.id, lesson);
-        const subjectName = lesson.subject?.name || lesson.name;
-        const teacherName = `${lesson.teacher.name} ${lesson.teacher.surname}`;
-        
-        return [
-          subjectName,
-          teacherName,
-          grade ? grade.toString() : "-",
-          grade ? (grade >= 75 ? "Baik" : grade >= 60 ? "Cukup" : "Kurang") : "-"
-        ];
-      });
+    const tableData = filteredLessons.map((lesson, idx) => {
+      const grade = calculateStudentGrade(student.id, lesson);
+      const subjectName = lesson.subject?.name || lesson.name;
+      let description = "-";
+      let predikat = "-";
+      if (grade !== null) {
+        if (grade >= 90) {
+          predikat = "A";
+          description = "Sudah menguasai semua kompetensi dengan sangat baik, mampu memahami dan menerapkan materi secara menyeluruh.";
+        } else if (grade >= 75) {
+          predikat = "B";
+          description = "Sudah menguasai kompetensi dengan baik, mampu memahami materi dan menerapkannya dengan cukup baik.";
+        } else if (grade >= 60) {
+          predikat = "C";
+          description = "Menguasai sebagian kompetensi, namun masih perlu meningkatkan pemahaman dan penerapan materi.";
+        } else {
+          predikat = "D";
+          description = "Belum menguasai kompetensi, perlu bimbingan lebih lanjut.";
+        }
+      }
+      return [
+        (idx + 1).toString(),
+        subjectName,
+        grade !== null ? grade.toString() : "-",
+        predikat,
+        description
+      ];
+    });
 
     // Calculate overall average
     const overallAverage = calculateStudentAverage(student.id);
 
     // Create table
     autoTable(doc, {
-      startY: 70,
-      head: [["Mata Pelajaran", "Guru", "Nilai Akhir", "Predikat"]],
+      startY: 42,
+      head: [["No", "Mata Pelajaran", "Nilai", "Predikat", "Deskripsi"]],
       body: tableData,
       theme: "striped",
-      styles: { fontSize: 10, cellPadding: 4 },
+      styles: { fontSize: 8, cellPadding: 4 },
       headStyles: { 
         fillColor: [41, 128, 185], 
         textColor: 255, 
         fontStyle: 'bold',
-        halign: 'center'
+        halign: 'center',
+        fontSize: 8
       },
       alternateRowStyles: { fillColor: [240, 240, 240] },
       margin: { left: 14, right: 14 },
       columnStyles: {
-        0: { cellWidth: 60 },
-        1: { cellWidth: 50 },
+        0: { cellWidth: 12, halign: 'center' },
+        1: { cellWidth: 60 },
         2: { cellWidth: 25, halign: 'center' },
-        3: { cellWidth: 25, halign: 'center' }
+        3: { cellWidth: 20, halign: 'center' },
+        4: { cellWidth: 60 }
       }
     });
 
     // Add summary section
     const finalY = (doc as any).lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
     doc.text("RINGKASAN NILAI", 14, finalY);
     
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
     doc.text(`Rata-rata Keseluruhan: ${overallAverage || "-"}`, 14, finalY + 8);
     doc.text(`Jumlah Mata Pelajaran: ${filteredLessons.length}`, 14, finalY + 16);
 

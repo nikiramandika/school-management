@@ -152,7 +152,7 @@ const ResultListPage = async ({
     },
     where: {
       ...((role === "admin" || role === "kepala_sekolah")
-        ? (searchParams.semester ? { semester: searchParams.semester } : {})
+        ? (searchParams.semester ? { semester: searchParams.semester as Semester } : {})
         : {
             OR: [
               { supervisorId: currentUserId as string },
