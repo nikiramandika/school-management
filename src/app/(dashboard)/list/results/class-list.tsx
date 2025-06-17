@@ -164,14 +164,37 @@ export default function ClassList({ classes, role, userId }: ClassListProps) {
 
           {/* Action Button */}
           <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
-            <Button
-              className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
-              asChild
-            >
-              <Link href={`/list/results/${classItem.id}`}>
-                Lihat Nilai
-              </Link>
-            </Button>
+            {role === "admin" || role === "kepala_sekolah" ? (
+              <div className="space-y-2">
+                <Button
+                  className="w-full bg-gradient-to-r bg-blue-500 hover:bg-blue-600 text-white"
+                  asChild
+                >
+                  <Link href={`/list/results/${classItem.id}/exam`}>
+                    <HiClipboardCheck className="h-4 w-4 mr-2" />
+                    Input Nilai
+                  </Link>
+                </Button>
+                <Button
+                  className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
+                  asChild
+                >
+                  <Link href={`/list/results/${classItem.id}`}>
+                    <BarChart2 className="h-4 w-4 mr-2" />
+                    Lihat Hasil
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="w-full bg-gradient-to-r bg-cyan-500 hover:bg-cyan-600 text-white"
+                asChild
+              >
+                <Link href={`/list/results/${classItem.id}`}>
+                  Lihat Nilai
+                </Link>
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

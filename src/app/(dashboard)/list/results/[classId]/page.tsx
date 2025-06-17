@@ -107,6 +107,7 @@ const PageHeader = ({
   students,
   lessons,
   skillGrades,
+  classId,
 }: {
   className: string;
   gradeLevel: number | null;
@@ -122,6 +123,7 @@ const PageHeader = ({
   })[];
   lessons: LessonWithResults[];
   skillGrades: any[];
+  classId: string;
 }) => (
   <div className="space-y-6">
     {/* Navigation Breadcrumb */}
@@ -154,9 +156,20 @@ const PageHeader = ({
           </div>
         </div>
         
-        {/* Download buttons for supervisor */}
-        {isSupervisor && (
-          <div className="flex items-center gap-2">
+        {/* Action buttons */}
+        <div className="flex items-center gap-2">
+          {/* Admin/Kepala Sekolah Navigation Buttons */}
+          {(role === "admin" || role === "kepala_sekolah") && (
+            <Link href={`/list/results/${classId}/exam`}>
+              <Button variant="outline" className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-300">
+                <BookOpenCheck className="h-4 w-4 mr-2" />
+                Input Nilai
+              </Button>
+            </Link>
+          )}
+          
+          {/* Download buttons for supervisor, admin, and kepala sekolah */}
+          {(isSupervisor || role === "admin" || role === "kepala_sekolah") && (
             <DownloadReportCardPDFButton
               students={students}
               lessons={lessons}
@@ -165,8 +178,8 @@ const PageHeader = ({
               classSemester={semester}
               skillGrades={skillGrades}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   </div>
@@ -234,9 +247,9 @@ const ClassPage = async ({
 
   const isSupervisor = classData.supervisorId === currentUserId;
 
-  // Redirect admin, kepala_sekolah, and non-supervisor teachers to the exam page for grade input
-  // Only supervisors can access this results page
-  if (role === "admin" || role === "kepala_sekolah" || (role === "teacher" && !isSupervisor)) {
+  // For admin and kepala_sekolah, allow access to both pages
+  // For teachers, only supervisors can access this results page
+  if (role === "teacher" && !isSupervisor) {
     redirect(`/list/results/${params.classId}/exam`);
   }
 
@@ -332,6 +345,7 @@ const ClassPage = async ({
           students={updatedClassData.students}
           lessons={lessonsWithResults}
           skillGrades={skillGrades}
+          classId={params.classId}
         />
 
         {/* Semester Filter */}
